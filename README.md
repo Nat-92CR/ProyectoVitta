@@ -1,4 +1,4 @@
-### **ProyectoVitta**
+## **ProyectoVitta**
 
 
 
@@ -6,7 +6,7 @@ Sistema de gestión nutricional Vitta desarrollado en C#. Proyecto del curso Té
 
 ###### 
 
-###### **# Proyecto Vitta**
+### **# Proyecto Vitta**
 
 
 
@@ -28,7 +28,7 @@ El sistema permitirá gestionar información como:
 
 
 
-###### **## Planificación del proyecto**
+### **## Planificación del proyecto**
 
 
 
@@ -50,11 +50,11 @@ Esta planificación se encuentra documentada en el \*\*Entregable #1\*\*.
 
 
 
-###### **## Documentación**
+### **## Documentación**
 
 
 
-La documentación del proyecto se encuentra en la carpeta:# Proyecto Vitta
+La documentación del proyecto se encuentra en la carpeta:#docs
 
 
 
@@ -73,36 +73,4 @@ El sistema permitirá gestionar información como:
 \- Cálculo de información nutricional
 
 \- Visualización de estadísticas de consumo
-
-
-
-###### **## Planificación del proyecto**
-
-
-
-La planificación del proyecto se realizó utilizando una estructura basada en:
-
-
-
-\- Epic
-
-\- Features
-
-\- Product Backlog Items (PBIs)
-
-\- Tareas de implementación
-
-
-
-Esta planificación se encuentra documentada en el \*\*Entregable #1\*\*.
-
-
-
-**## Documentación**
-
-
-
-La documentación del proyecto se encuentra en la carpeta: doc/
-
-
 
