@@ -55,9 +55,9 @@
             label1.AutoSize = true;
             label1.Location = new Point(125, 104);
             label1.Name = "label1";
-            label1.Size = new Size(109, 15);
+            label1.Size = new Size(62, 15);
             label1.TabIndex = 0;
-            label1.Text = "Nombre de usuario";
+            label1.Text = "UserName";
             // 
             // label2
             // 
@@ -133,18 +133,20 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(242, 56);
+            label6.Font = new Font("Segoe UI", 13F);
+            label6.Location = new Point(248, 46);
             label6.Name = "label6";
-            label6.Size = new Size(109, 15);
+            label6.Size = new Size(167, 25);
             label6.TabIndex = 10;
             label6.Text = "Registro de Usuario";
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(60, 30);
+            label7.Font = new Font("Segoe UI", 20F);
+            label7.Location = new Point(23, 34);
             label7.Name = "label7";
-            label7.Size = new Size(38, 15);
+            label7.Size = new Size(85, 37);
             label7.TabIndex = 11;
             label7.Text = "VITTA";
             // 
@@ -160,7 +162,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(125, 307);
+            label9.Location = new Point(125, 312);
             label9.Name = "label9";
             label9.Size = new Size(104, 15);
             label9.TabIndex = 13;
@@ -186,7 +188,7 @@
             // cmbActivityLevel
             // 
             cmbActivityLevel.FormattingEnabled = true;
-            cmbActivityLevel.Location = new Point(277, 299);
+            cmbActivityLevel.Location = new Point(277, 304);
             cmbActivityLevel.Name = "cmbActivityLevel";
             cmbActivityLevel.Size = new Size(258, 23);
             cmbActivityLevel.TabIndex = 16;

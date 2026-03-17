@@ -20,6 +20,7 @@ namespace VittaView
         }
 
         //METODO LOADCOMBOBOXES
+
         private void LoadComboBoxes()
         {
             this.cmbGoal.Items.Add("Mantener");
