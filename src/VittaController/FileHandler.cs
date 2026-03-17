@@ -1,7 +1,10 @@
 ﻿namespace VittaController
 {
     using VittaController.Abstractions;
+    using System;
     using System.Collections.Generic;
+    using System.IO;
+    using VittaModel;
 
     /// <summary>
     /// Clase encargada de gestionar la carga y el guardado de datos mediante archivos,
@@ -12,8 +15,7 @@
         private readonly string filePath;
 
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="FileHandler{T}"/>
-        /// con la ruta del archivo que se utilizará para cargar o guardar información.
+        /// Inicializa una nueva instancia de la clase FileHandler.
         /// </summary>
         /// <param name="filePath">La ruta del archivo.</param>
         public FileHandler(string filePath)
@@ -25,24 +27,21 @@
         /// Carga los datos almacenados en el archivo configurado y los convierte
         /// en una lista del tipo especificado.
         /// </summary>
-        /// <param name="filePath">La ruta del archivo.</param>
-        /// <returns>
-        /// La colección de datos cargada desde el archivo.
-        /// </returns>
+        /// <returns>La colección de datos cargada desde el archivo.</returns>
         public List<T> LoadData()
         {
-            if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+            if (string.IsNullOrEmpty(this.filePath) || !File.Exists(this.filePath))
             {
-                throw new FileNotFoundException($"The file '{filePath}' was not found.");
+                throw new FileNotFoundException($"The file '{this.filePath}' was not found.");
             }
 
             var data = new List<T>();
-            var lines = File.ReadAllLines(filePath);
+            var lines = File.ReadAllLines(this.filePath);
 
             for (var i = 1; i < lines.Length; i++)
             {
                 var lineElements = lines[i].Split(',');
-                var element = Activator.CreateInstance(typeof(T), lineElements);
+                var element = Activator.CreateInstance(typeof(T), new object[] { lineElements });
                 data.Add((T)element);
             }
 
@@ -52,13 +51,38 @@
         /// <summary>
         /// Guarda la colección de datos recibida en el archivo correspondiente.
         /// </summary>
-        /// <param name="filePath">La ruta del archivo.</param>
         /// <param name="data">Los datos que se desean guardar.</param>
-        /// <returns>
-        /// True si los datos se guardan correctamente; de lo contrario, false.
-        /// </returns>
+        /// <returns>True si los datos se guardan correctamente; de lo contrario, false.</returns>
         public bool SaveData(List<T> data)
         {
+            if (string.IsNullOrEmpty(this.filePath) || data == null)
+            {
+                return false;
+            }
+
+            var lines = new List<string>();
+            lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType");
+
+            foreach (var item in data)
+            {
+                var user = item as User;
+
+                if (user != null)
+                {
+                    var line = user.UserName + "," +
+                               user.Password + "," +
+                               user.Name + "," +
+                               user.Weight + "," +
+                               user.Height + "," +
+                               user.Goal + "," +
+                               user.ActivityLevel + "," +
+                               user.DietType;
+
+                    lines.Add(line);
+                }
+            }
+
+            File.WriteAllLines(this.filePath, lines);
             return true;
         }
     }
