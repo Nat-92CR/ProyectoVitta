@@ -1,2 +1,5 @@
 UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType
 CarlosT,1234,Carlos Villalobos,60,160,Ganar masa,Sedentario,Estándar
+Nat,1234,Natalia,60,160,Mantener,Moderado,Estándar
+Diego,1234,Diego Rodriguez,55,1,6,Mantener,Moderado
+Santiago,1234,Santiago,80,170,Ganar masa,Ligero,Vegetariana

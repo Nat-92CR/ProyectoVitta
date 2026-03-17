@@ -21,6 +21,7 @@
         {
             this.InitializeComponent();
             this.loginController = loginController;
+            this.txtPassword.UseSystemPasswordChar = true; //oculta la contraseña ***
         }
 
         private void BtnLogin_Click(object sender, EventArgs e)
@@ -30,8 +31,12 @@
             if (result)
             {
                 MessageBox.Show("¡Bienvenido a Vitta! Has iniciado sesión correctamente.");
-                var principalForm = new DashboardView();
-                principalForm.Show();
+                this.Hide();
+
+                var principalForm = new DashboardView(this.loginController, userName);
+                principalForm.ShowDialog();
+
+                this.Show();
             }
             else
             {
