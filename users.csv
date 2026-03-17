@@ -1,4 +1,2 @@
-UserName,Password
-Nat,123
-Joely,123
-Kevin,123
+UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType
+CarlosT,1234,Carlos Villalobos,60,160,Ganar masa,Sedentario,Estándar

@@ -10,6 +10,7 @@
         /// Ruta del archivo de usuarios utilizada para cargar y guardar
         /// la información relacionada con el acceso al sistema.
         /// </summary>
-        public static readonly string UserFilePath = @"C:\Users\natal\Downloads\PVitta\users.csv";
+        public static readonly string UserFilePath = @"C:\Users\natal\OneDrive\Escritorio\ProyectoVitta\users.csv";
+        
     }
 }

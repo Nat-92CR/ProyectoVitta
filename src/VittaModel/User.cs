@@ -1,48 +1,89 @@
 ﻿namespace VittaModel
 {
+    using System.Globalization;
+
     /// <summary>
-    /// Modelo que representa al usuario del sistema y encapsula
-    /// la información básica necesaria para los procesos de inicio de sesión y registro.
+    /// Modelo que representa a un usuario del sistema.
     /// </summary>
     public class User
     {
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="User"/>
-        /// utilizando el nombre de usuario y la contraseña proporcionados.
+        /// Inicializa un usuario con todos sus datos.
         /// </summary>
-        /// <param name="userName">El nombre del usuario.</param>
-        /// <param name="password">La contraseña.</param>
-        public User(string userName, string password)
+        /// <param name="userName">Nombre de usuario.</param>
+        /// <param name="password">Contraseña.</param>
+        /// <param name="name">Nombre completo.</param>
+        /// <param name="weight">Peso.</param>
+        /// <param name="height">Altura.</param>
+        /// <param name="goal">Objetivo.</param>
+        /// <param name="activityLevel">Nivel de actividad.</param>
+        /// <param name="dietType">Tipo de dieta.</param>
+        public User(string userName, string password, string name, double weight, double height, string goal, string activityLevel, string dietType)
         {
             this.UserName = userName;
             this.Password = password;
+            this.Name = name;
+            this.Weight = weight;
+            this.Height = height;
+            this.Goal = goal;
+            this.ActivityLevel = activityLevel;
+            this.DietType = dietType;
         }
 
         /// <summary>
-        /// Inicializa una nueva instancia de la clase <see cref="User"/>
-        /// utilizando un arreglo de datos que contiene la información del usuario.
+        /// Inicializa un usuario a partir de los datos del archivo CSV.
         /// </summary>
-        /// <param name="userData">Los datos del usuario.</param>
+        /// <param name="userData">Arreglo con los datos del usuario.</param>
         public User(string[] userData)
         {
             this.UserName = userData[0];
             this.Password = userData[1];
+            this.Name = userData[2];
+            this.Weight = double.Parse(userData[3], CultureInfo.InvariantCulture);
+            this.Height = double.Parse(userData[4], CultureInfo.InvariantCulture);
+            this.Goal = userData[5];
+            this.ActivityLevel = userData[6];
+            this.DietType = userData[7];
         }
 
         /// <summary>
-        /// Obtiene o establece el nombre del usuario.
+        /// Obtiene o establece el nombre de usuario.
         /// </summary>
-        /// <value>
-        /// El nombre del usuario.
-        /// </value>
         public string UserName { get; set; }
 
         /// <summary>
-        /// Obtiene o establece la contraseña del usuario.
+        /// Obtiene o establece la contraseña.
         /// </summary>
-        /// <value>
-        /// La contraseña del usuario.
-        /// </value>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece el nombre completo.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece el peso.
+        /// </summary>
+        public double Weight { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece la altura.
+        /// </summary>
+        public double Height { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece el objetivo.
+        /// </summary>
+        public string Goal { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece el nivel de actividad.
+        /// </summary>
+        public string ActivityLevel { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece el tipo de dieta.
+        /// </summary>
+        public string DietType { get; set; }
     }
 }

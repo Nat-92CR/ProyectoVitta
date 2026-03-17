@@ -1,5 +1,6 @@
 ﻿namespace VittaController.Abstractions
 {
+    using VittaModel;
     /// <summary>
     /// Interfaz que define el contrato de las operaciones principales relacionadas con los usuarios del sistema,
     /// específicamente el inicio de sesión y el registro.
@@ -20,6 +21,8 @@
         /// <param name="username">El nombre de usuario que se desea registrar.</param>
         /// <param name="password">La contraseña asociada al nuevo usuario.</param>
         /// <returns>True si el registro se realiza correctamente; de lo contrario, false.</returns>
-        public bool Register(string username, string password);
+        public bool Register(User user);
+        User GetUserByUserName(string username);
+        bool UpdateUser(User updatedUser);
     }
 }

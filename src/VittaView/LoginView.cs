@@ -38,5 +38,11 @@
                 MessageBox.Show("No se pudo iniciar sesión en Vitta. Por favor, revisa tus credenciales e inténtalo de nuevo.");
             }
         }
+
+        private void btnRegister_Click(object sender, EventArgs e)
+        {
+            var registerView = new RegisterView(this.loginController);
+            registerView.ShowDialog();
+        }
     }
 }
