@@ -16,6 +16,8 @@
         /// Inicializa una nueva instancia de la clase <see cref="UserController"/>.
         /// </summary>
         /// <param name="dataHandler">Manejador de datos de usuarios.</param>
+        
+        //CONSTRUCTOR UserController (Controlador de Usuarios)
         public UserController(IDataHandler<User> dataHandler)
         {
             this.dataHandler = dataHandler;
