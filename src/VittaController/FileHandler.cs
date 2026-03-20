@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.IO;
     using VittaModel;
+    using System.Globalization;
 
     /// <summary>
     /// Clase encargada de gestionar la carga y el guardado de datos mediante archivos,
@@ -64,25 +65,53 @@
             }
 
             var lines = new List<string>();
-            lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType");
 
-            foreach (var item in data)
+            if (typeof(T) == typeof(User))
             {
-                var user = item as User;
+                lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType");
 
-                if (user != null)
+                foreach (var item in data)
                 {
-                    var line = user.UserName + "," +
-                               user.Password + "," +
-                               user.Name + "," +
-                               user.Weight + "," +
-                               user.Height + "," +
-                               user.Goal + "," +
-                               user.ActivityLevel + "," +
-                               user.DietType;
+                    var user = item as User;
 
-                    lines.Add(line);
+                    if (user != null)
+                    {
+                        var line = user.UserName + "," +
+                                   user.Password + "," +
+                                   user.Name + "," +
+                                   user.Weight.ToString(CultureInfo.InvariantCulture) + "," +
+                                   user.Height.ToString(CultureInfo.InvariantCulture) + "," +
+                                   user.Goal + "," +
+                                   user.ActivityLevel + "," +
+                                   user.DietType;
+
+                        lines.Add(line);
+                    }
                 }
+            }
+            else if (typeof(T) == typeof(Food))
+            {
+                lines.Add("Name,Calories,Protein,Carbohydrates,Fat");
+
+                foreach (var item in data)
+                {
+                    var food = item as Food;
+
+                    if (food != null)
+                    {
+                        var line = food.Name + "," +
+                                   food.Calories.ToString(CultureInfo.InvariantCulture) + "," +
+                                   food.Protein.ToString(CultureInfo.InvariantCulture) + "," +
+                                   food.Carbohydrates.ToString(CultureInfo.InvariantCulture) + "," +
+                                   food.Fat.ToString(CultureInfo.InvariantCulture);
+
+                        lines.Add(line);
+                    }
+                }
+            }
+            else
+            {
+                return false;
             }
 
             File.WriteAllLines(this.filePath, lines);

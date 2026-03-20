@@ -1,4 +1,5 @@
 using VittaController;
+using VittaController.Abstractions;
 using VittaModel;
 using VittaView.Configuration;
 
@@ -12,11 +13,12 @@ namespace VittaView
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+
             var loginController = LoadServices();
-            Application.Run(new LoginView(loginController));
+            var foodController = LoadFoodServices();
+
+            Application.Run(new LoginView(loginController, foodController));
         }
 
         private static LoginController LoadServices()
@@ -25,6 +27,13 @@ namespace VittaView
             var userController = new UserController(fileHandler);
             var loginController = new LoginController(userController);
             return loginController;
+        }
+
+        private static IFoodController LoadFoodServices()
+        {
+            var fileHandler = new FileHandler<Food>(ConfigurationItems.FoodFilePath);
+            var foodController = new FoodController(fileHandler);
+            return foodController;
         }
     }
 }
