@@ -31,36 +31,48 @@
         {
             label1 = new Label();
             btnProfile = new Button();
+            btnOpenFoodRegister = new Button();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 22F);
-            label1.Location = new Point(26, 30);
+            label1.Location = new Point(30, 40);
             label1.Name = "label1";
-            label1.Size = new Size(405, 41);
+            label1.Size = new Size(501, 50);
             label1.TabIndex = 0;
             label1.Text = "Bienvenido a nuestro sistema";
             // 
             // btnProfile
             // 
-            btnProfile.Location = new Point(821, 37);
+            btnProfile.Location = new Point(30, 117);
+            btnProfile.Margin = new Padding(3, 4, 3, 4);
             btnProfile.Name = "btnProfile";
-            btnProfile.Size = new Size(167, 41);
+            btnProfile.Size = new Size(191, 55);
             btnProfile.TabIndex = 1;
             btnProfile.Text = "Mi perfil";
             btnProfile.UseVisualStyleBackColor = true;
             btnProfile.Click += btnProfile_Click;
             // 
+            // btnOpenFoodRegister
+            // 
+            btnOpenFoodRegister.Location = new Point(268, 117);
+            btnOpenFoodRegister.Name = "btnOpenFoodRegister";
+            btnOpenFoodRegister.Size = new Size(191, 55);
+            btnOpenFoodRegister.TabIndex = 2;
+            btnOpenFoodRegister.Text = "Registrar alimento";
+            btnOpenFoodRegister.UseVisualStyleBackColor = true;
+            btnOpenFoodRegister.Click += btnOpenFoodRegister_Click;
+            // 
             // DashboardView
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1074, 491);
+            ClientSize = new Size(1227, 655);
+            Controls.Add(btnOpenFoodRegister);
             Controls.Add(btnProfile);
             Controls.Add(label1);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "DashboardView";
             Text = "DashboardView";
             ResumeLayout(false);
@@ -71,5 +83,6 @@
 
         private Label label1;
         private Button btnProfile;
+        private Button btnOpenFoodRegister;
     }
 }

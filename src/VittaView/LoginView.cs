@@ -1,6 +1,7 @@
 ﻿namespace VittaView
 {
     using VittaController;
+    using VittaController.Abstractions;
 
     /// <summary>
     /// Vista para el inicio de sesión.
@@ -9,6 +10,7 @@
     public partial class LoginView : Form
     {
         private LoginController loginController;
+        private IFoodController foodController;
         private string userName => this.txtUser.Text;
         private string password => this.txtPassword.Text;
 
@@ -17,11 +19,12 @@
         /// Inicializa una nueva instancia de la clase <see cref="LoginView"/>.
         /// </summary>
         /// <param name="loginController">El controlador de inicio de sesión.</param>
-        public LoginView(LoginController loginController)
+        public LoginView(LoginController loginController, IFoodController foodController)
         {
             this.InitializeComponent();
             this.loginController = loginController;
-            this.txtPassword.UseSystemPasswordChar = true; //oculta la contraseña ***
+            this.foodController = foodController;
+            this.txtPassword.UseSystemPasswordChar = true;
         }
 
         private void BtnLogin_Click(object sender, EventArgs e)
@@ -33,7 +36,7 @@
                 MessageBox.Show("¡Bienvenido a Vitta! Has iniciado sesión correctamente.");
                 this.Hide();
 
-                var principalForm = new DashboardView(this.loginController, userName);
+                var principalForm = new DashboardView(this.loginController, this.foodController, this.userName);
                 principalForm.ShowDialog();
 
                 this.Show();
