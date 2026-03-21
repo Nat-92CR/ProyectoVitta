@@ -32,6 +32,7 @@
             label1 = new Label();
             btnProfile = new Button();
             btnOpenFoodRegister = new Button();
+            btnOpenFoodConsult = new Button();
             SuspendLayout();
             // 
             // label1
@@ -65,11 +66,22 @@
             btnOpenFoodRegister.UseVisualStyleBackColor = true;
             btnOpenFoodRegister.Click += btnOpenFoodRegister_Click;
             // 
+            // btnOpenFoodConsult
+            // 
+            btnOpenFoodConsult.Location = new Point(505, 117);
+            btnOpenFoodConsult.Name = "btnOpenFoodConsult";
+            btnOpenFoodConsult.Size = new Size(191, 55);
+            btnOpenFoodConsult.TabIndex = 3;
+            btnOpenFoodConsult.Text = "Consultar alimentos";
+            btnOpenFoodConsult.UseVisualStyleBackColor = true;
+            btnOpenFoodConsult.Click += btnOpenFoodConsult_Click;
+            // 
             // DashboardView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1227, 655);
+            Controls.Add(btnOpenFoodConsult);
             Controls.Add(btnOpenFoodRegister);
             Controls.Add(btnProfile);
             Controls.Add(label1);
@@ -84,5 +96,6 @@
         private Label label1;
         private Button btnProfile;
         private Button btnOpenFoodRegister;
+        private Button btnOpenFoodConsult;
     }
 }
