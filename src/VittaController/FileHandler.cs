@@ -56,6 +56,7 @@
         /// </summary>
         /// <param name="data">Los datos que se desean guardar.</param>
         /// <returns>True si los datos se guardan correctamente; de lo contrario, false.</returns>
+        ///Cuando se registra o actualiza un usuario, esta clase vuelve a escribir todo el CSV.
         public bool SaveData(List<T> data)
         {
             if (string.IsNullOrEmpty(this.filePath) || data == null)
