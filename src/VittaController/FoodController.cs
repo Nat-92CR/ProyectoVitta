@@ -82,6 +82,31 @@
         }
 
         /// <summary>
+        /// Busca alimentos por nombre o parte del nombre.
+        /// </summary>
+        /// <param name="name">Texto a buscar.</param>
+        /// <returns>Lista de alimentos encontrados.</returns>
+        public List<Food> SearchFoodsByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return new List<Food>(this.foods);
+            }
+
+            var foundFoods = new List<Food>();
+
+            foreach (var food in this.foods)
+            {
+                if (food.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    foundFoods.Add(food);
+                }
+            }
+
+            return foundFoods;
+        }
+
+        /// <summary>
         /// Actualiza la información de un alimento existente.
         /// </summary>
         /// <param name="updatedFood">Alimento con datos actualizados.</param>

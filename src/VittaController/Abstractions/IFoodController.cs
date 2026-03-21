@@ -29,6 +29,13 @@
         Food GetFoodByName(string name);
 
         /// <summary>
+        /// Busca alimentos por nombre o parte del nombre.
+        /// </summary>
+        /// <param name="name">Texto a buscar.</param>
+        /// <returns>Lista de alimentos encontrados.</returns>
+        List<Food> SearchFoodsByName(string name);
+
+        /// <summary>
         /// Actualiza la información de un alimento.
         /// </summary>
         /// <param name="updatedFood">Alimento con los datos actualizados.</param>

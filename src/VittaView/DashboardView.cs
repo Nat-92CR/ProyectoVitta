@@ -79,5 +79,21 @@
                 MessageBox.Show("No se pudo abrir el módulo de alimentos.");
             }
         }
+
+        /// <summary>
+        /// Abre la vista de consulta de alimentos.
+        /// </summary>
+        private void btnOpenFoodConsult_Click(object sender, EventArgs e)
+        {
+            if (this.foodController != null)
+            {
+                var foodConsultView = new FoodConsultView(this.foodController);
+                foodConsultView.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No se pudo abrir la consulta de alimentos.");
+            }
+        }
     }
 }

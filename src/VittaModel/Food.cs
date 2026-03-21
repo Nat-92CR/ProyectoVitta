@@ -15,6 +15,7 @@
         /// <param name="protein">Proteínas del alimento.</param>
         /// <param name="carbohydrates">Carbohidratos del alimento.</param>
         /// <param name="fat">Grasas del alimento.</param>
+        ///  /// <param name="measure">Medida del alimento.</param>
         public Food(string name, double calories, double protein, double carbohydrates, double fat)
         {
             this.Name = name;
@@ -22,6 +23,7 @@
             this.Protein = protein;
             this.Carbohydrates = carbohydrates;
             this.Fat = fat;
+
         }
 
         /// <summary>
