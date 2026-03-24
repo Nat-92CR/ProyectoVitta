@@ -116,9 +116,9 @@
         /// </summary>
         private void btnOpenMenuRegister_Click(object sender, EventArgs e)
         {
-            if (this.menuController != null && !string.IsNullOrWhiteSpace(this.currentUserName))
+            if (this.menuController != null && this.foodController != null && !string.IsNullOrWhiteSpace(this.currentUserName))
             {
-                var menuRegisterView = new MenuRegisterView(this.menuController, this.currentUserName);
+                var menuRegisterView = new MenuRegisterView(this.menuController, this.foodController, this.currentUserName);
                 menuRegisterView.ShowDialog();
             }
             else
