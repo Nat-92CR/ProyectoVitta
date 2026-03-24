@@ -1,6 +1,7 @@
 ﻿namespace VittaController
 {
     using System;
+    using System.Collections.Generic;
     using VittaController.Abstractions;
     using VittaModel;
 
@@ -29,22 +30,7 @@
         /// <returns>True si se registra correctamente; de lo contrario, false.</returns>
         public bool RegisterMenu(Menu menu)
         {
-            if (menu == null)
-            {
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(menu.UserName))
-            {
-                return false;
-            }
-
-            if (menu.MenuDate == DateTime.MinValue)
-            {
-                return false;
-            }
-
-            if (this.AreAllMealTimesEmpty(menu))
+            if (!this.IsValidMenu(menu))
             {
                 return false;
             }
@@ -108,6 +94,74 @@
         }
 
         /// <summary>
+        /// Actualiza un menú existente del usuario.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <param name="originalMenuDate">Fecha original del menú a modificar.</param>
+        /// <param name="updatedMenu">Menú actualizado.</param>
+        /// <returns>True si se actualiza correctamente; de lo contrario, false.</returns>
+        public bool UpdateMenu(string userName, DateTime originalMenuDate, Menu updatedMenu)
+        {
+            if (!this.IsValidMenu(updatedMenu))
+            {
+                return false;
+            }
+
+            var menuIndex = this.FindMenuIndexByUserAndDate(userName, originalMenuDate);
+
+            if (menuIndex == -1)
+            {
+                return false;
+            }
+
+            if (updatedMenu.MenuDate.Date != originalMenuDate.Date &&
+                this.ExistsMenuForUserAndDate(userName, updatedMenu.MenuDate))
+            {
+                return false;
+            }
+
+            var previousMenu = this.menus[menuIndex];
+            this.menus[menuIndex] = updatedMenu;
+
+            var saved = this.dataHandler.SaveData(this.menus);
+
+            if (!saved)
+            {
+                this.menus[menuIndex] = previousMenu;
+            }
+
+            return saved;
+        }
+
+        /// <summary>
+        /// Elimina un menú existente del usuario.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <param name="menuDate">Fecha del menú a eliminar.</param>
+        /// <returns>True si se elimina correctamente; de lo contrario, false.</returns>
+        public bool DeleteMenu(string userName, DateTime menuDate)
+        {
+            var menuIndex = this.FindMenuIndexByUserAndDate(userName, menuDate);
+
+            if (menuIndex == -1)
+            {
+                return false;
+            }
+
+            var removedMenu = this.menus[menuIndex];
+            this.menus.RemoveAt(menuIndex);
+
+            var saved = this.dataHandler.SaveData(this.menus);
+
+            if (!saved)
+            {
+                this.menus.Insert(menuIndex, removedMenu);
+            }
+
+            return saved;
+        }
+
+        /// <summary>
         /// Verifica si ya existe un menú registrado para el mismo usuario y fecha.
         /// </summary>
         /// <param name="userName">Nombre del usuario.</param>
@@ -125,6 +179,51 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Busca el índice del menú según usuario y fecha.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <param name="menuDate">Fecha del menú.</param>
+        /// <returns>Índice encontrado o -1 si no existe.</returns>
+        private int FindMenuIndexByUserAndDate(string userName, DateTime menuDate)
+        {
+            for (int i = 0; i < this.menus.Count; i++)
+            {
+                if (this.menus[i].UserName.Equals(userName, StringComparison.OrdinalIgnoreCase) &&
+                    this.menus[i].MenuDate.Date == menuDate.Date)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Verifica si el menú contiene datos válidos.
+        /// </summary>
+        /// <param name="menu">Menú a validar.</param>
+        /// <returns>True si es válido; de lo contrario, false.</returns>
+        private bool IsValidMenu(Menu menu)
+        {
+            if (menu == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(menu.UserName))
+            {
+                return false;
+            }
+
+            if (menu.MenuDate == DateTime.MinValue)
+            {
+                return false;
+            }
+
+            return !this.AreAllMealTimesEmpty(menu);
         }
 
         /// <summary>
