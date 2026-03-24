@@ -27,6 +27,7 @@
             this.currentUserName = string.Empty;
             this.isEditMode = false;
             this.selectedOriginalMenuDate = DateTime.MinValue;
+            this.AttachMealTextChangedEvents();
         }
 
         /// <summary>
@@ -45,6 +46,7 @@
             this.LoadMealTimes();
             this.ConfigureInitialState();
             this.LoadExistingMenus();
+            this.RefreshNutritionalResults();
         }
 
         /// <summary>
@@ -102,6 +104,7 @@
 
             this.AddFoodToSelectedMealTime(selectedMealTime, foodText);
             this.FillPreviewFromMealTextFields();
+            this.RefreshNutritionalResults();
             this.ResetFoodSelectionFields();
         }
 
@@ -181,6 +184,7 @@
             this.isEditMode = true;
             this.selectedOriginalMenuDate = selectedMenu.MenuDate.Date;
             this.FillPreviewFromMealTextFields();
+            this.RefreshNutritionalResults();
         }
 
         /// <summary>
@@ -224,6 +228,7 @@
                 this.LoadExistingMenus();
                 this.SelectExistingMenuByDate(updatedMenu.MenuDate.Date);
                 this.FillPreviewFromMealTextFields();
+                this.RefreshNutritionalResults();
             }
             else
             {
@@ -291,11 +296,12 @@
         }
 
         /// <summary>
-        /// Evento que se ejecuta al presionar el botón Cancelar.
+        /// Evento que reacciona cuando cambia el contenido de un tiempo de comida.
         /// </summary>
-        private void BtnCancel_Click(object sender, EventArgs e)
+        private void MealTextFields_TextChanged(object sender, EventArgs e)
         {
-            this.Close();
+            this.FillPreviewFromMealTextFields();
+            this.RefreshNutritionalResults();
         }
 
         /// <summary>
@@ -365,6 +371,25 @@
             this.cmbAvailableFoods.SelectedIndex = -1;
             this.cmbMealTime.SelectedIndex = -1;
             this.cmbExistingMenus.SelectedIndex = -1;
+
+            this.txtTotalCalories.ReadOnly = true;
+            this.txtTotalProtein.ReadOnly = true;
+            this.txtTotalCarbohydrates.ReadOnly = true;
+            this.txtTotalFat.ReadOnly = true;
+
+            this.ShowNutritionTotals(0, 0, 0, 0);
+        }
+
+        /// <summary>
+        /// Asocia eventos de cambio a los tiempos de comida.
+        /// </summary>
+        private void AttachMealTextChangedEvents()
+        {
+            this.txtBreakfast.TextChanged += this.MealTextFields_TextChanged;
+            this.textMorning.TextChanged += this.MealTextFields_TextChanged;
+            this.txtLunch.TextChanged += this.MealTextFields_TextChanged;
+            this.txtAfternoonSnack.TextChanged += this.MealTextFields_TextChanged;
+            this.txtDinner.TextChanged += this.MealTextFields_TextChanged;
         }
 
         /// <summary>
@@ -457,6 +482,141 @@
             {
                 this.lstMenuPreview.Items.Add(mealTime + ": " + mealItem);
             }
+        }
+
+        /// <summary>
+        /// Calcula los totales nutricionales del menú actual.
+        /// </summary>
+        private void RefreshNutritionalResults()
+        {
+            if (this.foodController == null)
+            {
+                this.ShowNutritionTotals(0, 0, 0, 0);
+                return;
+            }
+
+            double totalCalories = 0;
+            double totalProtein = 0;
+            double totalCarbohydrates = 0;
+            double totalFat = 0;
+
+            this.AddNutritionFromMealText(this.txtBreakfast.Text, ref totalCalories, ref totalProtein, ref totalCarbohydrates, ref totalFat);
+            this.AddNutritionFromMealText(this.textMorning.Text, ref totalCalories, ref totalProtein, ref totalCarbohydrates, ref totalFat);
+            this.AddNutritionFromMealText(this.txtLunch.Text, ref totalCalories, ref totalProtein, ref totalCarbohydrates, ref totalFat);
+            this.AddNutritionFromMealText(this.txtAfternoonSnack.Text, ref totalCalories, ref totalProtein, ref totalCarbohydrates, ref totalFat);
+            this.AddNutritionFromMealText(this.txtDinner.Text, ref totalCalories, ref totalProtein, ref totalCarbohydrates, ref totalFat);
+
+            this.ShowNutritionTotals(totalCalories, totalProtein, totalCarbohydrates, totalFat);
+        }
+
+        /// <summary>
+        /// Suma la información nutricional de un tiempo de comida.
+        /// </summary>
+        /// <param name="mealText">Texto del tiempo de comida.</param>
+        /// <param name="totalCalories">Acumulado de calorías.</param>
+        /// <param name="totalProtein">Acumulado de proteínas.</param>
+        /// <param name="totalCarbohydrates">Acumulado de carbohidratos.</param>
+        /// <param name="totalFat">Acumulado de grasas.</param>
+        private void AddNutritionFromMealText(
+            string mealText,
+            ref double totalCalories,
+            ref double totalProtein,
+            ref double totalCarbohydrates,
+            ref double totalFat)
+        {
+            if (string.IsNullOrWhiteSpace(mealText) || this.foodController == null)
+            {
+                return;
+            }
+
+            string[] mealItems = mealText.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string mealItem in mealItems)
+            {
+                this.ParseMealItem(mealItem.Trim(), out string foodName, out int quantity);
+
+                Food? matchedFood = this.FindFoodByName(foodName);
+
+                if (matchedFood != null)
+                {
+                    totalCalories += matchedFood.Calories * quantity;
+                    totalProtein += matchedFood.Protein * quantity;
+                    totalCarbohydrates += matchedFood.Carbohydrates * quantity;
+                    totalFat += matchedFood.Fat * quantity;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Interpreta el nombre del alimento y la cantidad dentro del texto del menú.
+        /// </summary>
+        /// <param name="mealItem">Texto del alimento.</param>
+        /// <param name="foodName">Nombre del alimento.</param>
+        /// <param name="quantity">Cantidad detectada.</param>
+        private void ParseMealItem(string mealItem, out string foodName, out int quantity)
+        {
+            foodName = mealItem.Trim();
+            quantity = 1;
+
+            int quantityMarkerIndex = foodName.LastIndexOf(" x", StringComparison.OrdinalIgnoreCase);
+
+            if (quantityMarkerIndex > -1)
+            {
+                string possibleFoodName = foodName.Substring(0, quantityMarkerIndex).Trim();
+                string possibleQuantityText = foodName.Substring(quantityMarkerIndex + 2).Trim();
+
+                if (!string.IsNullOrWhiteSpace(possibleFoodName) &&
+                    int.TryParse(possibleQuantityText, out int parsedQuantity) &&
+                    parsedQuantity > 0)
+                {
+                    foodName = possibleFoodName;
+                    quantity = parsedQuantity;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Busca un alimento por nombre dentro del catálogo existente.
+        /// </summary>
+        /// <param name="foodName">Nombre del alimento.</param>
+        /// <returns>Alimento encontrado o null si no existe.</returns>
+        private Food? FindFoodByName(string foodName)
+        {
+            if (this.foodController == null || string.IsNullOrWhiteSpace(foodName))
+            {
+                return null;
+            }
+
+            List<Food> foods = this.foodController.GetFoods();
+
+            foreach (Food food in foods)
+            {
+                if (food.Name.Equals(foodName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return food;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Muestra en pantalla los totales nutricionales del menú.
+        /// </summary>
+        /// <param name="totalCalories">Calorías totales.</param>
+        /// <param name="totalProtein">Proteínas totales.</param>
+        /// <param name="totalCarbohydrates">Carbohidratos totales.</param>
+        /// <param name="totalFat">Grasas totales.</param>
+        private void ShowNutritionTotals(
+            double totalCalories,
+            double totalProtein,
+            double totalCarbohydrates,
+            double totalFat)
+        {
+            this.txtTotalCalories.Text = totalCalories.ToString("0.##", CultureInfo.InvariantCulture);
+            this.txtTotalProtein.Text = totalProtein.ToString("0.##", CultureInfo.InvariantCulture);
+            this.txtTotalCarbohydrates.Text = totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture);
+            this.txtTotalFat.Text = totalFat.ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -557,6 +717,7 @@
             this.cmbExistingMenus.SelectedIndex = -1;
             this.isEditMode = false;
             this.selectedOriginalMenuDate = DateTime.MinValue;
+            this.ShowNutritionTotals(0, 0, 0, 0);
             this.txtBreakfast.Focus();
         }
 
@@ -568,6 +729,14 @@
         private bool ContainsComma(string text)
         {
             return !string.IsNullOrEmpty(text) && text.Contains(",");
+        }
+
+        /// <summary>
+        /// Evento que se ejecuta al presionar el botón Cancelar.
+        /// </summary>
+        private void BtnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

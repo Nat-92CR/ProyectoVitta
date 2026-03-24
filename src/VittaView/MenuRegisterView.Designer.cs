@@ -3,14 +3,14 @@
     partial class MenuRegisterView
     {
         /// <summary>
-        /// Required designer variable.
+        /// Variable requerida por el diseñador.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Limpia los recursos que se estén utilizando.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true si los recursos administrados deben eliminarse; de lo contrario, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -21,10 +21,11 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Código generado por el Diseñador de Windows Forms
 
         /// <summary>
-        /// Required method for Designer support.
+        /// Método requerido para compatibilidad con el Diseñador.
+        /// No modifique el contenido de este método con el editor de código.
         /// </summary>
         private void InitializeComponent()
         {
@@ -57,6 +58,15 @@
             btnAddFoodToMenu = new Button();
             lblPreview = new Label();
             lstMenuPreview = new ListBox();
+            lblNutritionTitle = new Label();
+            lblTotalCalories = new Label();
+            txtTotalCalories = new TextBox();
+            lblTotalProtein = new Label();
+            txtTotalProtein = new TextBox();
+            lblTotalCarbohydrates = new Label();
+            txtTotalCarbohydrates = new TextBox();
+            lblTotalFat = new Label();
+            txtTotalFat = new TextBox();
             ((System.ComponentModel.ISupportInitialize)nudQuantity).BeginInit();
             SuspendLayout();
             // 
@@ -168,9 +178,9 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(180, 403);
+            btnSave.Location = new Point(30, 403);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(124, 50);
+            btnSave.Size = new Size(170, 50);
             btnSave.TabIndex = 13;
             btnSave.Text = "Guardar Menú";
             btnSave.UseVisualStyleBackColor = true;
@@ -178,9 +188,9 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(356, 488);
+            btnCancel.Location = new Point(750, 403);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(124, 50);
+            btnCancel.Size = new Size(170, 50);
             btnCancel.TabIndex = 17;
             btnCancel.Text = "Cancelar";
             btnCancel.UseVisualStyleBackColor = true;
@@ -216,9 +226,9 @@
             // 
             // btnUpdateMenu
             // 
-            btnUpdateMenu.Location = new Point(356, 403);
+            btnUpdateMenu.Location = new Point(281, 403);
             btnUpdateMenu.Name = "btnUpdateMenu";
-            btnUpdateMenu.Size = new Size(124, 50);
+            btnUpdateMenu.Size = new Size(170, 50);
             btnUpdateMenu.TabIndex = 14;
             btnUpdateMenu.Text = "Actualizar menú";
             btnUpdateMenu.UseVisualStyleBackColor = true;
@@ -226,9 +236,9 @@
             // 
             // btnDeleteMenu
             // 
-            btnDeleteMenu.Location = new Point(180, 488);
+            btnDeleteMenu.Location = new Point(522, 403);
             btnDeleteMenu.Name = "btnDeleteMenu";
-            btnDeleteMenu.Size = new Size(124, 50);
+            btnDeleteMenu.Size = new Size(170, 50);
             btnDeleteMenu.TabIndex = 15;
             btnDeleteMenu.Text = "Eliminar menú";
             btnDeleteMenu.UseVisualStyleBackColor = true;
@@ -299,7 +309,7 @@
             // lblPreview
             // 
             lblPreview.AutoSize = true;
-            lblPreview.Location = new Point(545, 380);
+            lblPreview.Location = new Point(36, 520);
             lblPreview.Name = "lblPreview";
             lblPreview.Size = new Size(126, 20);
             lblPreview.TabIndex = 28;
@@ -308,16 +318,99 @@
             // lstMenuPreview
             // 
             lstMenuPreview.FormattingEnabled = true;
-            lstMenuPreview.Location = new Point(545, 403);
+            lstMenuPreview.Location = new Point(36, 553);
             lstMenuPreview.Name = "lstMenuPreview";
-            lstMenuPreview.Size = new Size(375, 144);
+            lstMenuPreview.Size = new Size(375, 104);
             lstMenuPreview.TabIndex = 29;
+            // 
+            // lblNutritionTitle
+            // 
+            lblNutritionTitle.AutoSize = true;
+            lblNutritionTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblNutritionTitle.Location = new Point(522, 520);
+            lblNutritionTitle.Name = "lblNutritionTitle";
+            lblNutritionTitle.Size = new Size(173, 23);
+            lblNutritionTitle.TabIndex = 30;
+            lblNutritionTitle.Text = "Resumen nutricional";
+            // 
+            // lblTotalCalories
+            // 
+            lblTotalCalories.AutoSize = true;
+            lblTotalCalories.Location = new Point(522, 555);
+            lblTotalCalories.Name = "lblTotalCalories";
+            lblTotalCalories.Size = new Size(65, 20);
+            lblTotalCalories.TabIndex = 31;
+            lblTotalCalories.Text = "Calorías:";
+            // 
+            // txtTotalCalories
+            // 
+            txtTotalCalories.Location = new Point(627, 552);
+            txtTotalCalories.Name = "txtTotalCalories";
+            txtTotalCalories.Size = new Size(100, 27);
+            txtTotalCalories.TabIndex = 32;
+            // 
+            // lblTotalProtein
+            // 
+            lblTotalProtein.AutoSize = true;
+            lblTotalProtein.Location = new Point(747, 555);
+            lblTotalProtein.Name = "lblTotalProtein";
+            lblTotalProtein.Size = new Size(73, 20);
+            lblTotalProtein.TabIndex = 33;
+            lblTotalProtein.Text = "Proteínas:";
+            // 
+            // txtTotalProtein
+            // 
+            txtTotalProtein.Location = new Point(822, 552);
+            txtTotalProtein.Name = "txtTotalProtein";
+            txtTotalProtein.Size = new Size(100, 27);
+            txtTotalProtein.TabIndex = 34;
+            // 
+            // lblTotalCarbohydrates
+            // 
+            lblTotalCarbohydrates.AutoSize = true;
+            lblTotalCarbohydrates.Location = new Point(522, 590);
+            lblTotalCarbohydrates.Name = "lblTotalCarbohydrates";
+            lblTotalCarbohydrates.Size = new Size(106, 20);
+            lblTotalCarbohydrates.TabIndex = 35;
+            lblTotalCarbohydrates.Text = "Carbohidratos:";
+            // 
+            // txtTotalCarbohydrates
+            // 
+            txtTotalCarbohydrates.Location = new Point(627, 587);
+            txtTotalCarbohydrates.Name = "txtTotalCarbohydrates";
+            txtTotalCarbohydrates.Size = new Size(100, 27);
+            txtTotalCarbohydrates.TabIndex = 36;
+            // 
+            // lblTotalFat
+            // 
+            lblTotalFat.AutoSize = true;
+            lblTotalFat.Location = new Point(747, 590);
+            lblTotalFat.Name = "lblTotalFat";
+            lblTotalFat.Size = new Size(55, 20);
+            lblTotalFat.TabIndex = 37;
+            lblTotalFat.Text = "Grasas:";
+            // 
+            // txtTotalFat
+            // 
+            txtTotalFat.Location = new Point(822, 587);
+            txtTotalFat.Name = "txtTotalFat";
+            txtTotalFat.Size = new Size(100, 27);
+            txtTotalFat.TabIndex = 38;
             // 
             // MenuRegisterView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(960, 595);
+            ClientSize = new Size(980, 700);
+            Controls.Add(txtTotalFat);
+            Controls.Add(lblTotalFat);
+            Controls.Add(txtTotalCarbohydrates);
+            Controls.Add(lblTotalCarbohydrates);
+            Controls.Add(txtTotalProtein);
+            Controls.Add(lblTotalProtein);
+            Controls.Add(txtTotalCalories);
+            Controls.Add(lblTotalCalories);
+            Controls.Add(lblNutritionTitle);
             Controls.Add(lstMenuPreview);
             Controls.Add(lblPreview);
             Controls.Add(btnAddFoodToMenu);
@@ -385,5 +478,14 @@
         private Button btnAddFoodToMenu;
         private Label lblPreview;
         private ListBox lstMenuPreview;
+        private Label lblNutritionTitle;
+        private Label lblTotalCalories;
+        private TextBox txtTotalCalories;
+        private Label lblTotalProtein;
+        private TextBox txtTotalProtein;
+        private Label lblTotalCarbohydrates;
+        private TextBox txtTotalCarbohydrates;
+        private Label lblTotalFat;
+        private TextBox txtTotalFat;
     }
 }
