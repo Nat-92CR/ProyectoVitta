@@ -11,19 +11,22 @@
     {
         private LoginController loginController;
         private IFoodController foodController;
+        private IMenuController menuController;
         private string userName => this.txtUser.Text;
         private string password => this.txtPassword.Text;
-
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase <see cref="LoginView"/>.
         /// </summary>
         /// <param name="loginController">El controlador de inicio de sesión.</param>
-        public LoginView(LoginController loginController, IFoodController foodController)
+        /// <param name="foodController">El controlador de alimentos.</param>
+        /// <param name="menuController">El controlador de menús.</param>
+        public LoginView(LoginController loginController, IFoodController foodController, IMenuController menuController)
         {
             this.InitializeComponent();
             this.loginController = loginController;
             this.foodController = foodController;
+            this.menuController = menuController;
             this.txtPassword.UseSystemPasswordChar = true;
         }
 
@@ -36,7 +39,7 @@
                 MessageBox.Show("¡Bienvenido a Vitta! Has iniciado sesión correctamente.");
                 this.Hide();
 
-                var principalForm = new DashboardView(this.loginController, this.foodController, this.userName);
+                var principalForm = new DashboardView(this.loginController, this.foodController, this.menuController, this.userName);
                 principalForm.ShowDialog();
 
                 this.Show();

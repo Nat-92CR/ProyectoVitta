@@ -33,6 +33,7 @@
             btnProfile = new Button();
             btnOpenFoodRegister = new Button();
             btnOpenFoodConsult = new Button();
+            btnOpenMenuRegister = new Button();
             SuspendLayout();
             // 
             // label1
@@ -76,11 +77,22 @@
             btnOpenFoodConsult.UseVisualStyleBackColor = true;
             btnOpenFoodConsult.Click += btnOpenFoodConsult_Click;
             // 
+            // btnOpenMenuRegister
+            // 
+            btnOpenMenuRegister.Location = new Point(739, 117);
+            btnOpenMenuRegister.Name = "btnOpenMenuRegister";
+            btnOpenMenuRegister.Size = new Size(191, 55);
+            btnOpenMenuRegister.TabIndex = 4;
+            btnOpenMenuRegister.Text = "Registrar menú";
+            btnOpenMenuRegister.UseVisualStyleBackColor = true;
+            btnOpenMenuRegister.Click += btnOpenMenuRegister_Click;
+            // 
             // DashboardView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1227, 655);
+            Controls.Add(btnOpenMenuRegister);
             Controls.Add(btnOpenFoodConsult);
             Controls.Add(btnOpenFoodRegister);
             Controls.Add(btnProfile);
@@ -97,5 +109,6 @@
         private Button btnProfile;
         private Button btnOpenFoodRegister;
         private Button btnOpenFoodConsult;
+        private Button btnOpenMenuRegister;
     }
 }

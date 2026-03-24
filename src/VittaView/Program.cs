@@ -17,8 +17,9 @@ namespace VittaView
 
             var loginController = LoadServices();
             var foodController = LoadFoodServices();
+            var menuController = LoadMenuServices();
 
-            Application.Run(new LoginView(loginController, foodController));
+            Application.Run(new LoginView(loginController, foodController, menuController));
         }
 
         private static LoginController LoadServices()
@@ -34,6 +35,13 @@ namespace VittaView
             var fileHandler = new FileHandler<Food>(ConfigurationItems.FoodFilePath);
             var foodController = new FoodController(fileHandler);
             return foodController;
+        }
+
+        private static IMenuController LoadMenuServices()
+        {
+            var fileHandler = new FileHandler<Menu>(ConfigurationItems.MenuFilePath);
+            var menuController = new MenuController(fileHandler);
+            return menuController;
         }
     }
 }

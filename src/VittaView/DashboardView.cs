@@ -12,6 +12,7 @@
     {
         private readonly LoginController? loginController;
         private readonly IFoodController? foodController;
+        private readonly IMenuController? menuController;
         private readonly string currentUserName;
 
         /// <summary>
@@ -46,6 +47,20 @@
             : this(loginController, currentUserName)
         {
             this.foodController = foodController;
+        }
+
+        /// <summary>
+        /// Inicializa una nueva instancia del dashboard con el usuario actual,
+        /// el controlador del módulo de alimentos y el controlador del módulo de menús.
+        /// </summary>
+        /// <param name="loginController">Controlador de login.</param>
+        /// <param name="foodController">Controlador de alimentos.</param>
+        /// <param name="menuController">Controlador de menús.</param>
+        /// <param name="currentUserName">Nombre de usuario actual.</param>
+        public DashboardView(LoginController loginController, IFoodController foodController, IMenuController menuController, string currentUserName)
+            : this(loginController, foodController, currentUserName)
+        {
+            this.menuController = menuController;
         }
 
         /// <summary>
@@ -93,6 +108,22 @@
             else
             {
                 MessageBox.Show("No se pudo abrir la consulta de alimentos.");
+            }
+        }
+
+        /// <summary>
+        /// Abre la vista de registro de menús.
+        /// </summary>
+        private void btnOpenMenuRegister_Click(object sender, EventArgs e)
+        {
+            if (this.menuController != null && !string.IsNullOrWhiteSpace(this.currentUserName))
+            {
+                var menuRegisterView = new MenuRegisterView(this.menuController, this.currentUserName);
+                menuRegisterView.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No se pudo abrir el módulo de menús.");
             }
         }
     }

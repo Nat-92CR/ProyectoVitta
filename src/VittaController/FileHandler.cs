@@ -29,8 +29,6 @@
         /// en una lista del tipo especificado.
         /// </summary>
         /// <returns>La colección de datos cargada desde el archivo.</returns>
-
-        /// METODO LoadData(): lee y guarda el CSV
         public List<T> LoadData()
         {
             if (string.IsNullOrEmpty(this.filePath) || !File.Exists(this.filePath))
@@ -56,7 +54,6 @@
         /// </summary>
         /// <param name="data">Los datos que se desean guardar.</param>
         /// <returns>True si los datos se guardan correctamente; de lo contrario, false.</returns>
-        ///Cuando se registra o actualiza un usuario, esta clase vuelve a escribir todo el CSV.
         public bool SaveData(List<T> data)
         {
             if (string.IsNullOrEmpty(this.filePath) || data == null)
@@ -104,6 +101,28 @@
                                    food.Protein.ToString(CultureInfo.InvariantCulture) + "," +
                                    food.Carbohydrates.ToString(CultureInfo.InvariantCulture) + "," +
                                    food.Fat.ToString(CultureInfo.InvariantCulture);
+
+                        lines.Add(line);
+                    }
+                }
+            }
+            else if (typeof(T) == typeof(Menu))
+            {
+                lines.Add("UserName,MenuDate,Breakfast,MorningSnack,Lunch,AfternoonSnack,Dinner");
+
+                foreach (var item in data)
+                {
+                    var menu = item as Menu;
+
+                    if (menu != null)
+                    {
+                        var line = menu.UserName + "," +
+                                   menu.MenuDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "," +
+                                   menu.Breakfast + "," +
+                                   menu.MorningSnack + "," +
+                                   menu.Lunch + "," +
+                                   menu.AfternoonSnack + "," +
+                                   menu.Dinner;
 
                         lines.Add(line);
                     }
