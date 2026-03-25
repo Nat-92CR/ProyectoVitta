@@ -36,6 +36,8 @@
             lblActivityLevel = new Label();
             lblDietType = new Label();
             lblMaintenanceCalories = new Label();
+            lblBodyMassIndex = new Label();
+            lblBodyMassIndexCategory = new Label();
             txtUserName = new TextBox();
             txtWeight = new TextBox();
             txtHeight = new TextBox();
@@ -43,6 +45,8 @@
             txtActivityLevel = new TextBox();
             txtDietType = new TextBox();
             txtMaintenanceCalories = new TextBox();
+            txtBodyMassIndex = new TextBox();
+            txtBodyMassIndexCategory = new TextBox();
             btnRefresh = new Button();
             btnClose = new Button();
             SuspendLayout();
@@ -51,7 +55,7 @@
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTitle.Location = new Point(229, 33);
+            lblTitle.Location = new Point(211, 27);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(342, 41);
             lblTitle.TabIndex = 0;
@@ -60,7 +64,7 @@
             // lblUserName
             // 
             lblUserName.AutoSize = true;
-            lblUserName.Location = new Point(131, 109);
+            lblUserName.Location = new Point(93, 96);
             lblUserName.Name = "lblUserName";
             lblUserName.Size = new Size(56, 20);
             lblUserName.TabIndex = 1;
@@ -69,7 +73,7 @@
             // lblWeight
             // 
             lblWeight.AutoSize = true;
-            lblWeight.Location = new Point(131, 149);
+            lblWeight.Location = new Point(93, 136);
             lblWeight.Name = "lblWeight";
             lblWeight.Size = new Size(41, 20);
             lblWeight.TabIndex = 2;
@@ -78,7 +82,7 @@
             // lblHeight
             // 
             lblHeight.AutoSize = true;
-            lblHeight.Location = new Point(131, 189);
+            lblHeight.Location = new Point(93, 176);
             lblHeight.Name = "lblHeight";
             lblHeight.Size = new Size(48, 20);
             lblHeight.TabIndex = 3;
@@ -87,7 +91,7 @@
             // lblGoal
             // 
             lblGoal.AutoSize = true;
-            lblGoal.Location = new Point(131, 229);
+            lblGoal.Location = new Point(93, 216);
             lblGoal.Name = "lblGoal";
             lblGoal.Size = new Size(62, 20);
             lblGoal.TabIndex = 4;
@@ -96,7 +100,7 @@
             // lblActivityLevel
             // 
             lblActivityLevel.AutoSize = true;
-            lblActivityLevel.Location = new Point(131, 269);
+            lblActivityLevel.Location = new Point(93, 256);
             lblActivityLevel.Name = "lblActivityLevel";
             lblActivityLevel.Size = new Size(121, 20);
             lblActivityLevel.TabIndex = 5;
@@ -105,7 +109,7 @@
             // lblDietType
             // 
             lblDietType.AutoSize = true;
-            lblDietType.Location = new Point(131, 309);
+            lblDietType.Location = new Point(93, 296);
             lblDietType.Name = "lblDietType";
             lblDietType.Size = new Size(92, 20);
             lblDietType.TabIndex = 6;
@@ -114,86 +118,121 @@
             // lblMaintenanceCalories
             // 
             lblMaintenanceCalories.AutoSize = true;
-            lblMaintenanceCalories.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblMaintenanceCalories.Location = new Point(131, 369);
+            lblMaintenanceCalories.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblMaintenanceCalories.Location = new Point(93, 348);
             lblMaintenanceCalories.Name = "lblMaintenanceCalories";
-            lblMaintenanceCalories.Size = new Size(237, 25);
+            lblMaintenanceCalories.Size = new Size(223, 23);
             lblMaintenanceCalories.TabIndex = 7;
             lblMaintenanceCalories.Text = "Calorías de mantenimiento";
             // 
+            // lblBodyMassIndex
+            // 
+            lblBodyMassIndex.AutoSize = true;
+            lblBodyMassIndex.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblBodyMassIndex.Location = new Point(93, 392);
+            lblBodyMassIndex.Name = "lblBodyMassIndex";
+            lblBodyMassIndex.Size = new Size(44, 23);
+            lblBodyMassIndex.TabIndex = 8;
+            lblBodyMassIndex.Text = "IMC";
+            // 
+            // lblBodyMassIndexCategory
+            // 
+            lblBodyMassIndexCategory.AutoSize = true;
+            lblBodyMassIndexCategory.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblBodyMassIndexCategory.Location = new Point(93, 436);
+            lblBodyMassIndexCategory.Name = "lblBodyMassIndexCategory";
+            lblBodyMassIndexCategory.Size = new Size(135, 23);
+            lblBodyMassIndexCategory.TabIndex = 9;
+            lblBodyMassIndexCategory.Text = "Clasificación IMC";
+            // 
             // txtUserName
             // 
-            txtUserName.Location = new Point(390, 106);
+            txtUserName.Location = new Point(355, 93);
             txtUserName.Name = "txtUserName";
             txtUserName.ReadOnly = true;
-            txtUserName.Size = new Size(248, 27);
-            txtUserName.TabIndex = 8;
+            txtUserName.Size = new Size(263, 27);
+            txtUserName.TabIndex = 10;
             // 
             // txtWeight
             // 
-            txtWeight.Location = new Point(390, 146);
+            txtWeight.Location = new Point(355, 133);
             txtWeight.Name = "txtWeight";
             txtWeight.ReadOnly = true;
-            txtWeight.Size = new Size(248, 27);
-            txtWeight.TabIndex = 9;
+            txtWeight.Size = new Size(263, 27);
+            txtWeight.TabIndex = 11;
             // 
             // txtHeight
             // 
-            txtHeight.Location = new Point(390, 186);
+            txtHeight.Location = new Point(355, 173);
             txtHeight.Name = "txtHeight";
             txtHeight.ReadOnly = true;
-            txtHeight.Size = new Size(248, 27);
-            txtHeight.TabIndex = 10;
+            txtHeight.Size = new Size(263, 27);
+            txtHeight.TabIndex = 12;
             // 
             // txtGoal
             // 
-            txtGoal.Location = new Point(390, 226);
+            txtGoal.Location = new Point(355, 213);
             txtGoal.Name = "txtGoal";
             txtGoal.ReadOnly = true;
-            txtGoal.Size = new Size(248, 27);
-            txtGoal.TabIndex = 11;
+            txtGoal.Size = new Size(263, 27);
+            txtGoal.TabIndex = 13;
             // 
             // txtActivityLevel
             // 
-            txtActivityLevel.Location = new Point(390, 266);
+            txtActivityLevel.Location = new Point(355, 253);
             txtActivityLevel.Name = "txtActivityLevel";
             txtActivityLevel.ReadOnly = true;
-            txtActivityLevel.Size = new Size(248, 27);
-            txtActivityLevel.TabIndex = 12;
+            txtActivityLevel.Size = new Size(263, 27);
+            txtActivityLevel.TabIndex = 14;
             // 
             // txtDietType
             // 
-            txtDietType.Location = new Point(390, 306);
+            txtDietType.Location = new Point(355, 293);
             txtDietType.Name = "txtDietType";
             txtDietType.ReadOnly = true;
-            txtDietType.Size = new Size(248, 27);
-            txtDietType.TabIndex = 13;
+            txtDietType.Size = new Size(263, 27);
+            txtDietType.TabIndex = 15;
             // 
             // txtMaintenanceCalories
             // 
-            txtMaintenanceCalories.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            txtMaintenanceCalories.Location = new Point(390, 363);
+            txtMaintenanceCalories.Location = new Point(355, 345);
             txtMaintenanceCalories.Name = "txtMaintenanceCalories";
             txtMaintenanceCalories.ReadOnly = true;
-            txtMaintenanceCalories.Size = new Size(248, 34);
-            txtMaintenanceCalories.TabIndex = 14;
+            txtMaintenanceCalories.Size = new Size(263, 27);
+            txtMaintenanceCalories.TabIndex = 16;
+            // 
+            // txtBodyMassIndex
+            // 
+            txtBodyMassIndex.Location = new Point(355, 389);
+            txtBodyMassIndex.Name = "txtBodyMassIndex";
+            txtBodyMassIndex.ReadOnly = true;
+            txtBodyMassIndex.Size = new Size(263, 27);
+            txtBodyMassIndex.TabIndex = 17;
+            // 
+            // txtBodyMassIndexCategory
+            // 
+            txtBodyMassIndexCategory.Location = new Point(355, 433);
+            txtBodyMassIndexCategory.Name = "txtBodyMassIndexCategory";
+            txtBodyMassIndexCategory.ReadOnly = true;
+            txtBodyMassIndexCategory.Size = new Size(263, 27);
+            txtBodyMassIndexCategory.TabIndex = 18;
             // 
             // btnRefresh
             // 
-            btnRefresh.Location = new Point(247, 435);
+            btnRefresh.Location = new Point(217, 497);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(150, 43);
-            btnRefresh.TabIndex = 15;
+            btnRefresh.Size = new Size(149, 42);
+            btnRefresh.TabIndex = 19;
             btnRefresh.Text = "Actualizar";
             btnRefresh.UseVisualStyleBackColor = true;
             btnRefresh.Click += btnRefresh_Click;
             // 
             // btnClose
             // 
-            btnClose.Location = new Point(418, 435);
+            btnClose.Location = new Point(395, 497);
             btnClose.Name = "btnClose";
-            btnClose.Size = new Size(150, 43);
-            btnClose.TabIndex = 16;
+            btnClose.Size = new Size(149, 42);
+            btnClose.TabIndex = 20;
             btnClose.Text = "Cerrar";
             btnClose.UseVisualStyleBackColor = true;
             btnClose.Click += btnClose_Click;
@@ -202,9 +241,11 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 520);
+            ClientSize = new Size(731, 573);
             Controls.Add(btnClose);
             Controls.Add(btnRefresh);
+            Controls.Add(txtBodyMassIndexCategory);
+            Controls.Add(txtBodyMassIndex);
             Controls.Add(txtMaintenanceCalories);
             Controls.Add(txtDietType);
             Controls.Add(txtActivityLevel);
@@ -212,6 +253,8 @@
             Controls.Add(txtHeight);
             Controls.Add(txtWeight);
             Controls.Add(txtUserName);
+            Controls.Add(lblBodyMassIndexCategory);
+            Controls.Add(lblBodyMassIndex);
             Controls.Add(lblMaintenanceCalories);
             Controls.Add(lblDietType);
             Controls.Add(lblActivityLevel);
@@ -237,6 +280,8 @@
         private Label lblActivityLevel;
         private Label lblDietType;
         private Label lblMaintenanceCalories;
+        private Label lblBodyMassIndex;
+        private Label lblBodyMassIndexCategory;
         private TextBox txtUserName;
         private TextBox txtWeight;
         private TextBox txtHeight;
@@ -244,6 +289,8 @@
         private TextBox txtActivityLevel;
         private TextBox txtDietType;
         private TextBox txtMaintenanceCalories;
+        private TextBox txtBodyMassIndex;
+        private TextBox txtBodyMassIndexCategory;
         private Button btnRefresh;
         private Button btnClose;
     }
