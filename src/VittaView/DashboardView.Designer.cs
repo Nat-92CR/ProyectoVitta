@@ -34,6 +34,7 @@
             btnOpenFoodRegister = new Button();
             btnOpenFoodConsult = new Button();
             btnOpenMenuRegister = new Button();
+            btnOpenNutritionInfo = new Button();
             SuspendLayout();
             // 
             // label1
@@ -87,11 +88,22 @@
             btnOpenMenuRegister.UseVisualStyleBackColor = true;
             btnOpenMenuRegister.Click += btnOpenMenuRegister_Click;
             // 
+            // btnOpenNutritionInfo
+            // 
+            btnOpenNutritionInfo.Location = new Point(975, 117);
+            btnOpenNutritionInfo.Name = "btnOpenNutritionInfo";
+            btnOpenNutritionInfo.Size = new Size(191, 55);
+            btnOpenNutritionInfo.TabIndex = 5;
+            btnOpenNutritionInfo.Text = "Información nutricional";
+            btnOpenNutritionInfo.UseVisualStyleBackColor = true;
+            btnOpenNutritionInfo.Click += btnOpenNutritionInfo_Click;
+            // 
             // DashboardView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1227, 655);
+            Controls.Add(btnOpenNutritionInfo);
             Controls.Add(btnOpenMenuRegister);
             Controls.Add(btnOpenFoodConsult);
             Controls.Add(btnOpenFoodRegister);
@@ -110,5 +122,6 @@
         private Button btnOpenFoodRegister;
         private Button btnOpenFoodConsult;
         private Button btnOpenMenuRegister;
+        private Button btnOpenNutritionInfo;
     }
 }

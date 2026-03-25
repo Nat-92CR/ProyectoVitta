@@ -126,5 +126,22 @@
                 MessageBox.Show("No se pudo abrir el módulo de menús.");
             }
         }
+
+        /// <summary>
+        /// Abre la vista de información nutricional.
+        /// </summary>
+        private void btnOpenNutritionInfo_Click(object sender, EventArgs e)
+        {
+            if (this.loginController != null && !string.IsNullOrWhiteSpace(this.currentUserName))
+            {
+                INutritionInfoController nutritionInfoController = new NutritionInfoController(this.loginController);
+                var nutritionInfoView = new NutritionInfoView(nutritionInfoController, this.currentUserName);
+                nutritionInfoView.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No se pudo abrir el módulo de información nutricional.");
+            }
+        }
     }
 }
