@@ -1,5 +1,6 @@
 ﻿namespace VittaController
 {
+    using System;
     using VittaController.Abstractions;
     using VittaModel;
 
@@ -103,6 +104,46 @@
         }
 
         /// <summary>
+        /// Calcula la distribución recomendada de macronutrientes.
+        /// </summary>
+        /// <param name="user">Usuario a evaluar.</param>
+        /// <param name="proteinGrams">Proteínas recomendadas en gramos.</param>
+        /// <param name="carbohydratesGrams">Carbohidratos recomendados en gramos.</param>
+        /// <param name="fatGrams">Grasas recomendadas en gramos.</param>
+        public void CalculateMacronutrients(
+            User user,
+            out double proteinGrams,
+            out double carbohydratesGrams,
+            out double fatGrams)
+        {
+            proteinGrams = 0;
+            carbohydratesGrams = 0;
+            fatGrams = 0;
+
+            if (user == null || user.Weight <= 0)
+            {
+                return;
+            }
+
+            double maintenanceCalories = this.CalculateMaintenanceCalories(user);
+
+            if (maintenanceCalories <= 0)
+            {
+                return;
+            }
+
+            this.GetMacronutrientPercentages(
+                user,
+                out double proteinPercentage,
+                out double carbohydratesPercentage,
+                out double fatPercentage);
+
+            proteinGrams = (maintenanceCalories * proteinPercentage) / 4;
+            carbohydratesGrams = (maintenanceCalories * carbohydratesPercentage) / 4;
+            fatGrams = (maintenanceCalories * fatPercentage) / 9;
+        }
+
+        /// <summary>
         /// Obtiene el factor de actividad según el nivel registrado por el usuario.
         /// </summary>
         /// <param name="activityLevel">Nivel de actividad.</param>
@@ -130,6 +171,51 @@
             }
 
             return 30;
+        }
+
+        /// <summary>
+        /// Obtiene los porcentajes recomendados de macronutrientes según objetivo y tipo de dieta.
+        /// </summary>
+        /// <param name="user">Usuario a evaluar.</param>
+        /// <param name="proteinPercentage">Porcentaje de proteínas.</param>
+        /// <param name="carbohydratesPercentage">Porcentaje de carbohidratos.</param>
+        /// <param name="fatPercentage">Porcentaje de grasas.</param>
+        private void GetMacronutrientPercentages(
+            User user,
+            out double proteinPercentage,
+            out double carbohydratesPercentage,
+            out double fatPercentage)
+        {
+            proteinPercentage = 0.25;
+            carbohydratesPercentage = 0.50;
+            fatPercentage = 0.25;
+
+            if (user.Goal.Equals("Perder grasa", StringComparison.OrdinalIgnoreCase))
+            {
+                proteinPercentage = 0.30;
+                carbohydratesPercentage = 0.40;
+                fatPercentage = 0.30;
+            }
+            else if (user.Goal.Equals("Ganar masa", StringComparison.OrdinalIgnoreCase))
+            {
+                proteinPercentage = 0.25;
+                carbohydratesPercentage = 0.55;
+                fatPercentage = 0.20;
+            }
+
+            if (user.DietType.Equals("Keto", StringComparison.OrdinalIgnoreCase))
+            {
+                proteinPercentage = 0.30;
+                carbohydratesPercentage = 0.10;
+                fatPercentage = 0.60;
+            }
+            else if (user.DietType.Equals("Vegetariana", StringComparison.OrdinalIgnoreCase) &&
+                     user.Goal.Equals("Mantener", StringComparison.OrdinalIgnoreCase))
+            {
+                proteinPercentage = 0.20;
+                carbohydratesPercentage = 0.55;
+                fatPercentage = 0.25;
+            }
         }
 
         /// <summary>
