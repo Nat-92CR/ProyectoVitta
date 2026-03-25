@@ -53,6 +53,16 @@
             double bodyMassIndex = this.nutritionInfoController.CalculateBodyMassIndex(user);
             this.txtBodyMassIndex.Text = bodyMassIndex.ToString("0.##", CultureInfo.InvariantCulture);
             this.txtBodyMassIndexCategory.Text = this.nutritionInfoController.GetBodyMassIndexCategory(bodyMassIndex);
+
+            this.nutritionInfoController.CalculateMacronutrients(
+                user,
+                out double proteinGrams,
+                out double carbohydratesGrams,
+                out double fatGrams);
+
+            this.txtProteinGrams.Text = proteinGrams.ToString("0.##", CultureInfo.InvariantCulture);
+            this.txtCarbohydratesGrams.Text = carbohydratesGrams.ToString("0.##", CultureInfo.InvariantCulture);
+            this.txtFatGrams.Text = fatGrams.ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         /// <summary>

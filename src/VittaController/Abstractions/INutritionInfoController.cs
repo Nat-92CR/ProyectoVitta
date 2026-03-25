@@ -34,5 +34,18 @@
         /// <param name="bodyMassIndex">Valor del IMC.</param>
         /// <returns>Clasificación del IMC.</returns>
         string GetBodyMassIndexCategory(double bodyMassIndex);
+
+        /// <summary>
+        /// Calcula la distribución recomendada de macronutrientes.
+        /// </summary>
+        /// <param name="user">Usuario a evaluar.</param>
+        /// <param name="proteinGrams">Proteínas recomendadas en gramos.</param>
+        /// <param name="carbohydratesGrams">Carbohidratos recomendados en gramos.</param>
+        /// <param name="fatGrams">Grasas recomendadas en gramos.</param>
+        void CalculateMacronutrients(
+            User user,
+            out double proteinGrams,
+            out double carbohydratesGrams,
+            out double fatGrams);
     }
 }
