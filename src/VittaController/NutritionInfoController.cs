@@ -24,7 +24,7 @@
         /// </summary>
         /// <param name="username">Nombre de usuario.</param>
         /// <returns>Usuario encontrado o null.</returns>
-        public User GetUserByUserName(string username)
+        public User? GetUserByUserName(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -48,6 +48,58 @@
 
             double activityFactor = this.GetActivityFactor(user.ActivityLevel);
             return user.Weight * activityFactor;
+        }
+
+        /// <summary>
+        /// Calcula el índice de masa corporal del usuario.
+        /// </summary>
+        /// <param name="user">Usuario a evaluar.</param>
+        /// <returns>Valor del IMC.</returns>
+        public double CalculateBodyMassIndex(User user)
+        {
+            if (user == null || user.Weight <= 0 || user.Height <= 0)
+            {
+                return 0;
+            }
+
+            double heightInMeters = this.NormalizeHeightToMeters(user.Height);
+
+            if (heightInMeters <= 0)
+            {
+                return 0;
+            }
+
+            return user.Weight / (heightInMeters * heightInMeters);
+        }
+
+        /// <summary>
+        /// Obtiene la clasificación del IMC según el valor calculado.
+        /// </summary>
+        /// <param name="bodyMassIndex">Valor del IMC.</param>
+        /// <returns>Clasificación del IMC.</returns>
+        public string GetBodyMassIndexCategory(double bodyMassIndex)
+        {
+            if (bodyMassIndex <= 0)
+            {
+                return "No disponible";
+            }
+
+            if (bodyMassIndex < 18.5)
+            {
+                return "Bajo peso";
+            }
+
+            if (bodyMassIndex < 25)
+            {
+                return "Normal";
+            }
+
+            if (bodyMassIndex < 30)
+            {
+                return "Sobrepeso";
+            }
+
+            return "Obesidad";
         }
 
         /// <summary>
@@ -78,6 +130,21 @@
             }
 
             return 30;
+        }
+
+        /// <summary>
+        /// Convierte la altura a metros cuando sea necesario.
+        /// </summary>
+        /// <param name="height">Altura registrada.</param>
+        /// <returns>Altura en metros.</returns>
+        private double NormalizeHeightToMeters(double height)
+        {
+            if (height > 3)
+            {
+                return height / 100;
+            }
+
+            return height;
         }
     }
 }
