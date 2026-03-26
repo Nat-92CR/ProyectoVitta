@@ -143,5 +143,31 @@
                 MessageBox.Show("No se pudo abrir el módulo de información nutricional.");
             }
         }
+
+        /// <summary>
+        /// Abre la vista de estadísticas nutricionales.
+        /// </summary>
+        private void btnOpenStatistics_Click(object sender, EventArgs e)
+        {
+            if (this.loginController != null &&
+                this.foodController != null &&
+                this.menuController != null &&
+                !string.IsNullOrWhiteSpace(this.currentUserName))
+            {
+                INutritionInfoController nutritionInfoController = new NutritionInfoController(this.loginController);
+                IStatisticsController statisticsController = new StatisticsController(
+                    this.loginController,
+                    this.foodController,
+                    this.menuController,
+                    nutritionInfoController);
+
+                var statisticsView = new StatisticsView(statisticsController, this.currentUserName);
+                statisticsView.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("No se pudo abrir el módulo de estadísticas nutricionales.");
+            }
+        }
     }
 }
