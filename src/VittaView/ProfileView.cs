@@ -42,11 +42,12 @@
             this.cmbDietType.Items.Add("Estándar");
             this.cmbDietType.Items.Add("Keto");
             this.cmbDietType.Items.Add("Vegetariana");
+
+            this.cmbSex.Items.Add("Femenino");
+            this.cmbSex.Items.Add("Masculino");
+            this.cmbSex.Items.Add("No especificado");
         }
 
-
-
-        
         /// <summary>
         /// Carga los datos actuales del usuario en los controles del formulario.
         /// </summary>
@@ -61,6 +62,8 @@
                 this.textName.Text = user.Name;
                 this.txtWeight.Text = user.Weight.ToString();
                 this.txtHeight.Text = user.Height.ToString();
+                this.txtAge.Text = user.Age.ToString();
+                this.cmbSex.SelectedItem = string.IsNullOrWhiteSpace(user.Sex) ? "No especificado" : user.Sex;
                 this.cmbGoal.SelectedItem = user.Goal;
                 this.cmbActivityLevel.SelectedItem = user.ActivityLevel;
                 this.cmbDietType.SelectedItem = user.DietType;
@@ -72,7 +75,6 @@
             }
         }
 
-        //EVENTOS DE LOS BOTONES CANCELAR Y GUARDAR
         /// <summary>
         /// Cierra la ventana de perfil sin guardar cambios.
         /// </summary>
@@ -88,6 +90,7 @@
         {
             double weight;
             double height;
+            int age;
 
             if (string.IsNullOrWhiteSpace(this.textPassword.Text))
             {
@@ -131,6 +134,27 @@
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(this.txtAge.Text))
+            {
+                MessageBox.Show("Debe ingresar la edad.");
+                this.txtAge.Focus();
+                return;
+            }
+
+            if (!int.TryParse(this.txtAge.Text, out age) || age <= 0)
+            {
+                MessageBox.Show("La edad debe ser un número entero mayor que 0.");
+                this.txtAge.Focus();
+                return;
+            }
+
+            if (this.cmbSex.SelectedIndex == -1)
+            {
+                MessageBox.Show("Debe seleccionar el sexo.");
+                this.cmbSex.Focus();
+                return;
+            }
+
             if (this.cmbGoal.SelectedIndex == -1)
             {
                 MessageBox.Show("Debe seleccionar un objetivo.");
@@ -160,7 +184,9 @@
                 height,
                 this.cmbGoal.SelectedItem.ToString(),
                 this.cmbActivityLevel.SelectedItem.ToString(),
-                this.cmbDietType.SelectedItem.ToString());
+                this.cmbDietType.SelectedItem.ToString(),
+                age,
+                this.cmbSex.SelectedItem.ToString());
 
             var result = this.loginController.UpdateUser(updatedUser);
 
@@ -175,5 +201,4 @@
             }
         }
     }
-    
 }

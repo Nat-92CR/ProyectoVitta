@@ -169,5 +169,22 @@
                 MessageBox.Show("No se pudo abrir el módulo de estadísticas nutricionales.");
             }
         }
+
+        /// <summary>
+        /// Cierra la sesión actual y regresa a la pantalla de inicio de sesión.
+        /// </summary>
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "¿Deseas cerrar la sesión actual?",
+                "Cerrar sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
     }
 }
