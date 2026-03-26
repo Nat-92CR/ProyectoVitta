@@ -8,22 +8,24 @@ namespace VittaView
         private readonly LoginController loginController;
 
         /// <summary>
-        /// Constructor Añadir comentario 
+        /// Inicializa una nueva instancia del formulario de registro.
         /// </summary>
-        /// <param name="loginController"></param>
-
+        /// <param name="loginController">Controlador de login.</param>
         public RegisterView(LoginController loginController)
         {
             InitializeComponent();
             this.loginController = loginController;
-            this.LoadComboBoxes(); //Llamo el metodo loadComboBoxes
+            this.LoadComboBoxes();
+
             this.StartPosition = FormStartPosition.CenterScreen;
             this.txtPassword.UseSystemPasswordChar = true;
+            this.AcceptButton = this.btnRegister;
             this.txtUserName.Focus();
         }
 
-        //METODO LOADCOMBOBOXES
-
+        /// <summary>
+        /// Carga las opciones de los ComboBox.
+        /// </summary>
         private void LoadComboBoxes()
         {
             this.cmbGoal.Items.Add("Mantener");
@@ -39,12 +41,20 @@ namespace VittaView
             this.cmbDietType.Items.Add("Keto");
             this.cmbDietType.Items.Add("Vegetariana");
 
+            this.cmbSex.Items.Add("Femenino");
+            this.cmbSex.Items.Add("Masculino");
+            this.cmbSex.Items.Add("No especificado");
+
             this.cmbGoal.SelectedIndex = -1;
             this.cmbActivityLevel.SelectedIndex = -1;
             this.cmbDietType.SelectedIndex = -1;
+            this.cmbSex.SelectedIndex = -1;
         }
 
-        //METODO VALIDACIONES
+        /// <summary>
+        /// Valida los campos del formulario.
+        /// </summary>
+        /// <returns>True si todos los datos son válidos.</returns>
         private bool ValidateFields()
         {
             if (string.IsNullOrWhiteSpace(this.txtUserName.Text))
@@ -96,6 +106,27 @@ namespace VittaView
                 return false;
             }
 
+            if (string.IsNullOrWhiteSpace(this.txtAge.Text))
+            {
+                MessageBox.Show("Debe ingresar la edad.");
+                this.txtAge.Focus();
+                return false;
+            }
+
+            if (!int.TryParse(this.txtAge.Text.Trim(), out int age) || age <= 0)
+            {
+                MessageBox.Show("La edad debe ser un número entero mayor que 0.");
+                this.txtAge.Focus();
+                return false;
+            }
+
+            if (this.cmbSex.SelectedIndex == -1)
+            {
+                MessageBox.Show("Debe seleccionar el sexo.");
+                this.cmbSex.Focus();
+                return false;
+            }
+
             if (this.cmbGoal.SelectedIndex == -1)
             {
                 MessageBox.Show("Debe seleccionar un objetivo.");
@@ -120,10 +151,9 @@ namespace VittaView
             return true;
         }
 
-
-        //BOTONES 
-
-        //método del botón Registrar
+        /// <summary>
+        /// Registra un nuevo usuario.
+        /// </summary>
         private void btnRegister_Click(object sender, EventArgs e)
         {
             if (!this.ValidateFields())
@@ -136,11 +166,13 @@ namespace VittaView
             var name = this.txtName.Text.Trim();
             var weight = double.Parse(this.txtWeight.Text.Trim());
             var height = double.Parse(this.txtHeight.Text.Trim());
+            var age = int.Parse(this.txtAge.Text.Trim());
+            var sex = this.cmbSex.SelectedItem.ToString();
             var goal = this.cmbGoal.SelectedItem.ToString();
             var activityLevel = this.cmbActivityLevel.SelectedItem.ToString();
             var dietType = this.cmbDietType.SelectedItem.ToString();
 
-            var user = new User(userName, password, name, weight, height, goal, activityLevel, dietType);
+            var user = new User(userName, password, name, weight, height, goal, activityLevel, dietType, age, sex);
 
             var result = this.loginController.Register(user);
 
@@ -155,7 +187,9 @@ namespace VittaView
             }
         }
 
-        //método del botón Cancelar
+        /// <summary>
+        /// Cierra la ventana de registro.
+        /// </summary>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();

@@ -1,26 +1,20 @@
-UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType
-Nat,1234,Natalia Tobal,55,160,Mantener,Moderado,Estándar
-CarlosT,1234,Carlos Villalobos,60,160,Ganar masa,Sedentario,Estándar
-DiegoR,1234,Diego Rodríguez,72,175,Mantener,Moderado,Estándar
-SantiagoV,1234,Santiago Vargas,80,170,Ganar masa,Ligero,Vegetariana
-CarmenM,1234,Carmen Montoya,55,155,Mantener,Ligero,Vegetariana
-AndreaC,1234,Andrea Chacón,58,162,Perder grasa,Moderado,Estándar
-LuisA,1234,Luis Aguilar,78,178,Ganar masa,Alto,Estándar
-ValeriaR,1234,Valeria Rojas,62,165,Mantener,Ligero,Keto
-FernandaS,1234,Fernanda Solano,54,158,Perder grasa,Ligero,Vegetariana
-JorgeP,1234,Jorge Pacheco,85,180,Perder grasa,Moderado,Estándar
-MelissaQ,1234,Melissa Quesada,59,164,Mantener,Moderado,Estándar
-DanielM,1234,Daniel Murillo,76,177,Ganar masa,Moderado,Estándar
-PaolaG,1234,Paola González,63,167,Perder grasa,Ligero,Estándar
-RicardoO,1234,Ricardo Ortiz,82,182,Mantener,Alto,Estándar
-KarlaF,1234,Karla Fernández,57,160,Mantener,Sedentario,Estándar
-EstebanN,1234,Esteban Núñez,74,176,Perder grasa,Ligero,Keto
-SofíaH,1234,Sofía Hernández,56,161,Ganar masa,Moderado,Vegetariana
-JoséB,1234,José Brenes,79,174,Mantener,Moderado,Estándar
-MarianaD,1234,Mariana Delgado,61,168,Perder grasa,Moderado,Estándar
-KevinZ,1234,Kevin Zamora,83,181,Ganar masa,Alto,Estándar
-LauraU,1234,Laura Ugalde,53,157,Mantener,Ligero,Estándar
-GabrielW,1234,Gabriel Watson,77,179,Mantener,Moderado,Keto
-DanielaL,1234,Daniela López,60,163,Perder grasa,Ligero,Vegetariana
-MauricioE,1234,Mauricio Espinoza,81,183,Ganar masa,Moderado,Estándar
-RebecaI,1234,Rebeca Ibarra,58,166,Mantener,Moderado,Estándar
+UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType,Age,Sex
+Nat,1234,Natalia Tobal,55,160,Mantener,Moderado,Estándar,33,Femenino
+CarlosT,1234,Carlos Villalobos,60,160,Ganar masa,Sedentario,Estándar,28,Masculino
+DiegoR,1234,Diego Rodríguez,72,175,Mantener,Moderado,Estándar,31,Masculino
+SantiagoV,1234,Santiago Vargas,80,170,Ganar masa,Ligero,Vegetariana,26,Masculino
+CarmenM,1234,Carmen Montoya,55,155,Mantener,Ligero,Vegetariana,29,Femenino
+AndreaC,1234,Andrea Chacón,58,162,Perder grasa,Moderado,Estándar,27,Femenino
+LuisA,1234,Luis Aguilar,78,178,Ganar masa,Alto,Estándar,34,Masculino
+ValeriaR,1234,Valeria Rojas,62,165,Mantener,Ligero,Keto,25,Femenino
+FernandaS,1234,Fernanda Solano,54,158,Perder grasa,Ligero,Vegetariana,30,Femenino
+JorgeP,1234,Jorge Pacheco,85,180,Perder grasa,Moderado,Estándar,37,Masculino
+MelissaQ,1234,Melissa Quesada,59,164,Mantener,Moderado,Estándar,33,Femenino
+DanielM,1234,Daniel Murillo,76,177,Ganar masa,Moderado,Estándar,29,Masculino
+PaolaG,1234,Paola González,63,167,Perder grasa,Ligero,Estándar,31,Femenino
+RicardoO,1234,Ricardo Ortiz,82,182,Mantener,Alto,Estándar,36,Masculino
+KarlaF,1234,Karla Fernández,57,160,Mantener,Sedentario,Estándar,24,Femenino
+EstebanN,1234,Esteban Núñez,74,176,Perder grasa,Ligero,Keto,35,Masculino
+SofíaH,1234,Sofía Hernández,56,161,Ganar masa,Moderado,Vegetariana,23,Femenino
+JoséB,1234,José Brenes,79,174,Mantener,Moderado,Estándar,38,Masculino
+MarianaD,1234,Mariana Delgado,61,168,Perder grasa,Moderado,Estándar,27,Femenino

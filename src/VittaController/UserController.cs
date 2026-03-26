@@ -16,7 +16,7 @@
         /// Inicializa una nueva instancia de la clase <see cref="UserController"/>.
         /// </summary>
         /// <param name="dataHandler">Manejador de datos de usuarios.</param>
-        
+
         //CONSTRUCTOR UserController (Controlador de Usuarios)
         public UserController(IDataHandler<User> dataHandler)
         {
@@ -57,12 +57,13 @@
                 string.IsNullOrWhiteSpace(user.Name) ||
                 string.IsNullOrWhiteSpace(user.Goal) ||
                 string.IsNullOrWhiteSpace(user.ActivityLevel) ||
-                string.IsNullOrWhiteSpace(user.DietType))
+                string.IsNullOrWhiteSpace(user.DietType) ||
+                string.IsNullOrWhiteSpace(user.Sex))
             {
                 return false;
             }
 
-            if (user.Weight <= 0 || user.Height <= 0)
+            if (user.Weight <= 0 || user.Height <= 0 || user.Age <= 0)
             {
                 return false;
             }
@@ -102,6 +103,22 @@
         public bool UpdateUser(User updatedUser)
         {
             if (updatedUser == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(updatedUser.UserName) ||
+                string.IsNullOrWhiteSpace(updatedUser.Password) ||
+                string.IsNullOrWhiteSpace(updatedUser.Name) ||
+                string.IsNullOrWhiteSpace(updatedUser.Goal) ||
+                string.IsNullOrWhiteSpace(updatedUser.ActivityLevel) ||
+                string.IsNullOrWhiteSpace(updatedUser.DietType) ||
+                string.IsNullOrWhiteSpace(updatedUser.Sex))
+            {
+                return false;
+            }
+
+            if (updatedUser.Weight <= 0 || updatedUser.Height <= 0 || updatedUser.Age <= 0)
             {
                 return false;
             }

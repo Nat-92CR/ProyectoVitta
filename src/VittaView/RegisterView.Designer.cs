@@ -44,6 +44,10 @@
             txtWeight = new TextBox();
             lblHeight = new Label();
             txtHeight = new TextBox();
+            lblAge = new Label();
+            txtAge = new TextBox();
+            lblSex = new Label();
+            cmbSex = new ComboBox();
             lblGoal = new Label();
             cmbGoal = new ComboBox();
             lblActivityLevel = new Label();
@@ -114,6 +118,10 @@
             pnlRegisterCard.Controls.Add(txtWeight);
             pnlRegisterCard.Controls.Add(lblHeight);
             pnlRegisterCard.Controls.Add(txtHeight);
+            pnlRegisterCard.Controls.Add(lblAge);
+            pnlRegisterCard.Controls.Add(txtAge);
+            pnlRegisterCard.Controls.Add(lblSex);
+            pnlRegisterCard.Controls.Add(cmbSex);
             pnlRegisterCard.Controls.Add(lblGoal);
             pnlRegisterCard.Controls.Add(cmbGoal);
             pnlRegisterCard.Controls.Add(lblActivityLevel);
@@ -124,7 +132,7 @@
             pnlRegisterCard.Controls.Add(btnCancel);
             pnlRegisterCard.Location = new Point(89, 196);
             pnlRegisterCard.Name = "pnlRegisterCard";
-            pnlRegisterCard.Size = new Size(800, 453);
+            pnlRegisterCard.Size = new Size(800, 528);
             pnlRegisterCard.TabIndex = 3;
             // 
             // lblCardTitle
@@ -233,15 +241,55 @@
             txtHeight.Size = new Size(300, 30);
             txtHeight.TabIndex = 10;
             // 
+            // lblAge
+            // 
+            lblAge.AutoSize = true;
+            lblAge.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblAge.ForeColor = Color.FromArgb(66, 66, 66);
+            lblAge.Location = new Point(450, 232);
+            lblAge.Name = "lblAge";
+            lblAge.Size = new Size(50, 23);
+            lblAge.TabIndex = 11;
+            lblAge.Text = "Edad";
+            // 
+            // txtAge
+            // 
+            txtAge.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtAge.Location = new Point(450, 258);
+            txtAge.Name = "txtAge";
+            txtAge.Size = new Size(300, 30);
+            txtAge.TabIndex = 12;
+            // 
+            // lblSex
+            // 
+            lblSex.AutoSize = true;
+            lblSex.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblSex.ForeColor = Color.FromArgb(66, 66, 66);
+            lblSex.Location = new Point(48, 307);
+            lblSex.Name = "lblSex";
+            lblSex.Size = new Size(48, 23);
+            lblSex.TabIndex = 13;
+            lblSex.Text = "Sexo";
+            // 
+            // cmbSex
+            // 
+            cmbSex.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbSex.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cmbSex.FormattingEnabled = true;
+            cmbSex.Location = new Point(48, 333);
+            cmbSex.Name = "cmbSex";
+            cmbSex.Size = new Size(300, 31);
+            cmbSex.TabIndex = 14;
+            // 
             // lblGoal
             // 
             lblGoal.AutoSize = true;
             lblGoal.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblGoal.ForeColor = Color.FromArgb(66, 66, 66);
-            lblGoal.Location = new Point(450, 232);
+            lblGoal.Location = new Point(450, 307);
             lblGoal.Name = "lblGoal";
             lblGoal.Size = new Size(79, 23);
-            lblGoal.TabIndex = 11;
+            lblGoal.TabIndex = 15;
             lblGoal.Text = "Objetivo";
             // 
             // cmbGoal
@@ -249,20 +297,20 @@
             cmbGoal.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGoal.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbGoal.FormattingEnabled = true;
-            cmbGoal.Location = new Point(450, 258);
+            cmbGoal.Location = new Point(450, 333);
             cmbGoal.Name = "cmbGoal";
             cmbGoal.Size = new Size(300, 31);
-            cmbGoal.TabIndex = 12;
+            cmbGoal.TabIndex = 16;
             // 
             // lblActivityLevel
             // 
             lblActivityLevel.AutoSize = true;
             lblActivityLevel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblActivityLevel.ForeColor = Color.FromArgb(66, 66, 66);
-            lblActivityLevel.Location = new Point(48, 307);
+            lblActivityLevel.Location = new Point(48, 382);
             lblActivityLevel.Name = "lblActivityLevel";
             lblActivityLevel.Size = new Size(155, 23);
-            lblActivityLevel.TabIndex = 13;
+            lblActivityLevel.TabIndex = 17;
             lblActivityLevel.Text = "Nivel de actividad";
             // 
             // cmbActivityLevel
@@ -270,20 +318,20 @@
             cmbActivityLevel.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbActivityLevel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbActivityLevel.FormattingEnabled = true;
-            cmbActivityLevel.Location = new Point(48, 333);
+            cmbActivityLevel.Location = new Point(48, 408);
             cmbActivityLevel.Name = "cmbActivityLevel";
             cmbActivityLevel.Size = new Size(300, 31);
-            cmbActivityLevel.TabIndex = 14;
+            cmbActivityLevel.TabIndex = 18;
             // 
             // lblDietType
             // 
             lblDietType.AutoSize = true;
             lblDietType.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDietType.ForeColor = Color.FromArgb(66, 66, 66);
-            lblDietType.Location = new Point(450, 307);
+            lblDietType.Location = new Point(450, 382);
             lblDietType.Name = "lblDietType";
             lblDietType.Size = new Size(117, 23);
-            lblDietType.TabIndex = 15;
+            lblDietType.TabIndex = 19;
             lblDietType.Text = "Tipo de dieta";
             // 
             // cmbDietType
@@ -291,10 +339,10 @@
             cmbDietType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbDietType.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbDietType.FormattingEnabled = true;
-            cmbDietType.Location = new Point(450, 333);
+            cmbDietType.Location = new Point(450, 408);
             cmbDietType.Name = "cmbDietType";
             cmbDietType.Size = new Size(300, 31);
-            cmbDietType.TabIndex = 16;
+            cmbDietType.TabIndex = 20;
             // 
             // btnRegister
             // 
@@ -302,10 +350,10 @@
             btnRegister.FlatStyle = FlatStyle.Flat;
             btnRegister.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnRegister.ForeColor = Color.White;
-            btnRegister.Location = new Point(236, 386);
+            btnRegister.Location = new Point(236, 460);
             btnRegister.Name = "btnRegister";
             btnRegister.Size = new Size(150, 42);
-            btnRegister.TabIndex = 17;
+            btnRegister.TabIndex = 21;
             btnRegister.Text = "Registrar";
             btnRegister.UseVisualStyleBackColor = false;
             btnRegister.Click += btnRegister_Click;
@@ -316,10 +364,10 @@
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCancel.ForeColor = Color.FromArgb(46, 125, 50);
-            btnCancel.Location = new Point(412, 386);
+            btnCancel.Location = new Point(412, 460);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(150, 42);
-            btnCancel.TabIndex = 18;
+            btnCancel.TabIndex = 22;
             btnCancel.Text = "Cancelar";
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
@@ -329,7 +377,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 245, 245);
-            ClientSize = new Size(983, 675);
+            ClientSize = new Size(983, 754);
             Controls.Add(pnlRegisterCard);
             Controls.Add(lblSubtitle);
             Controls.Add(lblMainTitle);
@@ -364,6 +412,10 @@
         private TextBox txtWeight;
         private Label lblHeight;
         private TextBox txtHeight;
+        private Label lblAge;
+        private TextBox txtAge;
+        private Label lblSex;
+        private ComboBox cmbSex;
         private Label lblGoal;
         private ComboBox cmbGoal;
         private Label lblActivityLevel;

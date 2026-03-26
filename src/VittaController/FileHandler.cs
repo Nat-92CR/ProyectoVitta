@@ -65,7 +65,7 @@
 
             if (typeof(T) == typeof(User))
             {
-                lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType");
+                lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType,Age,Sex");
 
                 foreach (var item in data)
                 {
@@ -80,7 +80,9 @@
                                    user.Height.ToString(CultureInfo.InvariantCulture) + "," +
                                    user.Goal + "," +
                                    user.ActivityLevel + "," +
-                                   user.DietType;
+                                   user.DietType + "," +
+                                   user.Age.ToString(CultureInfo.InvariantCulture) + "," +
+                                   user.Sex;
 
                         lines.Add(line);
                     }
