@@ -17,6 +17,9 @@ namespace VittaView
             InitializeComponent();
             this.loginController = loginController;
             this.LoadComboBoxes(); //Llamo el metodo loadComboBoxes
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.txtPassword.UseSystemPasswordChar = true;
+            this.txtUserName.Focus();
         }
 
         //METODO LOADCOMBOBOXES
@@ -51,17 +54,17 @@ namespace VittaView
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(this.textPassword.Text))
+            if (string.IsNullOrWhiteSpace(this.txtPassword.Text))
             {
                 MessageBox.Show("Debe ingresar la contraseña.");
-                this.textPassword.Focus();
+                this.txtPassword.Focus();
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(this.textName.Text))
+            if (string.IsNullOrWhiteSpace(this.txtName.Text))
             {
                 MessageBox.Show("Debe ingresar el nombre.");
-                this.textName.Focus();
+                this.txtName.Focus();
                 return false;
             }
 
@@ -129,8 +132,8 @@ namespace VittaView
             }
 
             var userName = this.txtUserName.Text.Trim();
-            var password = this.textPassword.Text.Trim();
-            var name = this.textName.Text.Trim();
+            var password = this.txtPassword.Text.Trim();
+            var name = this.txtName.Text.Trim();
             var weight = double.Parse(this.txtWeight.Text.Trim());
             var height = double.Parse(this.txtHeight.Text.Trim());
             var goal = this.cmbGoal.SelectedItem.ToString();

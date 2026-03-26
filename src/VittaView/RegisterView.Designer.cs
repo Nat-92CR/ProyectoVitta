@@ -3,274 +3,372 @@
     partial class RegisterView
     {
         /// <summary>
-        /// Required designer variable.
+        /// Variable del diseñador requerida.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// Clean up any resources being used.
+        /// Limpia los recursos que se estén utilizando.
         /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        /// <param name="disposing">true si los recursos administrados deben eliminarse; de lo contrario, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Código generado por el Diseñador de Windows Forms
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Método requerido para la compatibilidad con el Diseñador.
         /// </summary>
         private void InitializeComponent()
         {
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
+            pnlHeader = new Panel();
+            lblAppName = new Label();
+            lblMainTitle = new Label();
+            lblSubtitle = new Label();
+            pnlRegisterCard = new Panel();
+            lblCardTitle = new Label();
+            lblUserName = new Label();
             txtUserName = new TextBox();
-            textPassword = new TextBox();
-            textName = new TextBox();
+            lblPassword = new Label();
+            txtPassword = new TextBox();
+            lblName = new Label();
+            txtName = new TextBox();
+            lblWeight = new Label();
             txtWeight = new TextBox();
+            lblHeight = new Label();
             txtHeight = new TextBox();
-            label6 = new Label();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
-            label10 = new Label();
+            lblGoal = new Label();
             cmbGoal = new ComboBox();
+            lblActivityLevel = new Label();
             cmbActivityLevel = new ComboBox();
+            lblDietType = new Label();
             cmbDietType = new ComboBox();
             btnRegister = new Button();
             btnCancel = new Button();
+            pnlHeader.SuspendLayout();
+            pnlRegisterCard.SuspendLayout();
             SuspendLayout();
             // 
-            // label1
+            // pnlHeader
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(125, 104);
-            label1.Name = "label1";
-            label1.Size = new Size(62, 15);
-            label1.TabIndex = 0;
-            label1.Text = "UserName";
+            pnlHeader.BackColor = Color.FromArgb(46, 125, 50);
+            pnlHeader.Controls.Add(lblAppName);
+            pnlHeader.Dock = DockStyle.Top;
+            pnlHeader.Location = new Point(0, 0);
+            pnlHeader.Name = "pnlHeader";
+            pnlHeader.Size = new Size(983, 60);
+            pnlHeader.TabIndex = 0;
             // 
-            // label2
+            // lblAppName
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(125, 133);
-            label2.Name = "label2";
-            label2.Size = new Size(67, 15);
-            label2.TabIndex = 1;
-            label2.Text = "Contraseña";
+            lblAppName.AutoSize = true;
+            lblAppName.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblAppName.ForeColor = Color.White;
+            lblAppName.Location = new Point(32, 10);
+            lblAppName.Name = "lblAppName";
+            lblAppName.Size = new Size(87, 41);
+            lblAppName.TabIndex = 0;
+            lblAppName.Text = "Vitta";
             // 
-            // label3
+            // lblMainTitle
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(125, 162);
-            label3.Name = "label3";
-            label3.Size = new Size(51, 15);
-            label3.TabIndex = 2;
-            label3.Text = "Nombre";
+            lblMainTitle.AutoSize = true;
+            lblMainTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblMainTitle.ForeColor = Color.FromArgb(33, 33, 33);
+            lblMainTitle.Location = new Point(284, 83);
+            lblMainTitle.Name = "lblMainTitle";
+            lblMainTitle.Size = new Size(393, 54);
+            lblMainTitle.TabIndex = 1;
+            lblMainTitle.Text = "Registro de Usuario";
             // 
-            // label4
+            // lblSubtitle
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(125, 191);
-            label4.Name = "label4";
-            label4.Size = new Size(32, 15);
-            label4.TabIndex = 3;
-            label4.Text = "Peso";
+            lblSubtitle.AutoSize = true;
+            lblSubtitle.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSubtitle.ForeColor = Color.FromArgb(97, 97, 97);
+            lblSubtitle.Location = new Point(149, 148);
+            lblSubtitle.Name = "lblSubtitle";
+            lblSubtitle.Size = new Size(706, 25);
+            lblSubtitle.TabIndex = 2;
+            lblSubtitle.Text = "Crea tu cuenta para registrar alimentos, menús y consultar tu progreso nutricional.";
             // 
-            // label5
+            // pnlRegisterCard
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(125, 220);
-            label5.Name = "label5";
-            label5.Size = new Size(39, 15);
-            label5.TabIndex = 4;
-            label5.Text = "Altura";
+            pnlRegisterCard.BackColor = Color.White;
+            pnlRegisterCard.BorderStyle = BorderStyle.FixedSingle;
+            pnlRegisterCard.Controls.Add(lblCardTitle);
+            pnlRegisterCard.Controls.Add(lblUserName);
+            pnlRegisterCard.Controls.Add(txtUserName);
+            pnlRegisterCard.Controls.Add(lblPassword);
+            pnlRegisterCard.Controls.Add(txtPassword);
+            pnlRegisterCard.Controls.Add(lblName);
+            pnlRegisterCard.Controls.Add(txtName);
+            pnlRegisterCard.Controls.Add(lblWeight);
+            pnlRegisterCard.Controls.Add(txtWeight);
+            pnlRegisterCard.Controls.Add(lblHeight);
+            pnlRegisterCard.Controls.Add(txtHeight);
+            pnlRegisterCard.Controls.Add(lblGoal);
+            pnlRegisterCard.Controls.Add(cmbGoal);
+            pnlRegisterCard.Controls.Add(lblActivityLevel);
+            pnlRegisterCard.Controls.Add(cmbActivityLevel);
+            pnlRegisterCard.Controls.Add(lblDietType);
+            pnlRegisterCard.Controls.Add(cmbDietType);
+            pnlRegisterCard.Controls.Add(btnRegister);
+            pnlRegisterCard.Controls.Add(btnCancel);
+            pnlRegisterCard.Location = new Point(89, 196);
+            pnlRegisterCard.Name = "pnlRegisterCard";
+            pnlRegisterCard.Size = new Size(800, 453);
+            pnlRegisterCard.TabIndex = 3;
+            // 
+            // lblCardTitle
+            // 
+            lblCardTitle.AutoSize = true;
+            lblCardTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblCardTitle.ForeColor = Color.FromArgb(46, 125, 50);
+            lblCardTitle.Location = new Point(290, 20);
+            lblCardTitle.Name = "lblCardTitle";
+            lblCardTitle.Size = new Size(215, 32);
+            lblCardTitle.TabIndex = 0;
+            lblCardTitle.Text = "Datos del usuario";
+            // 
+            // lblUserName
+            // 
+            lblUserName.AutoSize = true;
+            lblUserName.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblUserName.ForeColor = Color.FromArgb(66, 66, 66);
+            lblUserName.Location = new Point(48, 82);
+            lblUserName.Name = "lblUserName";
+            lblUserName.Size = new Size(70, 23);
+            lblUserName.TabIndex = 1;
+            lblUserName.Text = "Usuario";
             // 
             // txtUserName
             // 
-            txtUserName.Location = new Point(277, 96);
+            txtUserName.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtUserName.Location = new Point(48, 108);
             txtUserName.Name = "txtUserName";
-            txtUserName.Size = new Size(258, 23);
-            txtUserName.TabIndex = 5;
+            txtUserName.Size = new Size(300, 30);
+            txtUserName.TabIndex = 2;
             // 
-            // textPassword
+            // lblPassword
             // 
-            textPassword.Location = new Point(277, 125);
-            textPassword.Name = "textPassword";
-            textPassword.Size = new Size(258, 23);
-            textPassword.TabIndex = 6;
+            lblPassword.AutoSize = true;
+            lblPassword.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblPassword.ForeColor = Color.FromArgb(66, 66, 66);
+            lblPassword.Location = new Point(450, 82);
+            lblPassword.Name = "lblPassword";
+            lblPassword.Size = new Size(99, 23);
+            lblPassword.TabIndex = 3;
+            lblPassword.Text = "Contraseña";
             // 
-            // textName
+            // txtPassword
             // 
-            textName.Location = new Point(277, 154);
-            textName.Name = "textName";
-            textName.Size = new Size(258, 23);
-            textName.TabIndex = 7;
+            txtPassword.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtPassword.Location = new Point(450, 108);
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new Size(300, 30);
+            txtPassword.TabIndex = 4;
+            // 
+            // lblName
+            // 
+            lblName.AutoSize = true;
+            lblName.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblName.ForeColor = Color.FromArgb(66, 66, 66);
+            lblName.Location = new Point(48, 157);
+            lblName.Name = "lblName";
+            lblName.Size = new Size(76, 23);
+            lblName.TabIndex = 5;
+            lblName.Text = "Nombre";
+            // 
+            // txtName
+            // 
+            txtName.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtName.Location = new Point(48, 183);
+            txtName.Name = "txtName";
+            txtName.Size = new Size(300, 30);
+            txtName.TabIndex = 6;
+            // 
+            // lblWeight
+            // 
+            lblWeight.AutoSize = true;
+            lblWeight.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblWeight.ForeColor = Color.FromArgb(66, 66, 66);
+            lblWeight.Location = new Point(450, 157);
+            lblWeight.Name = "lblWeight";
+            lblWeight.Size = new Size(45, 23);
+            lblWeight.TabIndex = 7;
+            lblWeight.Text = "Peso";
             // 
             // txtWeight
             // 
-            txtWeight.Location = new Point(277, 183);
+            txtWeight.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtWeight.Location = new Point(450, 183);
             txtWeight.Name = "txtWeight";
-            txtWeight.Size = new Size(258, 23);
+            txtWeight.Size = new Size(300, 30);
             txtWeight.TabIndex = 8;
+            // 
+            // lblHeight
+            // 
+            lblHeight.AutoSize = true;
+            lblHeight.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblHeight.ForeColor = Color.FromArgb(66, 66, 66);
+            lblHeight.Location = new Point(48, 232);
+            lblHeight.Name = "lblHeight";
+            lblHeight.Size = new Size(60, 23);
+            lblHeight.TabIndex = 9;
+            lblHeight.Text = "Altura";
             // 
             // txtHeight
             // 
-            txtHeight.Location = new Point(277, 212);
+            txtHeight.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtHeight.Location = new Point(48, 258);
             txtHeight.Name = "txtHeight";
-            txtHeight.Size = new Size(258, 23);
-            txtHeight.TabIndex = 9;
+            txtHeight.Size = new Size(300, 30);
+            txtHeight.TabIndex = 10;
             // 
-            // label6
+            // lblGoal
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 13F);
-            label6.Location = new Point(248, 46);
-            label6.Name = "label6";
-            label6.Size = new Size(167, 25);
-            label6.TabIndex = 10;
-            label6.Text = "Registro de Usuario";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 20F);
-            label7.Location = new Point(23, 34);
-            label7.Name = "label7";
-            label7.Size = new Size(85, 37);
-            label7.TabIndex = 11;
-            label7.Text = "VITTA";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(125, 273);
-            label8.Name = "label8";
-            label8.Size = new Size(52, 15);
-            label8.TabIndex = 12;
-            label8.Text = "Objetivo";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(125, 312);
-            label9.Name = "label9";
-            label9.Size = new Size(104, 15);
-            label9.TabIndex = 13;
-            label9.Text = "Nivel de actividad:";
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(125, 348);
-            label10.Name = "label10";
-            label10.Size = new Size(79, 15);
-            label10.TabIndex = 14;
-            label10.Text = "Tipo de dieta:";
+            lblGoal.AutoSize = true;
+            lblGoal.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblGoal.ForeColor = Color.FromArgb(66, 66, 66);
+            lblGoal.Location = new Point(450, 232);
+            lblGoal.Name = "lblGoal";
+            lblGoal.Size = new Size(79, 23);
+            lblGoal.TabIndex = 11;
+            lblGoal.Text = "Objetivo";
             // 
             // cmbGoal
             // 
+            cmbGoal.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbGoal.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbGoal.FormattingEnabled = true;
-            cmbGoal.Location = new Point(277, 265);
+            cmbGoal.Location = new Point(450, 258);
             cmbGoal.Name = "cmbGoal";
-            cmbGoal.Size = new Size(258, 23);
-            cmbGoal.TabIndex = 15;
+            cmbGoal.Size = new Size(300, 31);
+            cmbGoal.TabIndex = 12;
+            // 
+            // lblActivityLevel
+            // 
+            lblActivityLevel.AutoSize = true;
+            lblActivityLevel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblActivityLevel.ForeColor = Color.FromArgb(66, 66, 66);
+            lblActivityLevel.Location = new Point(48, 307);
+            lblActivityLevel.Name = "lblActivityLevel";
+            lblActivityLevel.Size = new Size(155, 23);
+            lblActivityLevel.TabIndex = 13;
+            lblActivityLevel.Text = "Nivel de actividad";
             // 
             // cmbActivityLevel
             // 
+            cmbActivityLevel.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbActivityLevel.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbActivityLevel.FormattingEnabled = true;
-            cmbActivityLevel.Location = new Point(277, 304);
+            cmbActivityLevel.Location = new Point(48, 333);
             cmbActivityLevel.Name = "cmbActivityLevel";
-            cmbActivityLevel.Size = new Size(258, 23);
-            cmbActivityLevel.TabIndex = 16;
+            cmbActivityLevel.Size = new Size(300, 31);
+            cmbActivityLevel.TabIndex = 14;
+            // 
+            // lblDietType
+            // 
+            lblDietType.AutoSize = true;
+            lblDietType.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblDietType.ForeColor = Color.FromArgb(66, 66, 66);
+            lblDietType.Location = new Point(450, 307);
+            lblDietType.Name = "lblDietType";
+            lblDietType.Size = new Size(117, 23);
+            lblDietType.TabIndex = 15;
+            lblDietType.Text = "Tipo de dieta";
             // 
             // cmbDietType
             // 
+            cmbDietType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDietType.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbDietType.FormattingEnabled = true;
-            cmbDietType.Location = new Point(277, 340);
+            cmbDietType.Location = new Point(450, 333);
             cmbDietType.Name = "cmbDietType";
-            cmbDietType.Size = new Size(259, 23);
-            cmbDietType.TabIndex = 17;
+            cmbDietType.Size = new Size(300, 31);
+            cmbDietType.TabIndex = 16;
             // 
             // btnRegister
             // 
-            btnRegister.Location = new Point(132, 408);
+            btnRegister.BackColor = Color.FromArgb(46, 125, 50);
+            btnRegister.FlatStyle = FlatStyle.Flat;
+            btnRegister.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRegister.ForeColor = Color.White;
+            btnRegister.Location = new Point(236, 386);
             btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(196, 38);
-            btnRegister.TabIndex = 18;
+            btnRegister.Size = new Size(150, 42);
+            btnRegister.TabIndex = 17;
             btnRegister.Text = "Registrar";
-            btnRegister.UseVisualStyleBackColor = true;
+            btnRegister.UseVisualStyleBackColor = false;
             btnRegister.Click += btnRegister_Click;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(340, 410);
+            btnCancel.BackColor = Color.White;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.ForeColor = Color.FromArgb(46, 125, 50);
+            btnCancel.Location = new Point(412, 386);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(196, 36);
-            btnCancel.TabIndex = 19;
+            btnCancel.Size = new Size(150, 42);
+            btnCancel.TabIndex = 18;
             btnCancel.Text = "Cancelar";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // RegisterView
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(602, 494);
-            Controls.Add(btnCancel);
-            Controls.Add(btnRegister);
-            Controls.Add(cmbDietType);
-            Controls.Add(cmbActivityLevel);
-            Controls.Add(cmbGoal);
-            Controls.Add(label10);
-            Controls.Add(label9);
-            Controls.Add(label8);
-            Controls.Add(label7);
-            Controls.Add(label6);
-            Controls.Add(txtHeight);
-            Controls.Add(txtWeight);
-            Controls.Add(textName);
-            Controls.Add(textPassword);
-            Controls.Add(txtUserName);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            BackColor = Color.FromArgb(245, 245, 245);
+            ClientSize = new Size(983, 675);
+            Controls.Add(pnlRegisterCard);
+            Controls.Add(lblSubtitle);
+            Controls.Add(lblMainTitle);
+            Controls.Add(pnlHeader);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "RegisterView";
-            Text = "RegisterView";
+            Text = "Vitta - Registro de usuario";
+            pnlHeader.ResumeLayout(false);
+            pnlHeader.PerformLayout();
+            pnlRegisterCard.ResumeLayout(false);
+            pnlRegisterCard.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
+        private Panel pnlHeader;
+        private Label lblAppName;
+        private Label lblMainTitle;
+        private Label lblSubtitle;
+        private Panel pnlRegisterCard;
+        private Label lblCardTitle;
+        private Label lblUserName;
         private TextBox txtUserName;
-        private TextBox textPassword;
-        private TextBox textName;
+        private Label lblPassword;
+        private TextBox txtPassword;
+        private Label lblName;
+        private TextBox txtName;
+        private Label lblWeight;
         private TextBox txtWeight;
+        private Label lblHeight;
         private TextBox txtHeight;
-        private Label label6;
-        private Label label7;
-        private Label label8;
-        private Label label9;
-        private Label label10;
+        private Label lblGoal;
         private ComboBox cmbGoal;
+        private Label lblActivityLevel;
         private ComboBox cmbActivityLevel;
+        private Label lblDietType;
         private ComboBox cmbDietType;
         private Button btnRegister;
         private Button btnCancel;
