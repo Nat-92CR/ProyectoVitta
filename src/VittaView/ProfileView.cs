@@ -23,6 +23,10 @@
             this.currentUserName = currentUserName;
             this.LoadComboBoxes();
             this.LoadUserData();
+
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.textPassword.UseSystemPasswordChar = true;
+            this.AcceptButton = this.btnSave;
         }
 
         /// <summary>

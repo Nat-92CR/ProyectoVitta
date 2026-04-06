@@ -1,10 +1,8 @@
 ﻿namespace VittaView
 {
-    using System;
-    using System.Windows.Forms;
+    using System.Globalization;
     using VittaController.Abstractions;
     using VittaModel;
-    using System.Globalization;
 
     /// <summary>
     /// Vista encargada del registro de alimentos dentro del sistema.
@@ -21,6 +19,10 @@
         {
             this.InitializeComponent();
             this.foodController = foodController;
+
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.AcceptButton = this.btnSave;
+            this.txtName.Focus();
         }
 
         /// <summary>
@@ -38,13 +40,14 @@
             if (string.IsNullOrWhiteSpace(this.FoodName))
             {
                 MessageBox.Show("Debe ingresar el nombre del alimento.");
+                this.txtName.Focus();
                 return;
             }
 
             if (!double.TryParse(this.txtCalories.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double calories) ||
-            !double.TryParse(this.txtProtein.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double protein) ||
-            !double.TryParse(this.txtCarbohydrates.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double carbohydrates) ||
-            !double.TryParse(this.txtFat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double fat))
+                !double.TryParse(this.txtProtein.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double protein) ||
+                !double.TryParse(this.txtCarbohydrates.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double carbohydrates) ||
+                !double.TryParse(this.txtFat.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double fat))
             {
                 MessageBox.Show("Las calorías, proteínas, carbohidratos y grasas deben ser valores numéricos válidos.");
                 return;

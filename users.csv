@@ -1,5 +1,5 @@
 UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType,Age,Sex
-Nat,1234,Natalia Tobal,55,160,Mantener,Moderado,Estándar,33,Femenino
+Nat,1234,Natalia Tobal,60,160,Mantener,Moderado,Estándar,33,Femenino
 CarlosT,1234,Carlos Villalobos,60,160,Ganar masa,Sedentario,Estándar,28,Masculino
 DiegoR,1234,Diego Rodríguez,72,175,Mantener,Moderado,Estándar,31,Masculino
 SantiagoV,1234,Santiago Vargas,80,170,Ganar masa,Ligero,Vegetariana,26,Masculino
@@ -18,3 +18,9 @@ EstebanN,1234,Esteban Núñez,74,176,Perder grasa,Ligero,Keto,35,Masculino
 SofíaH,1234,Sofía Hernández,56,161,Ganar masa,Moderado,Vegetariana,23,Femenino
 JoséB,1234,José Brenes,79,174,Mantener,Moderado,Estándar,38,Masculino
 MarianaD,1234,Mariana Delgado,61,168,Perder grasa,Moderado,Estándar,27,Femenino
+DanielaL,1234,Daniela López,57,163,Mantener,Ligero,Estándar,26,Femenino
+GabrielW,1234,Gabriel Wong,77,179,Ganar masa,Alto,Estándar,32,Masculino
+KevinZ,1234,Kevin Zamora,73,172,Perder grasa,Moderado,Keto,29,Masculino
+LauraU,1234,Laura Ureña,55,159,Mantener,Moderado,Vegetariana,28,Femenino
+MauricioE,1234,Mauricio Esquivel,81,181,Mantener,Moderado,Estándar,35,Masculino
+RebecaI,1234,Rebeca Ibarra,60,166,Perder grasa,Ligero,Estándar,30,Femenino

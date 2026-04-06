@@ -59,7 +59,8 @@
             string dailySummary = this.LoadDailyStatistics(selectedDate);
             string rangeSummary = this.LoadRangeStatistics(startDate, endDate);
 
-            this.txtSummary.Text = dailySummary + Environment.NewLine + Environment.NewLine + rangeSummary;
+            this.txtDailySummary.Text = dailySummary;
+            this.txtPeriodSummary.Text = rangeSummary;
         }
 
         /// <summary>
@@ -150,11 +151,11 @@
 
             if (registeredDays == 0)
             {
-                return "Consulta por período (" +
+                return "Período consultado: " +
                        startDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
                        " a " +
                        endDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
-                       "):" + Environment.NewLine +
+                       Environment.NewLine +
                        "No hay menús registrados en ese rango de fechas.";
             }
 
@@ -199,8 +200,7 @@
             string carbohydratesMessage = this.GetDifferenceMessage("carbohidratos", remainingCarbohydrates);
             string fatMessage = this.GetDifferenceMessage("grasas", remainingFat);
 
-            return "Consulta diaria:" + Environment.NewLine +
-                   caloriesMessage + Environment.NewLine +
+            return caloriesMessage + Environment.NewLine +
                    proteinMessage + Environment.NewLine +
                    carbohydratesMessage + Environment.NewLine +
                    fatMessage;
@@ -238,22 +238,21 @@
             double averageCaloriesPerRegisteredDay,
             double compliancePercentage)
         {
-            return "Consulta por período (" +
+            return "Período consultado: " +
                    startDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
                    " a " +
                    endDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
-                   "):" + Environment.NewLine +
-                   "Días del período: " + totalDaysInRange.ToString(CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Días con menú registrado: " + registeredDays.ToString(CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Días que cumplieron o superaron la meta calórica: " + daysMeetingGoal.ToString(CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Porcentaje de cumplimiento: " + compliancePercentage.ToString("0.##", CultureInfo.InvariantCulture) + "%" + Environment.NewLine +
-                   "Meta calórica acumulada de los días registrados: " + accumulatedGoal.ToString("0.##", CultureInfo.InvariantCulture) + Environment.NewLine +
-                   this.GetPeriodDifferenceMessage(periodDifference) + Environment.NewLine +
-                   "Promedio de calorías por día registrado: " + averageCaloriesPerRegisteredDay.ToString("0.##", CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Consumo total de calorías: " + totalCalories.ToString("0.##", CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Consumo total de proteínas: " + totalProtein.ToString("0.##", CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Consumo total de carbohidratos: " + totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture) + Environment.NewLine +
-                   "Consumo total de grasas: " + totalFat.ToString("0.##", CultureInfo.InvariantCulture);
+                   Environment.NewLine +
+                   "Se registraron menús en " + registeredDays.ToString(CultureInfo.InvariantCulture) +
+                   " de " + totalDaysInRange.ToString(CultureInfo.InvariantCulture) + " días." +
+                   Environment.NewLine +
+                   "Días que cumplieron la meta calórica: " + daysMeetingGoal.ToString(CultureInfo.InvariantCulture) + "." +
+                   Environment.NewLine +
+                   "Porcentaje de cumplimiento: " + compliancePercentage.ToString("0.##", CultureInfo.InvariantCulture) + "%." +
+                   Environment.NewLine +
+                   this.GetPeriodDifferenceMessage(periodDifference) +
+                   Environment.NewLine +
+                   "Promedio de calorías por día registrado: " + averageCaloriesPerRegisteredDay.ToString("0.##", CultureInfo.InvariantCulture);
         }
 
         /// <summary>

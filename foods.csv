@@ -1,56 +1,85 @@
 Name,Calories,Protein,Carbohydrates,Fat
-Gallo pinto,190,6,32,4
-Tortilla de maíz,60,2,12,1
-Huevo entero,78,6,1,5
-Claras de huevo,34,7,0,0
-Pechuga de pollo,165,31,0,4
-Filete de salmón,208,22,0,13
-Atún en agua,120,26,0,1
-Carne molida magra,170,26,0,7
-Bistec de res,210,28,0,10
-Cerdo magro,180,27,0,8
-Arroz blanco cocido,130,2.5,28,0.3
-Arroz integral cocido,111,2.6,23,0.9
-Frijoles negros cocidos,132,9,24,0.5
-Lentejas cocidas,116,9,20,0.4
-Garbanzos cocidos,164,9,27,2.6
-Papa cocida,87,2,20,0.1
-Camote cocido,90,2,21,0.2
-Yuca cocida,160,1.5,38,0.3
-Plátano maduro,122,1.3,32,0.3
-Banano,105,1.3,27,0.4
-Manzana,95,0.5,25,0.3
-Piña,82,0.9,22,0.2
-Papaya,55,0.9,14,0.2
-Mango,99,1.4,25,0.6
-Aguacate,160,2,9,15
-Tomate,22,1,5,0.2
-Lechuga,10,1,2,0.1
-Pepino,16,0.7,4,0.1
-Zanahoria,41,0.9,10,0.2
-Brócoli,55,3.7,11,0.6
-Espinaca,23,2.9,3.6,0.4
-Queso fresco,98,11,3,4
-Queso mozzarella,85,6,1,6
-Yogur natural,61,3.5,4.7,3.3
-Yogur griego,100,17,6,0
-Leche descremada,83,8,12,0.2
-Avena,150,5,27,3
-Pan integral,80,4,14,1.2
-Pasta cocida,158,5.8,31,0.9
-Sardinas,191,23,0,11
-Tilapia,128,26,0,3
-Tortilla integral,110,4,19,2.5
-Chayote,25,1,6,0.2
-Ayote sazón,49,1.8,12,0.2
-Coliflor,25,2,5,0.3
-Palmito,36,4,7,0.5
-Maní,170,7,6,14
-Almendras,164,6,6,14
-Semillas de chía,138,4.7,12,8.7
-Aceite de oliva,119,0,0,13.5
-Pinto con huevo,260,12,33,9
-Casado con pollo,520,35,58,15
-Ensalada verde,45,2,7,2
-Batido de proteína,130,24,4,2
-Tostadas integrales,120,5,22,2
+Gallo pinto casero 1 taza,190,6,32,4
+Arroz blanco cocido 1 taza,205,4,45,0.4
+Arroz integral cocido 1 taza,215,5,45,1.8
+Frijoles negros cocidos 1 taza,227,15,41,1
+Lentejas cocidas 1 taza,230,18,40,0.8
+Garbanzos cocidos 1 taza,269,14,45,4
+Pechuga de pollo a la plancha 120 g,198,37,0,4
+Carne molida magra 120 g,228,29,0,11
+Bistec de res 120 g,250,31,0,13
+Lomo de cerdo a la plancha 120 g,242,31,0,10
+Tilapia al horno 120 g,154,32,0,3
+Salmón al horno 120 g,248,26,0,15
+Atún en agua Sardimar 1 lata,120,26,0,1
+Huevo entero 1 unidad,78,6,1,5
+Claras de huevo 3 unidades,51,11,1,0
+Tofu firme 100 g,144,15,3,8
+Queso panela 40 g,96,7,1,7
+Queso cottage Dos Pinos 1 taza,180,24,8,5
+Aguacate 1 2 unidad,120,2,6,11
+Tomate 1 unidad,22,1,5,0
+Pepino 1 taza,16,1,4,0
+Lechuga 1 taza,8,1,2,0
+Espinaca 1 taza,7,1,1,0
+Brócoli al vapor 1 taza,55,4,11,0.6
+Vegetales salteados 1 taza,90,3,12,3
+Zucchini salteado 1 taza,40,2,7,1
+Ensalada verde 1 taza,35,1.5,6,0.4
+Papa cocida 150 g,130,3,30,0
+Camote cocido 150 g,135,2,31,0
+Pasta integral cocida 1 taza,180,7,37,1.5
+Yuca cocida 150 g,165,1,39,0.3
+Plátano maduro asado 1 porción,140,1,36,0
+Banano mediano,105,1.3,27,0.4
+Manzana mediana,95,0.5,25,0.3
+Papaya 1 taza,55,0.8,14,0.2
+Piña 1 taza,82,1,22,0.2
+Mango 1 taza,99,1.4,25,0.6
+Sandía 1 taza,46,1,12,0.2
+Fresas 1 taza,49,1,12,0.5
+Almendras 20 g,116,4,4,10
+Nueces mixtas 20 g,130,3,4,13
+Mantequilla de maní 1 cda,95,4,3,8
+Semillas de chía 1 cda,58,2,5,4
+Granola artesanal 30 g,130,3,20,4
+Café negro 1 taza,2,0,0,0
+Agua de pipa 250 ml,46,1,9,0
+Batido de proteína 1 porción,120,24,3,2
+Hummus 2 cdas,70,2,6,4
+Tortilla de maíz 2 unidades,120,4,24,2
+Avena en hojuelas 40 g,150,5,27,3
+Revuelto de huevo con tomate 1 porción,170,13,4,11
+Casado con pollo 1 plato,520,35,55,16
+Casado vegetariano 1 plato,470,18,66,14
+Sopa negra 1 taza,140,9,23,1
+Ceviche de pescado 1 taza,160,24,10,3
+Wrap de pollo 1 unidad,320,24,29,11
+Wrap vegetariano 1 unidad,290,12,34,10
+Omelette de espinaca 1 porción,210,17,4,14
+Ensalada de atún 1 porción,220,28,8,8
+Ensalada de garbanzos 1 porción,260,10,30,10
+Pico de gallo 1 porción,25,1,5,0
+Palitos de zanahoria 1 taza,50,1,12,0.2
+Sardinas en tomate 1 lata,190,23,3,10
+Leche descremada Dos Pinos 250 ml,90,8,12,0.5
+Leche deslactosada Dos Pinos 250 ml,110,8,12,4
+Leche más proteína Dos Pinos 250 ml,140,15,14,3
+Yogurt griego natural Dos Pinos 150 g,110,15,6,2
+Yogurt de fresa Dos Pinos 125 g,105,4,17,2
+Queso fresco Dos Pinos 30 g,80,6,1,6
+Queso mozzarella Dos Pinos 30 g,85,7,1,6
+Natilla liviana Dos Pinos 1 cda,35,0.5,1,3
+Helado de vainilla Dos Pinos 1 porción,140,3,18,6
+Pan cuadrado integral Musmanni 2 rebanadas,150,6,28,2
+Pan blanco Musmanni 2 rebanadas,160,5,30,2
+Bagel integral Musmanni 1 unidad,220,8,42,2
+Galleta soda Pozuelo 4 unidades,84,2,14,2
+Galleta maría Pozuelo 4 unidades,110,2,20,2
+Galleta cremosa Pozuelo 2 unidades,140,2,22,5
+Cereal Chokos Jack's 30 g,115,2,24,1.5
+Cereal Poffis Jack's 30 g,118,2,25,1
+Barra de cereal Jack's 1 unidad,98,1.5,18,2
+Meneitos Jack's 25 g,130,2,17,6
+Picaritas Jack's 25 g,128,2,16,6
+Tostadas Pozuelo 4 unidades,100,2,19,2

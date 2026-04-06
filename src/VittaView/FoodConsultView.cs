@@ -23,6 +23,8 @@
             this.InitializeComponent();
             this.foodController = foodController;
             this.selectedFoodName = string.Empty;
+
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void FoodConsultView_Load(object sender, EventArgs e)
