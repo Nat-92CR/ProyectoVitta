@@ -17,6 +17,9 @@
         private readonly string currentUserName;
         private bool isEditMode;
         private DateTime selectedOriginalMenuDate;
+        private bool suppressDateChangeHandling;
+        private string selectedMealItemText;
+        private string selectedMealTimeText;
 
         /// <summary>
         /// Inicializa una nueva instancia de la clase MenuRegisterView.
@@ -27,6 +30,9 @@
             this.currentUserName = string.Empty;
             this.isEditMode = false;
             this.selectedOriginalMenuDate = DateTime.MinValue;
+            this.suppressDateChangeHandling = false;
+            this.selectedMealItemText = string.Empty;
+            this.selectedMealTimeText = string.Empty;
             this.AttachMealTextChangedEvents();
         }
 
@@ -72,9 +78,9 @@
                 return;
             }
 
-            var selectedFoodName = this.cmbAvailableFoods.SelectedItem.ToString() ?? string.Empty;
-            var selectedMealTime = this.cmbMealTime.SelectedItem.ToString() ?? string.Empty;
-            var quantity = Convert.ToInt32(this.nudQuantity.Value);
+            string selectedFoodName = this.cmbAvailableFoods.SelectedItem.ToString() ?? string.Empty;
+            string selectedMealTime = this.cmbMealTime.SelectedItem.ToString() ?? string.Empty;
+            int quantityToAdd = Convert.ToInt32(this.nudQuantity.Value);
 
             if (string.IsNullOrWhiteSpace(selectedFoodName))
             {
@@ -88,22 +94,65 @@
                 return;
             }
 
-            if (quantity <= 0)
+            if (quantityToAdd <= 0)
             {
                 MessageBox.Show("La cantidad debe ser mayor que cero.");
                 return;
             }
 
-            var foodText = selectedFoodName + " x" + quantity;
-
-            if (this.ContainsComma(foodText))
+            if (this.ContainsComma(selectedFoodName))
             {
                 MessageBox.Show("No se permiten comas porque el sistema guarda la información en archivo CSV.");
                 return;
             }
 
-            this.AddFoodToSelectedMealTime(selectedMealTime, foodText);
-            this.FillPreviewFromMealTextFields();
+            this.AddFoodToSelectedMealTime(selectedMealTime, selectedFoodName, quantityToAdd);
+            this.RefreshNutritionalResults();
+            this.ResetFoodSelectionFields();
+            this.ClearSelectedMealItem();
+        }
+
+        /// <summary>
+        /// Evento que quita un alimento específico del menú actual.
+        /// </summary>
+        private void btnRemoveFoodFromMenu_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(this.selectedMealItemText) || string.IsNullOrWhiteSpace(this.selectedMealTimeText))
+            {
+                MessageBox.Show("Seleccione un alimento directamente dentro de Desayuno, Mañana, Almuerzo, Tarde o Cena.");
+                return;
+            }
+
+            this.ParseMealItem(this.selectedMealItemText, out string selectedFoodName, out int selectedQuantity);
+            int quantityToRemove = Convert.ToInt32(this.nudQuantity.Value);
+
+            if (string.IsNullOrWhiteSpace(selectedFoodName))
+            {
+                MessageBox.Show("No se pudo interpretar el alimento seleccionado.");
+                return;
+            }
+
+            if (quantityToRemove <= 0)
+            {
+                MessageBox.Show("La cantidad debe ser mayor que cero.");
+                return;
+            }
+
+            if (quantityToRemove > selectedQuantity)
+            {
+                MessageBox.Show("La cantidad a quitar no puede ser mayor que la cantidad registrada en la línea seleccionada.");
+                return;
+            }
+
+            bool removed = this.RemoveFoodFromSelectedMealTime(this.selectedMealTimeText, selectedFoodName, quantityToRemove);
+
+            if (!removed)
+            {
+                MessageBox.Show("No se pudo quitar el alimento seleccionado.");
+                return;
+            }
+
+            this.ClearSelectedMealItem();
             this.RefreshNutritionalResults();
             this.ResetFoodSelectionFields();
         }
@@ -124,7 +173,7 @@
                 return;
             }
 
-            var menu = new Menu(
+            Menu menu = new Menu(
                 this.currentUserName,
                 this.dtpMenuDate.Value.Date,
                 breakfast,
@@ -133,7 +182,7 @@
                 afternoonSnack,
                 dinner);
 
-            var result = this.menuController!.RegisterMenu(menu);
+            bool result = this.menuController!.RegisterMenu(menu);
 
             if (result)
             {
@@ -164,7 +213,7 @@
                 return;
             }
 
-            var selectedDateText = this.cmbExistingMenus.SelectedItem.ToString() ?? string.Empty;
+            string selectedDateText = this.cmbExistingMenus.SelectedItem.ToString() ?? string.Empty;
 
             if (!DateTime.TryParseExact(selectedDateText, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime selectedDate))
             {
@@ -172,7 +221,7 @@
                 return;
             }
 
-            var selectedMenu = this.menuController.GetMenuByUserAndDate(this.currentUserName, selectedDate);
+            Menu? selectedMenu = this.menuController.GetMenuByUserAndDate(this.currentUserName, selectedDate);
 
             if (selectedMenu == null)
             {
@@ -183,7 +232,7 @@
             this.LoadMenuIntoForm(selectedMenu);
             this.isEditMode = true;
             this.selectedOriginalMenuDate = selectedMenu.MenuDate.Date;
-            this.FillPreviewFromMealTextFields();
+            this.SelectExistingMenuByDate(selectedMenu.MenuDate.Date);
             this.RefreshNutritionalResults();
         }
 
@@ -209,7 +258,7 @@
                 return;
             }
 
-            var updatedMenu = new Menu(
+            Menu updatedMenu = new Menu(
                 this.currentUserName,
                 this.dtpMenuDate.Value.Date,
                 breakfast,
@@ -218,7 +267,7 @@
                 afternoonSnack,
                 dinner);
 
-            var result = this.menuController.UpdateMenu(this.currentUserName, this.selectedOriginalMenuDate, updatedMenu);
+            bool result = this.menuController.UpdateMenu(this.currentUserName, this.selectedOriginalMenuDate, updatedMenu);
 
             if (result)
             {
@@ -227,7 +276,6 @@
                 this.selectedOriginalMenuDate = updatedMenu.MenuDate.Date;
                 this.LoadExistingMenus();
                 this.SelectExistingMenuByDate(updatedMenu.MenuDate.Date);
-                this.FillPreviewFromMealTextFields();
                 this.RefreshNutritionalResults();
             }
             else
@@ -261,7 +309,7 @@
                     return;
                 }
 
-                var selectedDateText = this.cmbExistingMenus.SelectedItem.ToString() ?? string.Empty;
+                string selectedDateText = this.cmbExistingMenus.SelectedItem.ToString() ?? string.Empty;
 
                 if (!DateTime.TryParseExact(selectedDateText, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out targetDate))
                 {
@@ -270,7 +318,7 @@
                 }
             }
 
-            var confirmation = MessageBox.Show(
+            DialogResult confirmation = MessageBox.Show(
                 "¿Está seguro de que desea eliminar este menú?",
                 "Confirmar eliminación",
                 MessageBoxButtons.YesNo,
@@ -281,7 +329,7 @@
                 return;
             }
 
-            var result = this.menuController.DeleteMenu(this.currentUserName, targetDate);
+            bool result = this.menuController.DeleteMenu(this.currentUserName, targetDate);
 
             if (result)
             {
@@ -296,12 +344,60 @@
         }
 
         /// <summary>
+        /// Evento que reacciona cuando cambia la fecha del menú.
+        /// </summary>
+        private void dtpMenuDate_ValueChanged(object sender, EventArgs e)
+        {
+            if (this.suppressDateChangeHandling)
+            {
+                return;
+            }
+
+            if (!this.isEditMode)
+            {
+                return;
+            }
+
+            DateTime currentDate = this.dtpMenuDate.Value.Date;
+
+            if (currentDate == this.selectedOriginalMenuDate)
+            {
+                return;
+            }
+
+            this.ClearMealFieldsOnly();
+            this.ResetFoodSelectionFields();
+            this.ShowNutritionTotals(0, 0, 0, 0);
+            this.isEditMode = false;
+            this.selectedOriginalMenuDate = DateTime.MinValue;
+            this.cmbExistingMenus.SelectedIndex = -1;
+            this.ClearSelectedMealItem();
+        }
+
+        /// <summary>
         /// Evento que reacciona cuando cambia el contenido de un tiempo de comida.
         /// </summary>
         private void MealTextFields_TextChanged(object sender, EventArgs e)
         {
-            this.FillPreviewFromMealTextFields();
             this.RefreshNutritionalResults();
+        }
+
+        /// <summary>
+        /// Evento que detecta un clic dentro de un tiempo de comida.
+        /// </summary>
+        private void MealTextBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            TextBox? mealTextBox = sender as TextBox;
+            this.SelectCurrentMealItem(mealTextBox);
+        }
+
+        /// <summary>
+        /// Evento que detecta movimiento del cursor dentro de un tiempo de comida.
+        /// </summary>
+        private void MealTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            TextBox? mealTextBox = sender as TextBox;
+            this.SelectCurrentMealItem(mealTextBox);
         }
 
         /// <summary>
@@ -317,6 +413,7 @@
             this.cmbAvailableFoods.Items.Clear();
 
             List<Food> foods = this.foodController.GetFoods();
+            foods.Sort((firstFood, secondFood) => string.Compare(firstFood.Name, secondFood.Name, StringComparison.CurrentCultureIgnoreCase));
 
             foreach (Food food in foods)
             {
@@ -368,9 +465,28 @@
             this.nudQuantity.Minimum = 1;
             this.nudQuantity.Maximum = 20;
             this.nudQuantity.Value = 1;
+
             this.cmbAvailableFoods.SelectedIndex = -1;
             this.cmbMealTime.SelectedIndex = -1;
             this.cmbExistingMenus.SelectedIndex = -1;
+
+            this.txtBreakfast.ReadOnly = true;
+            this.textMorning.ReadOnly = true;
+            this.txtLunch.ReadOnly = true;
+            this.txtAfternoonSnack.ReadOnly = true;
+            this.txtDinner.ReadOnly = true;
+
+            this.txtBreakfast.TabStop = false;
+            this.textMorning.TabStop = false;
+            this.txtLunch.TabStop = false;
+            this.txtAfternoonSnack.TabStop = false;
+            this.txtDinner.TabStop = false;
+
+            this.txtBreakfast.HideSelection = false;
+            this.textMorning.HideSelection = false;
+            this.txtLunch.HideSelection = false;
+            this.txtAfternoonSnack.HideSelection = false;
+            this.txtDinner.HideSelection = false;
 
             this.txtTotalCalories.ReadOnly = true;
             this.txtTotalProtein.ReadOnly = true;
@@ -381,7 +497,7 @@
         }
 
         /// <summary>
-        /// Asocia eventos de cambio a los tiempos de comida.
+        /// Asocia eventos de cambio y selección a los tiempos de comida.
         /// </summary>
         private void AttachMealTextChangedEvents()
         {
@@ -390,6 +506,139 @@
             this.txtLunch.TextChanged += this.MealTextFields_TextChanged;
             this.txtAfternoonSnack.TextChanged += this.MealTextFields_TextChanged;
             this.txtDinner.TextChanged += this.MealTextFields_TextChanged;
+
+            this.txtBreakfast.MouseUp += this.MealTextBox_MouseUp;
+            this.textMorning.MouseUp += this.MealTextBox_MouseUp;
+            this.txtLunch.MouseUp += this.MealTextBox_MouseUp;
+            this.txtAfternoonSnack.MouseUp += this.MealTextBox_MouseUp;
+            this.txtDinner.MouseUp += this.MealTextBox_MouseUp;
+
+            this.txtBreakfast.KeyUp += this.MealTextBox_KeyUp;
+            this.textMorning.KeyUp += this.MealTextBox_KeyUp;
+            this.txtLunch.KeyUp += this.MealTextBox_KeyUp;
+            this.txtAfternoonSnack.KeyUp += this.MealTextBox_KeyUp;
+            this.txtDinner.KeyUp += this.MealTextBox_KeyUp;
+        }
+
+        /// <summary>
+        /// Selecciona el alimento actual dentro del TextBox correspondiente.
+        /// </summary>
+        /// <param name="mealTextBox">TextBox del tiempo de comida.</param>
+        private void SelectCurrentMealItem(TextBox? mealTextBox)
+        {
+            if (mealTextBox == null || string.IsNullOrWhiteSpace(mealTextBox.Text))
+            {
+                this.ClearSelectedMealItem();
+                return;
+            }
+
+            int lineIndex = mealTextBox.GetLineFromCharIndex(mealTextBox.SelectionStart);
+
+            if (lineIndex < 0 || lineIndex >= mealTextBox.Lines.Length)
+            {
+                this.ClearSelectedMealItem();
+                return;
+            }
+
+            string selectedLine = mealTextBox.Lines[lineIndex].Trim();
+
+            if (string.IsNullOrWhiteSpace(selectedLine))
+            {
+                this.ClearSelectedMealItem();
+                return;
+            }
+
+            this.ClearMealTextBoxSelections(mealTextBox);
+
+            int lineStart = mealTextBox.GetFirstCharIndexFromLine(lineIndex);
+            int lineLength = mealTextBox.Lines[lineIndex].Length;
+
+            if (lineStart >= 0 && lineLength > 0)
+            {
+                mealTextBox.SelectionStart = lineStart;
+                mealTextBox.SelectionLength = lineLength;
+            }
+
+            this.selectedMealItemText = selectedLine;
+            this.selectedMealTimeText = this.GetMealTimeByTextBox(mealTextBox);
+
+            this.ParseMealItem(selectedLine, out string selectedFoodName, out int selectedQuantity);
+
+            this.cmbMealTime.SelectedItem = this.selectedMealTimeText;
+
+            if (!string.IsNullOrWhiteSpace(selectedFoodName))
+            {
+                this.cmbAvailableFoods.SelectedItem = selectedFoodName;
+            }
+
+            this.nudQuantity.Value = 1;
+        }
+
+        /// <summary>
+        /// Limpia la selección visual de todos los tiempos de comida excepto el activo.
+        /// </summary>
+        /// <param name="activeTextBox">TextBox activo.</param>
+        private void ClearMealTextBoxSelections(TextBox? activeTextBox)
+        {
+            this.ClearMealTextBoxSelection(this.txtBreakfast, activeTextBox);
+            this.ClearMealTextBoxSelection(this.textMorning, activeTextBox);
+            this.ClearMealTextBoxSelection(this.txtLunch, activeTextBox);
+            this.ClearMealTextBoxSelection(this.txtAfternoonSnack, activeTextBox);
+            this.ClearMealTextBoxSelection(this.txtDinner, activeTextBox);
+        }
+
+        /// <summary>
+        /// Limpia la selección visual de un TextBox si no es el activo.
+        /// </summary>
+        /// <param name="mealTextBox">TextBox a limpiar.</param>
+        /// <param name="activeTextBox">TextBox activo.</param>
+        private void ClearMealTextBoxSelection(TextBox mealTextBox, TextBox? activeTextBox)
+        {
+            if (mealTextBox != activeTextBox)
+            {
+                mealTextBox.SelectionStart = 0;
+                mealTextBox.SelectionLength = 0;
+            }
+        }
+
+        /// <summary>
+        /// Limpia la selección actual de alimento.
+        /// </summary>
+        private void ClearSelectedMealItem()
+        {
+            this.selectedMealItemText = string.Empty;
+            this.selectedMealTimeText = string.Empty;
+            this.ClearMealTextBoxSelections(null);
+        }
+
+        /// <summary>
+        /// Obtiene el nombre del tiempo de comida según el TextBox recibido.
+        /// </summary>
+        /// <param name="mealTextBox">TextBox del tiempo de comida.</param>
+        /// <returns>Nombre del tiempo de comida.</returns>
+        private string GetMealTimeByTextBox(TextBox mealTextBox)
+        {
+            if (mealTextBox == this.txtBreakfast)
+            {
+                return "Desayuno";
+            }
+
+            if (mealTextBox == this.textMorning)
+            {
+                return "Merienda mañana";
+            }
+
+            if (mealTextBox == this.txtLunch)
+            {
+                return "Almuerzo";
+            }
+
+            if (mealTextBox == this.txtAfternoonSnack)
+            {
+                return "Merienda tarde";
+            }
+
+            return "Cena";
         }
 
         /// <summary>
@@ -398,90 +647,191 @@
         /// <param name="menu">Menú a cargar.</param>
         private void LoadMenuIntoForm(Menu menu)
         {
+            this.suppressDateChangeHandling = true;
+
             this.dtpMenuDate.Value = menu.MenuDate;
-            this.txtBreakfast.Text = menu.Breakfast;
-            this.textMorning.Text = menu.MorningSnack;
-            this.txtLunch.Text = menu.Lunch;
-            this.txtAfternoonSnack.Text = menu.AfternoonSnack;
-            this.txtDinner.Text = menu.Dinner;
+            this.txtBreakfast.Text = this.ConvertStorageTextToDisplay(menu.Breakfast);
+            this.textMorning.Text = this.ConvertStorageTextToDisplay(menu.MorningSnack);
+            this.txtLunch.Text = this.ConvertStorageTextToDisplay(menu.Lunch);
+            this.txtAfternoonSnack.Text = this.ConvertStorageTextToDisplay(menu.AfternoonSnack);
+            this.txtDinner.Text = this.ConvertStorageTextToDisplay(menu.Dinner);
+
+            this.suppressDateChangeHandling = false;
+            this.ClearSelectedMealItem();
         }
 
         /// <summary>
         /// Agrega el alimento al tiempo de comida seleccionado.
         /// </summary>
         /// <param name="mealTime">Tiempo de comida.</param>
-        /// <param name="foodText">Texto del alimento a agregar.</param>
-        private void AddFoodToSelectedMealTime(string mealTime, string foodText)
+        /// <param name="foodName">Nombre del alimento.</param>
+        /// <param name="quantityToAdd">Cantidad a agregar.</param>
+        private void AddFoodToSelectedMealTime(string mealTime, string foodName, int quantityToAdd)
+        {
+            TextBox mealTextBox = this.GetMealTextBoxByMealTime(mealTime);
+            List<string> mealItems = this.GetMealItems(mealTextBox.Text);
+            bool updated = false;
+
+            this.ClearSelectedMealItem();
+
+            for (int index = 0; index < mealItems.Count; index++)
+            {
+                this.ParseMealItem(mealItems[index], out string existingFoodName, out int existingQuantity);
+
+                if (existingFoodName.Equals(foodName, StringComparison.OrdinalIgnoreCase))
+                {
+                    mealItems[index] = existingFoodName + " x" + (existingQuantity + quantityToAdd);
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated)
+            {
+                mealItems.Add(foodName + " x" + quantityToAdd);
+            }
+
+            this.SetMealItems(mealTextBox, mealItems);
+        }
+
+        /// <summary>
+        /// Quita la cantidad indicada de un alimento dentro del tiempo de comida seleccionado.
+        /// </summary>
+        /// <param name="mealTime">Tiempo de comida.</param>
+        /// <param name="foodName">Nombre del alimento.</param>
+        /// <param name="quantityToRemove">Cantidad a quitar.</param>
+        /// <returns>True si se quitó correctamente; de lo contrario, false.</returns>
+        private bool RemoveFoodFromSelectedMealTime(string mealTime, string foodName, int quantityToRemove)
+        {
+            TextBox mealTextBox = this.GetMealTextBoxByMealTime(mealTime);
+            List<string> mealItems = this.GetMealItems(mealTextBox.Text);
+
+            for (int index = 0; index < mealItems.Count; index++)
+            {
+                this.ParseMealItem(mealItems[index], out string existingFoodName, out int existingQuantity);
+
+                if (!existingFoodName.Equals(foodName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (existingQuantity < quantityToRemove)
+                {
+                    continue;
+                }
+
+                int remainingQuantity = existingQuantity - quantityToRemove;
+
+                if (remainingQuantity == 0)
+                {
+                    mealItems.RemoveAt(index);
+                }
+                else
+                {
+                    mealItems[index] = existingFoodName + " x" + remainingQuantity;
+                }
+
+                this.SetMealItems(mealTextBox, mealItems);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Obtiene el TextBox correspondiente al tiempo de comida seleccionado.
+        /// </summary>
+        /// <param name="mealTime">Tiempo de comida.</param>
+        /// <returns>TextBox del tiempo de comida.</returns>
+        private TextBox GetMealTextBoxByMealTime(string mealTime)
         {
             if (mealTime == "Desayuno")
             {
-                this.txtBreakfast.Text = this.AppendFood(this.txtBreakfast.Text, foodText);
+                return this.txtBreakfast;
             }
-            else if (mealTime == "Merienda mañana")
+
+            if (mealTime == "Merienda mañana")
             {
-                this.textMorning.Text = this.AppendFood(this.textMorning.Text, foodText);
+                return this.textMorning;
             }
-            else if (mealTime == "Almuerzo")
+
+            if (mealTime == "Almuerzo")
             {
-                this.txtLunch.Text = this.AppendFood(this.txtLunch.Text, foodText);
+                return this.txtLunch;
             }
-            else if (mealTime == "Merienda tarde")
+
+            if (mealTime == "Merienda tarde")
             {
-                this.txtAfternoonSnack.Text = this.AppendFood(this.txtAfternoonSnack.Text, foodText);
+                return this.txtAfternoonSnack;
             }
-            else if (mealTime == "Cena")
-            {
-                this.txtDinner.Text = this.AppendFood(this.txtDinner.Text, foodText);
-            }
+
+            return this.txtDinner;
         }
 
         /// <summary>
-        /// Agrega un alimento al texto actual del tiempo de comida.
+        /// Obtiene la lista de alimentos de un tiempo de comida.
         /// </summary>
-        /// <param name="currentText">Texto actual.</param>
-        /// <param name="foodText">Nuevo alimento.</param>
-        /// <returns>Texto combinado.</returns>
-        private string AppendFood(string currentText, string foodText)
-        {
-            if (string.IsNullOrWhiteSpace(currentText))
-            {
-                return foodText;
-            }
-
-            return currentText + " | " + foodText;
-        }
-
-        /// <summary>
-        /// Llena el resumen visual con el contenido actual del menú.
-        /// </summary>
-        private void FillPreviewFromMealTextFields()
-        {
-            this.lstMenuPreview.Items.Clear();
-            this.AddPreviewItemsFromMealText("Desayuno", this.txtBreakfast.Text);
-            this.AddPreviewItemsFromMealText("Merienda mañana", this.textMorning.Text);
-            this.AddPreviewItemsFromMealText("Almuerzo", this.txtLunch.Text);
-            this.AddPreviewItemsFromMealText("Merienda tarde", this.txtAfternoonSnack.Text);
-            this.AddPreviewItemsFromMealText("Cena", this.txtDinner.Text);
-        }
-
-        /// <summary>
-        /// Agrega los elementos de un tiempo de comida al resumen visual.
-        /// </summary>
-        /// <param name="mealTime">Tiempo de comida.</param>
         /// <param name="mealText">Texto del tiempo de comida.</param>
-        private void AddPreviewItemsFromMealText(string mealTime, string mealText)
+        /// <returns>Lista de alimentos.</returns>
+        private List<string> GetMealItems(string mealText)
         {
+            List<string> items = new List<string>();
+
             if (string.IsNullOrWhiteSpace(mealText))
             {
-                return;
+                return items;
             }
 
-            string[] mealItems = mealText.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+            string normalizedText = mealText
+                .Replace("\r\n", "|")
+                .Replace("\n", "|")
+                .Replace("\r", "|");
 
-            foreach (string mealItem in mealItems)
+            string[] parts = normalizedText.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string part in parts)
             {
-                this.lstMenuPreview.Items.Add(mealTime + ": " + mealItem);
+                string cleanItem = part.Trim();
+
+                if (!string.IsNullOrWhiteSpace(cleanItem))
+                {
+                    items.Add(cleanItem);
+                }
             }
+
+            return items;
+        }
+
+        /// <summary>
+        /// Asigna la lista de alimentos al TextBox del tiempo de comida.
+        /// </summary>
+        /// <param name="mealTextBox">TextBox a actualizar.</param>
+        /// <param name="mealItems">Lista de alimentos.</param>
+        private void SetMealItems(TextBox mealTextBox, List<string> mealItems)
+        {
+            mealTextBox.Text = string.Join(Environment.NewLine, mealItems);
+        }
+
+        /// <summary>
+        /// Convierte el texto almacenado del menú al formato visual del formulario.
+        /// </summary>
+        /// <param name="storageText">Texto almacenado.</param>
+        /// <returns>Texto listo para mostrar.</returns>
+        private string ConvertStorageTextToDisplay(string storageText)
+        {
+            List<string> mealItems = this.GetMealItems(storageText);
+            return string.Join(Environment.NewLine, mealItems);
+        }
+
+        /// <summary>
+        /// Convierte el texto visual del formulario al formato que se guarda en archivo.
+        /// </summary>
+        /// <param name="displayText">Texto visual.</param>
+        /// <returns>Texto listo para guardar.</returns>
+        private string ConvertDisplayTextToStorage(string displayText)
+        {
+            List<string> mealItems = this.GetMealItems(displayText);
+            return string.Join(" | ", mealItems);
         }
 
         /// <summary>
@@ -529,7 +879,7 @@
                 return;
             }
 
-            string[] mealItems = mealText.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+            List<string> mealItems = this.GetMealItems(mealText);
 
             foreach (string mealItem in mealItems)
             {
@@ -635,11 +985,11 @@
             out string afternoonSnack,
             out string dinner)
         {
-            breakfast = this.txtBreakfast.Text.Trim();
-            morningSnack = this.textMorning.Text.Trim();
-            lunch = this.txtLunch.Text.Trim();
-            afternoonSnack = this.txtAfternoonSnack.Text.Trim();
-            dinner = this.txtDinner.Text.Trim();
+            breakfast = this.ConvertDisplayTextToStorage(this.txtBreakfast.Text);
+            morningSnack = this.ConvertDisplayTextToStorage(this.textMorning.Text);
+            lunch = this.ConvertDisplayTextToStorage(this.txtLunch.Text);
+            afternoonSnack = this.ConvertDisplayTextToStorage(this.txtAfternoonSnack.Text);
+            dinner = this.ConvertDisplayTextToStorage(this.txtDinner.Text);
 
             if (this.menuController == null || string.IsNullOrWhiteSpace(this.currentUserName))
             {
@@ -702,23 +1052,34 @@
         }
 
         /// <summary>
-        /// Limpia los campos del formulario.
+        /// Limpia únicamente los tiempos de comida.
         /// </summary>
-        private void ClearFields()
+        private void ClearMealFieldsOnly()
         {
             this.txtBreakfast.Clear();
             this.textMorning.Clear();
             this.txtLunch.Clear();
             this.txtAfternoonSnack.Clear();
             this.txtDinner.Clear();
-            this.lstMenuPreview.Items.Clear();
+            this.ClearSelectedMealItem();
+        }
+
+        /// <summary>
+        /// Limpia los campos del formulario.
+        /// </summary>
+        private void ClearFields()
+        {
+            this.suppressDateChangeHandling = true;
             this.dtpMenuDate.Value = DateTime.Now;
+            this.suppressDateChangeHandling = false;
+
+            this.ClearMealFieldsOnly();
             this.ResetFoodSelectionFields();
             this.cmbExistingMenus.SelectedIndex = -1;
             this.isEditMode = false;
             this.selectedOriginalMenuDate = DateTime.MinValue;
             this.ShowNutritionTotals(0, 0, 0, 0);
-            this.txtBreakfast.Focus();
+            this.cmbAvailableFoods.Focus();
         }
 
         /// <summary>

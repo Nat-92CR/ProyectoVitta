@@ -26,7 +26,7 @@
         /// </summary>
         /// <param name="name">Nombre del alimento.</param>
         /// <returns>Alimento encontrado o null.</returns>
-        Food GetFoodByName(string name);
+        Food? GetFoodByName(string name);
 
         /// <summary>
         /// Busca alimentos por nombre o parte del nombre.

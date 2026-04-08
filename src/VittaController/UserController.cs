@@ -16,8 +16,6 @@
         /// Inicializa una nueva instancia de la clase <see cref="UserController"/>.
         /// </summary>
         /// <param name="dataHandler">Manejador de datos de usuarios.</param>
-
-        //CONSTRUCTOR UserController (Controlador de Usuarios)
         public UserController(IDataHandler<User> dataHandler)
         {
             this.dataHandler = dataHandler;
@@ -37,7 +35,7 @@
                 return false;
             }
 
-            return this.ExistsUserForLogin(username, password);
+            return this.ExistsUserForLogin(username.Trim(), password.Trim());
         }
 
         /// <summary>
@@ -68,6 +66,10 @@
                 return false;
             }
 
+            user.UserName = user.UserName.Trim();
+            user.Password = user.Password.Trim();
+            user.Name = user.Name.Trim();
+
             if (this.ExistsUserName(user.UserName))
             {
                 return false;
@@ -82,11 +84,18 @@
         /// </summary>
         /// <param name="username">Nombre de usuario.</param>
         /// <returns>El usuario encontrado o null si no existe.</returns>
-        public User GetUserByUserName(string username)
+        public User? GetUserByUserName(string username)
         {
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return null;
+            }
+
+            string normalizedUserName = username.Trim();
+
             foreach (var user in this.users)
             {
-                if (user.UserName == username)
+                if (user.UserName == normalizedUserName)
                 {
                     return user;
                 }
@@ -122,6 +131,10 @@
             {
                 return false;
             }
+
+            updatedUser.UserName = updatedUser.UserName.Trim();
+            updatedUser.Password = updatedUser.Password.Trim();
+            updatedUser.Name = updatedUser.Name.Trim();
 
             for (int i = 0; i < this.users.Count; i++)
             {

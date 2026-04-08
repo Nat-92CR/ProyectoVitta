@@ -18,12 +18,6 @@
         bool RegisterMenu(Menu menu);
 
         /// <summary>
-        /// Obtiene la lista de menús registrados.
-        /// </summary>
-        /// <returns>Lista de menús.</returns>
-        List<Menu> GetMenus();
-
-        /// <summary>
         /// Obtiene los menús registrados para un usuario específico.
         /// </summary>
         /// <param name="userName">Nombre del usuario.</param>
@@ -36,7 +30,7 @@
         /// <param name="userName">Nombre del usuario.</param>
         /// <param name="menuDate">Fecha del menú.</param>
         /// <returns>Menú encontrado o null si no existe.</returns>
-        Menu GetMenuByUserAndDate(string userName, DateTime menuDate);
+        Menu? GetMenuByUserAndDate(string userName, DateTime menuDate);
 
         /// <summary>
         /// Actualiza un menú existente del usuario.

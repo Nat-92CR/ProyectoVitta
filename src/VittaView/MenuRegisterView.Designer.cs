@@ -58,14 +58,7 @@
             lblMealTime = new Label();
             cmbMealTime = new ComboBox();
             btnAddFoodToMenu = new Button();
-            btnSave = new Button();
-            btnUpdateMenu = new Button();
-            btnDeleteMenu = new Button();
-            btnCancel = new Button();
-            pnlPreview = new Panel();
-            lblPreviewTitle = new Label();
-            lblPreview = new Label();
-            lstMenuPreview = new ListBox();
+            btnRemoveFoodFromMenu = new Button();
             pnlNutrition = new Panel();
             lblNutritionTitle = new Label();
             lblTotalCalories = new Label();
@@ -76,11 +69,14 @@
             txtTotalCarbohydrates = new TextBox();
             lblTotalFat = new Label();
             txtTotalFat = new TextBox();
+            btnSave = new Button();
+            btnUpdateMenu = new Button();
+            btnDeleteMenu = new Button();
+            btnCancel = new Button();
             pnlHeader.SuspendLayout();
             pnlMenuData.SuspendLayout();
             pnlMenuManagement.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudQuantity).BeginInit();
-            pnlPreview.SuspendLayout();
             pnlNutrition.SuspendLayout();
             SuspendLayout();
             // 
@@ -110,7 +106,7 @@
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.ForeColor = Color.FromArgb(33, 33, 33);
-            lblTitle.Location = new Point(406, 83);
+            lblTitle.Location = new Point(398, 82);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(356, 54);
             lblTitle.TabIndex = 1;
@@ -121,11 +117,11 @@
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblSubtitle.ForeColor = Color.FromArgb(97, 97, 97);
-            lblSubtitle.Location = new Point(270, 148);
+            lblSubtitle.Location = new Point(226, 145);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(666, 25);
+            lblSubtitle.Size = new Size(765, 25);
             lblSubtitle.TabIndex = 2;
-            lblSubtitle.Text = "Crea, actualiza y organiza menús diarios con alimentos y resumen nutricional.";
+            lblSubtitle.Text = "Crea, actualiza y organiza menús diarios con alimentos del sistema y resumen nutricional.";
             // 
             // pnlMenuData
             // 
@@ -144,9 +140,9 @@
             pnlMenuData.Controls.Add(txtAfternoonSnack);
             pnlMenuData.Controls.Add(lblDinner);
             pnlMenuData.Controls.Add(txtDinner);
-            pnlMenuData.Location = new Point(42, 195);
+            pnlMenuData.Location = new Point(36, 190);
             pnlMenuData.Name = "pnlMenuData";
-            pnlMenuData.Size = new Size(520, 389);
+            pnlMenuData.Size = new Size(540, 558);
             pnlMenuData.TabIndex = 3;
             // 
             // lblMenuDataTitle
@@ -154,18 +150,18 @@
             lblMenuDataTitle.AutoSize = true;
             lblMenuDataTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblMenuDataTitle.ForeColor = Color.FromArgb(46, 125, 50);
-            lblMenuDataTitle.Location = new Point(182, 18);
+            lblMenuDataTitle.Location = new Point(189, 18);
             lblMenuDataTitle.Name = "lblMenuDataTitle";
-            lblMenuDataTitle.Size = new Size(194, 32);
+            lblMenuDataTitle.Size = new Size(156, 32);
             lblMenuDataTitle.TabIndex = 0;
-            lblMenuDataTitle.Text = "Datos del menú";
+            lblMenuDataTitle.Text = "Menú actual";
             // 
             // lblDate
             // 
             lblDate.AutoSize = true;
             lblDate.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDate.ForeColor = Color.FromArgb(66, 66, 66);
-            lblDate.Location = new Point(25, 72);
+            lblDate.Location = new Point(24, 74);
             lblDate.Name = "lblDate";
             lblDate.Size = new Size(55, 23);
             lblDate.TabIndex = 1;
@@ -174,17 +170,18 @@
             // dtpMenuDate
             // 
             dtpMenuDate.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dtpMenuDate.Location = new Point(153, 69);
+            dtpMenuDate.Location = new Point(155, 71);
             dtpMenuDate.Name = "dtpMenuDate";
-            dtpMenuDate.Size = new Size(330, 30);
+            dtpMenuDate.Size = new Size(350, 30);
             dtpMenuDate.TabIndex = 2;
+            dtpMenuDate.ValueChanged += dtpMenuDate_ValueChanged;
             // 
             // lblBreakfast
             // 
             lblBreakfast.AutoSize = true;
             lblBreakfast.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblBreakfast.ForeColor = Color.FromArgb(66, 66, 66);
-            lblBreakfast.Location = new Point(25, 117);
+            lblBreakfast.Location = new Point(24, 164);
             lblBreakfast.Name = "lblBreakfast";
             lblBreakfast.Size = new Size(87, 23);
             lblBreakfast.TabIndex = 3;
@@ -193,19 +190,22 @@
             // txtBreakfast
             // 
             txtBreakfast.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtBreakfast.Location = new Point(153, 114);
+            txtBreakfast.Location = new Point(154, 120);
             txtBreakfast.Multiline = true;
             txtBreakfast.Name = "txtBreakfast";
+            txtBreakfast.ReadOnly = true;
             txtBreakfast.ScrollBars = ScrollBars.Vertical;
-            txtBreakfast.Size = new Size(330, 42);
+            txtBreakfast.Size = new Size(350, 67);
             txtBreakfast.TabIndex = 4;
+            txtBreakfast.TabStop = false;
+            txtBreakfast.WordWrap = false;
             // 
             // lblMorningSnack
             // 
             lblMorningSnack.AutoSize = true;
             lblMorningSnack.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblMorningSnack.ForeColor = Color.FromArgb(66, 66, 66);
-            lblMorningSnack.Location = new Point(25, 171);
+            lblMorningSnack.Location = new Point(24, 248);
             lblMorningSnack.Name = "lblMorningSnack";
             lblMorningSnack.Size = new Size(73, 23);
             lblMorningSnack.TabIndex = 5;
@@ -214,19 +214,22 @@
             // textMorning
             // 
             textMorning.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            textMorning.Location = new Point(153, 168);
+            textMorning.Location = new Point(154, 207);
             textMorning.Multiline = true;
             textMorning.Name = "textMorning";
+            textMorning.ReadOnly = true;
             textMorning.ScrollBars = ScrollBars.Vertical;
-            textMorning.Size = new Size(330, 42);
+            textMorning.Size = new Size(350, 64);
             textMorning.TabIndex = 6;
+            textMorning.TabStop = false;
+            textMorning.WordWrap = false;
             // 
             // lblLunch
             // 
             lblLunch.AutoSize = true;
             lblLunch.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblLunch.ForeColor = Color.FromArgb(66, 66, 66);
-            lblLunch.Location = new Point(25, 225);
+            lblLunch.Location = new Point(24, 328);
             lblLunch.Name = "lblLunch";
             lblLunch.Size = new Size(87, 23);
             lblLunch.TabIndex = 7;
@@ -235,19 +238,22 @@
             // txtLunch
             // 
             txtLunch.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtLunch.Location = new Point(153, 222);
+            txtLunch.Location = new Point(155, 287);
             txtLunch.Multiline = true;
             txtLunch.Name = "txtLunch";
+            txtLunch.ReadOnly = true;
             txtLunch.ScrollBars = ScrollBars.Vertical;
-            txtLunch.Size = new Size(330, 42);
+            txtLunch.Size = new Size(350, 64);
             txtLunch.TabIndex = 8;
+            txtLunch.TabStop = false;
+            txtLunch.WordWrap = false;
             // 
             // lblAfternoonSnack
             // 
             lblAfternoonSnack.AutoSize = true;
             lblAfternoonSnack.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAfternoonSnack.ForeColor = Color.FromArgb(66, 66, 66);
-            lblAfternoonSnack.Location = new Point(25, 279);
+            lblAfternoonSnack.Location = new Point(24, 413);
             lblAfternoonSnack.Name = "lblAfternoonSnack";
             lblAfternoonSnack.Size = new Size(55, 23);
             lblAfternoonSnack.TabIndex = 9;
@@ -256,19 +262,22 @@
             // txtAfternoonSnack
             // 
             txtAfternoonSnack.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtAfternoonSnack.Location = new Point(153, 276);
+            txtAfternoonSnack.Location = new Point(154, 374);
             txtAfternoonSnack.Multiline = true;
             txtAfternoonSnack.Name = "txtAfternoonSnack";
+            txtAfternoonSnack.ReadOnly = true;
             txtAfternoonSnack.ScrollBars = ScrollBars.Vertical;
-            txtAfternoonSnack.Size = new Size(330, 42);
+            txtAfternoonSnack.Size = new Size(350, 62);
             txtAfternoonSnack.TabIndex = 10;
+            txtAfternoonSnack.TabStop = false;
+            txtAfternoonSnack.WordWrap = false;
             // 
             // lblDinner
             // 
             lblDinner.AutoSize = true;
             lblDinner.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblDinner.ForeColor = Color.FromArgb(66, 66, 66);
-            lblDinner.Location = new Point(25, 333);
+            lblDinner.Location = new Point(24, 500);
             lblDinner.Name = "lblDinner";
             lblDinner.Size = new Size(49, 23);
             lblDinner.TabIndex = 11;
@@ -277,12 +286,15 @@
             // txtDinner
             // 
             txtDinner.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtDinner.Location = new Point(153, 330);
+            txtDinner.Location = new Point(155, 461);
             txtDinner.Multiline = true;
             txtDinner.Name = "txtDinner";
+            txtDinner.ReadOnly = true;
             txtDinner.ScrollBars = ScrollBars.Vertical;
-            txtDinner.Size = new Size(330, 42);
+            txtDinner.Size = new Size(350, 62);
             txtDinner.TabIndex = 12;
+            txtDinner.TabStop = false;
+            txtDinner.WordWrap = false;
             // 
             // pnlMenuManagement
             // 
@@ -299,9 +311,10 @@
             pnlMenuManagement.Controls.Add(lblMealTime);
             pnlMenuManagement.Controls.Add(cmbMealTime);
             pnlMenuManagement.Controls.Add(btnAddFoodToMenu);
-            pnlMenuManagement.Location = new Point(603, 195);
+            pnlMenuManagement.Controls.Add(btnRemoveFoodFromMenu);
+            pnlMenuManagement.Location = new Point(604, 190);
             pnlMenuManagement.Name = "pnlMenuManagement";
-            pnlMenuManagement.Size = new Size(535, 389);
+            pnlMenuManagement.Size = new Size(540, 360);
             pnlMenuManagement.TabIndex = 4;
             // 
             // lblManagementTitle
@@ -309,7 +322,7 @@
             lblManagementTitle.AutoSize = true;
             lblManagementTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblManagementTitle.ForeColor = Color.FromArgb(46, 125, 50);
-            lblManagementTitle.Location = new Point(160, 18);
+            lblManagementTitle.Location = new Point(156, 18);
             lblManagementTitle.Name = "lblManagementTitle";
             lblManagementTitle.Size = new Size(215, 32);
             lblManagementTitle.TabIndex = 0;
@@ -320,7 +333,7 @@
             lblExistingMenus.AutoSize = true;
             lblExistingMenus.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblExistingMenus.ForeColor = Color.FromArgb(66, 66, 66);
-            lblExistingMenus.Location = new Point(28, 72);
+            lblExistingMenus.Location = new Point(24, 77);
             lblExistingMenus.Name = "lblExistingMenus";
             lblExistingMenus.Size = new Size(146, 23);
             lblExistingMenus.TabIndex = 1;
@@ -331,9 +344,9 @@
             cmbExistingMenus.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbExistingMenus.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbExistingMenus.FormattingEnabled = true;
-            cmbExistingMenus.Location = new Point(28, 98);
+            cmbExistingMenus.Location = new Point(24, 103);
             cmbExistingMenus.Name = "cmbExistingMenus";
-            cmbExistingMenus.Size = new Size(265, 31);
+            cmbExistingMenus.Size = new Size(302, 31);
             cmbExistingMenus.TabIndex = 2;
             // 
             // btnLoadMenu
@@ -342,9 +355,9 @@
             btnLoadMenu.FlatStyle = FlatStyle.Flat;
             btnLoadMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnLoadMenu.ForeColor = Color.FromArgb(46, 125, 50);
-            btnLoadMenu.Location = new Point(319, 95);
+            btnLoadMenu.Location = new Point(349, 100);
             btnLoadMenu.Name = "btnLoadMenu";
-            btnLoadMenu.Size = new Size(180, 38);
+            btnLoadMenu.Size = new Size(157, 38);
             btnLoadMenu.TabIndex = 3;
             btnLoadMenu.Text = "Cargar";
             btnLoadMenu.UseVisualStyleBackColor = false;
@@ -355,20 +368,20 @@
             lblAvailableFood.AutoSize = true;
             lblAvailableFood.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblAvailableFood.ForeColor = Color.FromArgb(66, 66, 66);
-            lblAvailableFood.Location = new Point(28, 164);
+            lblAvailableFood.Location = new Point(24, 164);
             lblAvailableFood.Name = "lblAvailableFood";
-            lblAvailableFood.Size = new Size(173, 23);
+            lblAvailableFood.Size = new Size(84, 23);
             lblAvailableFood.TabIndex = 4;
-            lblAvailableFood.Text = "Alimento disponible";
+            lblAvailableFood.Text = "Alimento";
             // 
             // cmbAvailableFoods
             // 
             cmbAvailableFoods.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbAvailableFoods.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbAvailableFoods.FormattingEnabled = true;
-            cmbAvailableFoods.Location = new Point(28, 190);
+            cmbAvailableFoods.Location = new Point(24, 190);
             cmbAvailableFoods.Name = "cmbAvailableFoods";
-            cmbAvailableFoods.Size = new Size(471, 31);
+            cmbAvailableFoods.Size = new Size(482, 31);
             cmbAvailableFoods.TabIndex = 5;
             // 
             // lblQuantity
@@ -376,7 +389,7 @@
             lblQuantity.AutoSize = true;
             lblQuantity.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblQuantity.ForeColor = Color.FromArgb(66, 66, 66);
-            lblQuantity.Location = new Point(28, 248);
+            lblQuantity.Location = new Point(24, 238);
             lblQuantity.Name = "lblQuantity";
             lblQuantity.Size = new Size(83, 23);
             lblQuantity.TabIndex = 6;
@@ -385,9 +398,9 @@
             // nudQuantity
             // 
             nudQuantity.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            nudQuantity.Location = new Point(28, 274);
+            nudQuantity.Location = new Point(24, 264);
             nudQuantity.Name = "nudQuantity";
-            nudQuantity.Size = new Size(110, 30);
+            nudQuantity.Size = new Size(120, 30);
             nudQuantity.TabIndex = 7;
             // 
             // lblMealTime
@@ -395,7 +408,7 @@
             lblMealTime.AutoSize = true;
             lblMealTime.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblMealTime.ForeColor = Color.FromArgb(66, 66, 66);
-            lblMealTime.Location = new Point(179, 248);
+            lblMealTime.Location = new Point(180, 238);
             lblMealTime.Name = "lblMealTime";
             lblMealTime.Size = new Size(160, 23);
             lblMealTime.TabIndex = 8;
@@ -406,9 +419,9 @@
             cmbMealTime.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbMealTime.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             cmbMealTime.FormattingEnabled = true;
-            cmbMealTime.Location = new Point(179, 274);
+            cmbMealTime.Location = new Point(180, 264);
             cmbMealTime.Name = "cmbMealTime";
-            cmbMealTime.Size = new Size(320, 31);
+            cmbMealTime.Size = new Size(326, 31);
             cmbMealTime.TabIndex = 9;
             // 
             // btnAddFoodToMenu
@@ -417,112 +430,27 @@
             btnAddFoodToMenu.FlatStyle = FlatStyle.Flat;
             btnAddFoodToMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnAddFoodToMenu.ForeColor = Color.White;
-            btnAddFoodToMenu.Location = new Point(86, 324);
+            btnAddFoodToMenu.Location = new Point(24, 309);
             btnAddFoodToMenu.Name = "btnAddFoodToMenu";
-            btnAddFoodToMenu.Size = new Size(345, 42);
+            btnAddFoodToMenu.Size = new Size(220, 42);
             btnAddFoodToMenu.TabIndex = 10;
-            btnAddFoodToMenu.Text = "Agregar alimento al menú";
+            btnAddFoodToMenu.Text = "Agregar alimento";
             btnAddFoodToMenu.UseVisualStyleBackColor = false;
             btnAddFoodToMenu.Click += btnAddFoodToMenu_Click;
             // 
-            // btnSave
+            // btnRemoveFoodFromMenu
             // 
-            btnSave.BackColor = Color.FromArgb(46, 125, 50);
-            btnSave.FlatStyle = FlatStyle.Flat;
-            btnSave.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(196, 626);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(180, 44);
-            btnSave.TabIndex = 5;
-            btnSave.Text = "Guardar menú";
-            btnSave.UseVisualStyleBackColor = false;
-            btnSave.Click += BtnSave_Click;
-            // 
-            // btnUpdateMenu
-            // 
-            btnUpdateMenu.BackColor = Color.White;
-            btnUpdateMenu.FlatStyle = FlatStyle.Flat;
-            btnUpdateMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnUpdateMenu.ForeColor = Color.FromArgb(46, 125, 50);
-            btnUpdateMenu.Location = new Point(492, 626);
-            btnUpdateMenu.Name = "btnUpdateMenu";
-            btnUpdateMenu.Size = new Size(180, 44);
-            btnUpdateMenu.TabIndex = 6;
-            btnUpdateMenu.Text = "Actualizar menú";
-            btnUpdateMenu.UseVisualStyleBackColor = false;
-            btnUpdateMenu.Click += btnUpdateMenu_Click;
-            // 
-            // btnDeleteMenu
-            // 
-            btnDeleteMenu.BackColor = Color.White;
-            btnDeleteMenu.FlatStyle = FlatStyle.Flat;
-            btnDeleteMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnDeleteMenu.ForeColor = Color.FromArgb(198, 40, 40);
-            btnDeleteMenu.Location = new Point(799, 626);
-            btnDeleteMenu.Name = "btnDeleteMenu";
-            btnDeleteMenu.Size = new Size(180, 44);
-            btnDeleteMenu.TabIndex = 7;
-            btnDeleteMenu.Text = "Eliminar menú";
-            btnDeleteMenu.UseVisualStyleBackColor = false;
-            btnDeleteMenu.Click += btnDeleteMenu_Click;
-            // 
-            // btnCancel
-            // 
-            btnCancel.BackColor = Color.White;
-            btnCancel.FlatStyle = FlatStyle.Flat;
-            btnCancel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCancel.ForeColor = Color.FromArgb(46, 125, 50);
-            btnCancel.Location = new Point(603, 985);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(535, 44);
-            btnCancel.TabIndex = 8;
-            btnCancel.Text = "Cancelar";
-            btnCancel.UseVisualStyleBackColor = false;
-            btnCancel.Click += BtnCancel_Click;
-            // 
-            // pnlPreview
-            // 
-            pnlPreview.BackColor = Color.White;
-            pnlPreview.BorderStyle = BorderStyle.FixedSingle;
-            pnlPreview.Controls.Add(lblPreviewTitle);
-            pnlPreview.Controls.Add(lblPreview);
-            pnlPreview.Controls.Add(lstMenuPreview);
-            pnlPreview.Location = new Point(42, 694);
-            pnlPreview.Name = "pnlPreview";
-            pnlPreview.Size = new Size(520, 335);
-            pnlPreview.TabIndex = 9;
-            // 
-            // lblPreviewTitle
-            // 
-            lblPreviewTitle.AutoSize = true;
-            lblPreviewTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblPreviewTitle.ForeColor = Color.FromArgb(46, 125, 50);
-            lblPreviewTitle.Location = new Point(167, 16);
-            lblPreviewTitle.Name = "lblPreviewTitle";
-            lblPreviewTitle.Size = new Size(184, 32);
-            lblPreviewTitle.TabIndex = 0;
-            lblPreviewTitle.Text = "Vista del menú";
-            // 
-            // lblPreview
-            // 
-            lblPreview.AutoSize = true;
-            lblPreview.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblPreview.ForeColor = Color.FromArgb(66, 66, 66);
-            lblPreview.Location = new Point(22, 64);
-            lblPreview.Name = "lblPreview";
-            lblPreview.Size = new Size(148, 23);
-            lblPreview.TabIndex = 1;
-            lblPreview.Text = "Resumen en vista";
-            // 
-            // lstMenuPreview
-            // 
-            lstMenuPreview.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lstMenuPreview.FormattingEnabled = true;
-            lstMenuPreview.Location = new Point(22, 90);
-            lstMenuPreview.Name = "lstMenuPreview";
-            lstMenuPreview.Size = new Size(470, 234);
-            lstMenuPreview.TabIndex = 2;
+            btnRemoveFoodFromMenu.BackColor = Color.White;
+            btnRemoveFoodFromMenu.FlatStyle = FlatStyle.Flat;
+            btnRemoveFoodFromMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnRemoveFoodFromMenu.ForeColor = Color.FromArgb(198, 40, 40);
+            btnRemoveFoodFromMenu.Location = new Point(286, 309);
+            btnRemoveFoodFromMenu.Name = "btnRemoveFoodFromMenu";
+            btnRemoveFoodFromMenu.Size = new Size(220, 42);
+            btnRemoveFoodFromMenu.TabIndex = 11;
+            btnRemoveFoodFromMenu.Text = "Quitar alimento";
+            btnRemoveFoodFromMenu.UseVisualStyleBackColor = false;
+            btnRemoveFoodFromMenu.Click += btnRemoveFoodFromMenu_Click;
             // 
             // pnlNutrition
             // 
@@ -537,17 +465,17 @@
             pnlNutrition.Controls.Add(txtTotalCarbohydrates);
             pnlNutrition.Controls.Add(lblTotalFat);
             pnlNutrition.Controls.Add(txtTotalFat);
-            pnlNutrition.Location = new Point(603, 694);
+            pnlNutrition.Location = new Point(604, 568);
             pnlNutrition.Name = "pnlNutrition";
-            pnlNutrition.Size = new Size(535, 216);
-            pnlNutrition.TabIndex = 10;
+            pnlNutrition.Size = new Size(540, 180);
+            pnlNutrition.TabIndex = 5;
             // 
             // lblNutritionTitle
             // 
             lblNutritionTitle.AutoSize = true;
             lblNutritionTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNutritionTitle.ForeColor = Color.FromArgb(46, 125, 50);
-            lblNutritionTitle.Location = new Point(144, 16);
+            lblNutritionTitle.Location = new Point(144, 15);
             lblNutritionTitle.Name = "lblNutritionTitle";
             lblNutritionTitle.Size = new Size(250, 32);
             lblNutritionTitle.TabIndex = 0;
@@ -558,7 +486,7 @@
             lblTotalCalories.AutoSize = true;
             lblTotalCalories.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalCalories.ForeColor = Color.FromArgb(66, 66, 66);
-            lblTotalCalories.Location = new Point(32, 93);
+            lblTotalCalories.Location = new Point(24, 75);
             lblTotalCalories.Name = "lblTotalCalories";
             lblTotalCalories.Size = new Size(73, 23);
             lblTotalCalories.TabIndex = 1;
@@ -567,10 +495,10 @@
             // txtTotalCalories
             // 
             txtTotalCalories.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTotalCalories.Location = new Point(144, 90);
+            txtTotalCalories.Location = new Point(140, 72);
             txtTotalCalories.Name = "txtTotalCalories";
             txtTotalCalories.ReadOnly = true;
-            txtTotalCalories.Size = new Size(120, 30);
+            txtTotalCalories.Size = new Size(110, 30);
             txtTotalCalories.TabIndex = 2;
             // 
             // lblTotalProtein
@@ -578,7 +506,7 @@
             lblTotalProtein.AutoSize = true;
             lblTotalProtein.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalProtein.ForeColor = Color.FromArgb(66, 66, 66);
-            lblTotalProtein.Location = new Point(294, 93);
+            lblTotalProtein.Location = new Point(296, 75);
             lblTotalProtein.Name = "lblTotalProtein";
             lblTotalProtein.Size = new Size(84, 23);
             lblTotalProtein.TabIndex = 3;
@@ -587,7 +515,7 @@
             // txtTotalProtein
             // 
             txtTotalProtein.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTotalProtein.Location = new Point(392, 90);
+            txtTotalProtein.Location = new Point(396, 72);
             txtTotalProtein.Name = "txtTotalProtein";
             txtTotalProtein.ReadOnly = true;
             txtTotalProtein.Size = new Size(110, 30);
@@ -598,7 +526,7 @@
             lblTotalCarbohydrates.AutoSize = true;
             lblTotalCarbohydrates.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalCarbohydrates.ForeColor = Color.FromArgb(66, 66, 66);
-            lblTotalCarbohydrates.Location = new Point(32, 137);
+            lblTotalCarbohydrates.Location = new Point(24, 118);
             lblTotalCarbohydrates.Name = "lblTotalCarbohydrates";
             lblTotalCarbohydrates.Size = new Size(124, 23);
             lblTotalCarbohydrates.TabIndex = 5;
@@ -607,10 +535,10 @@
             // txtTotalCarbohydrates
             // 
             txtTotalCarbohydrates.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTotalCarbohydrates.Location = new Point(158, 134);
+            txtTotalCarbohydrates.Location = new Point(154, 115);
             txtTotalCarbohydrates.Name = "txtTotalCarbohydrates";
             txtTotalCarbohydrates.ReadOnly = true;
-            txtTotalCarbohydrates.Size = new Size(106, 30);
+            txtTotalCarbohydrates.Size = new Size(96, 30);
             txtTotalCarbohydrates.TabIndex = 6;
             // 
             // lblTotalFat
@@ -618,7 +546,7 @@
             lblTotalFat.AutoSize = true;
             lblTotalFat.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTotalFat.ForeColor = Color.FromArgb(66, 66, 66);
-            lblTotalFat.Location = new Point(294, 137);
+            lblTotalFat.Location = new Point(296, 118);
             lblTotalFat.Name = "lblTotalFat";
             lblTotalFat.Size = new Size(61, 23);
             lblTotalFat.TabIndex = 7;
@@ -627,24 +555,79 @@
             // txtTotalFat
             // 
             txtTotalFat.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtTotalFat.Location = new Point(392, 134);
+            txtTotalFat.Location = new Point(396, 115);
             txtTotalFat.Name = "txtTotalFat";
             txtTotalFat.ReadOnly = true;
             txtTotalFat.Size = new Size(110, 30);
             txtTotalFat.TabIndex = 8;
+            // 
+            // btnSave
+            // 
+            btnSave.BackColor = Color.FromArgb(46, 125, 50);
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSave.ForeColor = Color.White;
+            btnSave.Location = new Point(36, 766);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(261, 44);
+            btnSave.TabIndex = 6;
+            btnSave.Text = "Guardar menú";
+            btnSave.UseVisualStyleBackColor = false;
+            btnSave.Click += BtnSave_Click;
+            // 
+            // btnUpdateMenu
+            // 
+            btnUpdateMenu.BackColor = Color.White;
+            btnUpdateMenu.FlatStyle = FlatStyle.Flat;
+            btnUpdateMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnUpdateMenu.ForeColor = Color.FromArgb(46, 125, 50);
+            btnUpdateMenu.Location = new Point(315, 766);
+            btnUpdateMenu.Name = "btnUpdateMenu";
+            btnUpdateMenu.Size = new Size(261, 44);
+            btnUpdateMenu.TabIndex = 7;
+            btnUpdateMenu.Text = "Actualizar menú";
+            btnUpdateMenu.UseVisualStyleBackColor = false;
+            btnUpdateMenu.Click += btnUpdateMenu_Click;
+            // 
+            // btnDeleteMenu
+            // 
+            btnDeleteMenu.BackColor = Color.White;
+            btnDeleteMenu.FlatStyle = FlatStyle.Flat;
+            btnDeleteMenu.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDeleteMenu.ForeColor = Color.FromArgb(198, 40, 40);
+            btnDeleteMenu.Location = new Point(604, 766);
+            btnDeleteMenu.Name = "btnDeleteMenu";
+            btnDeleteMenu.Size = new Size(261, 44);
+            btnDeleteMenu.TabIndex = 8;
+            btnDeleteMenu.Text = "Eliminar menú";
+            btnDeleteMenu.UseVisualStyleBackColor = false;
+            btnDeleteMenu.Click += btnDeleteMenu_Click;
+            // 
+            // btnCancel
+            // 
+            btnCancel.BackColor = Color.White;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.ForeColor = Color.FromArgb(46, 125, 50);
+            btnCancel.Location = new Point(883, 766);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(261, 44);
+            btnCancel.TabIndex = 9;
+            btnCancel.Text = "Cancelar";
+            btnCancel.UseVisualStyleBackColor = false;
+            btnCancel.Click += BtnCancel_Click;
             // 
             // MenuRegisterView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 245, 245);
-            ClientSize = new Size(1180, 1049);
-            Controls.Add(pnlNutrition);
-            Controls.Add(pnlPreview);
+            ClientSize = new Size(1180, 835);
             Controls.Add(btnCancel);
             Controls.Add(btnDeleteMenu);
             Controls.Add(btnUpdateMenu);
             Controls.Add(btnSave);
+            Controls.Add(pnlNutrition);
             Controls.Add(pnlMenuManagement);
             Controls.Add(pnlMenuData);
             Controls.Add(lblSubtitle);
@@ -661,8 +644,6 @@
             pnlMenuManagement.ResumeLayout(false);
             pnlMenuManagement.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudQuantity).EndInit();
-            pnlPreview.ResumeLayout(false);
-            pnlPreview.PerformLayout();
             pnlNutrition.ResumeLayout(false);
             pnlNutrition.PerformLayout();
             ResumeLayout(false);
@@ -671,53 +652,50 @@
 
         #endregion
 
-        private Panel pnlHeader;
-        private Label lblAppName;
-        private Label lblSubtitle;
-        private Panel pnlMenuData;
-        private Label lblMenuDataTitle;
-        private Panel pnlMenuManagement;
-        private Label lblManagementTitle;
-        private Panel pnlPreview;
-        private Label lblPreviewTitle;
-        private Panel pnlNutrition;
-        private Label lblTitle;
-        private Label lblDate;
-        private Label lblBreakfast;
-        private Label lblMorningSnack;
-        private Label lblLunch;
-        private Label lblAfternoonSnack;
-        private Label lblDinner;
-        private DateTimePicker dtpMenuDate;
-        private TextBox txtBreakfast;
-        private TextBox textMorning;
-        private TextBox txtLunch;
-        private TextBox txtAfternoonSnack;
-        private TextBox txtDinner;
-        private Button btnSave;
-        private Button btnCancel;
-        private Label lblExistingMenus;
-        private ComboBox cmbExistingMenus;
-        private Button btnLoadMenu;
-        private Button btnUpdateMenu;
-        private Button btnDeleteMenu;
-        private Label lblAvailableFood;
-        private ComboBox cmbAvailableFoods;
-        private Label lblQuantity;
-        private NumericUpDown nudQuantity;
-        private Label lblMealTime;
-        private ComboBox cmbMealTime;
-        private Button btnAddFoodToMenu;
-        private Label lblPreview;
-        private ListBox lstMenuPreview;
-        private Label lblNutritionTitle;
-        private Label lblTotalCalories;
-        private TextBox txtTotalCalories;
-        private Label lblTotalProtein;
-        private TextBox txtTotalProtein;
-        private Label lblTotalCarbohydrates;
-        private TextBox txtTotalCarbohydrates;
-        private Label lblTotalFat;
-        private TextBox txtTotalFat;
+        private System.Windows.Forms.Panel pnlHeader;
+        private System.Windows.Forms.Label lblAppName;
+        private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.Label lblSubtitle;
+        private System.Windows.Forms.Panel pnlMenuData;
+        private System.Windows.Forms.Label lblMenuDataTitle;
+        private System.Windows.Forms.Label lblDate;
+        private System.Windows.Forms.DateTimePicker dtpMenuDate;
+        private System.Windows.Forms.Label lblBreakfast;
+        private System.Windows.Forms.TextBox txtBreakfast;
+        private System.Windows.Forms.Label lblMorningSnack;
+        private System.Windows.Forms.TextBox textMorning;
+        private System.Windows.Forms.Label lblLunch;
+        private System.Windows.Forms.TextBox txtLunch;
+        private System.Windows.Forms.Label lblAfternoonSnack;
+        private System.Windows.Forms.TextBox txtAfternoonSnack;
+        private System.Windows.Forms.Label lblDinner;
+        private System.Windows.Forms.TextBox txtDinner;
+        private System.Windows.Forms.Panel pnlMenuManagement;
+        private System.Windows.Forms.Label lblManagementTitle;
+        private System.Windows.Forms.Label lblExistingMenus;
+        private System.Windows.Forms.ComboBox cmbExistingMenus;
+        private System.Windows.Forms.Button btnLoadMenu;
+        private System.Windows.Forms.Label lblAvailableFood;
+        private System.Windows.Forms.ComboBox cmbAvailableFoods;
+        private System.Windows.Forms.Label lblQuantity;
+        private System.Windows.Forms.NumericUpDown nudQuantity;
+        private System.Windows.Forms.Label lblMealTime;
+        private System.Windows.Forms.ComboBox cmbMealTime;
+        private System.Windows.Forms.Button btnAddFoodToMenu;
+        private System.Windows.Forms.Button btnRemoveFoodFromMenu;
+        private System.Windows.Forms.Panel pnlNutrition;
+        private System.Windows.Forms.Label lblNutritionTitle;
+        private System.Windows.Forms.Label lblTotalCalories;
+        private System.Windows.Forms.TextBox txtTotalCalories;
+        private System.Windows.Forms.Label lblTotalProtein;
+        private System.Windows.Forms.TextBox txtTotalProtein;
+        private System.Windows.Forms.Label lblTotalCarbohydrates;
+        private System.Windows.Forms.TextBox txtTotalCarbohydrates;
+        private System.Windows.Forms.Label lblTotalFat;
+        private System.Windows.Forms.TextBox txtTotalFat;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnUpdateMenu;
+        private System.Windows.Forms.Button btnDeleteMenu;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

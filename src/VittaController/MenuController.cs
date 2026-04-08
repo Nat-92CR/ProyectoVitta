@@ -45,15 +45,6 @@
         }
 
         /// <summary>
-        /// Obtiene la lista de menús registrados.
-        /// </summary>
-        /// <returns>Lista de menús.</returns>
-        public List<Menu> GetMenus()
-        {
-            return new List<Menu>(this.menus);
-        }
-
-        /// <summary>
         /// Obtiene los menús registrados para un usuario específico.
         /// </summary>
         /// <param name="userName">Nombre del usuario.</param>
@@ -79,7 +70,7 @@
         /// <param name="userName">Nombre del usuario.</param>
         /// <param name="menuDate">Fecha del menú.</param>
         /// <returns>Menú encontrado o null si no existe.</returns>
-        public Menu GetMenuByUserAndDate(string userName, DateTime menuDate)
+        public Menu? GetMenuByUserAndDate(string userName, DateTime menuDate)
         {
             foreach (var menu in this.menus)
             {
@@ -107,7 +98,7 @@
                 return false;
             }
 
-            var menuIndex = this.FindMenuIndexByUserAndDate(userName, originalMenuDate);
+            int menuIndex = this.FindMenuIndexByUserAndDate(userName, originalMenuDate);
 
             if (menuIndex == -1)
             {
@@ -120,10 +111,10 @@
                 return false;
             }
 
-            var previousMenu = this.menus[menuIndex];
+            Menu previousMenu = this.menus[menuIndex];
             this.menus[menuIndex] = updatedMenu;
 
-            var saved = this.dataHandler.SaveData(this.menus);
+            bool saved = this.dataHandler.SaveData(this.menus);
 
             if (!saved)
             {
@@ -141,17 +132,17 @@
         /// <returns>True si se elimina correctamente; de lo contrario, false.</returns>
         public bool DeleteMenu(string userName, DateTime menuDate)
         {
-            var menuIndex = this.FindMenuIndexByUserAndDate(userName, menuDate);
+            int menuIndex = this.FindMenuIndexByUserAndDate(userName, menuDate);
 
             if (menuIndex == -1)
             {
                 return false;
             }
 
-            var removedMenu = this.menus[menuIndex];
+            Menu removedMenu = this.menus[menuIndex];
             this.menus.RemoveAt(menuIndex);
 
-            var saved = this.dataHandler.SaveData(this.menus);
+            bool saved = this.dataHandler.SaveData(this.menus);
 
             if (!saved)
             {

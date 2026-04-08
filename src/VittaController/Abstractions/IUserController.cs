@@ -1,9 +1,10 @@
 ﻿namespace VittaController.Abstractions
 {
     using VittaModel;
+
     /// <summary>
     /// Interfaz que define el contrato de las operaciones principales relacionadas con los usuarios del sistema,
-    /// específicamente el inicio de sesión y el registro.
+    /// específicamente el inicio de sesión, el registro y la actualización del perfil.
     /// </summary>
     public interface IUserController
     {
@@ -13,16 +14,27 @@
         /// <param name="username">El nombre de usuario ingresado.</param>
         /// <param name="password">La contraseña ingresada.</param>
         /// <returns>True si las credenciales son válidas y el inicio de sesión es exitoso; de lo contrario, false.</returns>
-        public bool Login(string username, string password);
+        bool Login(string username, string password);
 
         /// <summary>
-        /// Registra un nuevo usuario en el sistema con el nombre de usuario y la contraseña especificados.
+        /// Registra un nuevo usuario en el sistema.
         /// </summary>
-        /// <param name="username">El nombre de usuario que se desea registrar.</param>
-        /// <param name="password">La contraseña asociada al nuevo usuario.</param>
+        /// <param name="user">Usuario a registrar.</param>
         /// <returns>True si el registro se realiza correctamente; de lo contrario, false.</returns>
-        public bool Register(User user);
-        User GetUserByUserName(string username);
+        bool Register(User user);
+
+        /// <summary>
+        /// Obtiene un usuario por su nombre de usuario.
+        /// </summary>
+        /// <param name="username">Nombre de usuario.</param>
+        /// <returns>Usuario encontrado o null si no existe.</returns>
+        User? GetUserByUserName(string username);
+
+        /// <summary>
+        /// Actualiza la información de un usuario existente.
+        /// </summary>
+        /// <param name="updatedUser">Usuario con datos actualizados.</param>
+        /// <returns>True si se actualiza correctamente; de lo contrario, false.</returns>
         bool UpdateUser(User updatedUser);
     }
 }

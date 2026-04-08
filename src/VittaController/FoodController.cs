@@ -45,6 +45,8 @@
                 return false;
             }
 
+            food.Name = food.Name.Trim();
+
             if (this.ExistsFoodName(food.Name))
             {
                 return false;
@@ -68,11 +70,18 @@
         /// </summary>
         /// <param name="name">Nombre del alimento.</param>
         /// <returns>Alimento encontrado o null si no existe.</returns>
-        public Food GetFoodByName(string name)
+        public Food? GetFoodByName(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+
+            string normalizedName = name.Trim();
+
             foreach (var food in this.foods)
             {
-                if (food.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                if (food.Name.Equals(normalizedName, StringComparison.OrdinalIgnoreCase))
                 {
                     return food;
                 }
@@ -93,11 +102,12 @@
                 return new List<Food>(this.foods);
             }
 
+            string normalizedName = name.Trim();
             var foundFoods = new List<Food>();
 
             foreach (var food in this.foods)
             {
-                if (food.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (food.Name.IndexOf(normalizedName, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     foundFoods.Add(food);
                 }
@@ -128,6 +138,8 @@
                 return false;
             }
 
+            updatedFood.Name = updatedFood.Name.Trim();
+
             for (int i = 0; i < this.foods.Count; i++)
             {
                 if (this.foods[i].Name.Equals(updatedFood.Name, StringComparison.OrdinalIgnoreCase))
@@ -152,9 +164,11 @@
                 return false;
             }
 
+            string normalizedName = name.Trim();
+
             for (int i = 0; i < this.foods.Count; i++)
             {
-                if (this.foods[i].Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                if (this.foods[i].Name.Equals(normalizedName, StringComparison.OrdinalIgnoreCase))
                 {
                     this.foods.RemoveAt(i);
                     return this.dataHandler.SaveData(this.foods);

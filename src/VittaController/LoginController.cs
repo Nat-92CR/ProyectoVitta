@@ -19,7 +19,6 @@
             this.userController = userController;
         }
 
-        //Inicio de Sesion
         /// <summary>
         /// Ejecuta el proceso de inicio de sesión.
         /// </summary>
@@ -31,7 +30,6 @@
             return this.userController.Login(username, password);
         }
 
-        //Registro de Usuario
         /// <summary>
         /// Ejecuta el proceso de registro de un usuario completo.
         /// </summary>
@@ -42,13 +40,12 @@
             return this.userController.Register(user);
         }
 
-        //Editar Perfil
         /// <summary>
         /// Obtiene un usuario por su nombre de usuario.
         /// </summary>
         /// <param name="username">Nombre de usuario a buscar.</param>
         /// <returns>Usuario encontrado o null.</returns>
-        public User GetUserByUserName(string username)
+        public User? GetUserByUserName(string username)
         {
             return this.userController.GetUserByUserName(username);
         }

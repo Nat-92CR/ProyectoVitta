@@ -57,7 +57,7 @@
         /// </summary>
         private void LoadUserData()
         {
-            User user = this.loginController.GetUserByUserName(this.currentUserName);
+            User? user = this.loginController.GetUserByUserName(this.currentUserName);
 
             if (user != null)
             {
@@ -186,13 +186,13 @@
                 this.textName.Text.Trim(),
                 weight,
                 height,
-                this.cmbGoal.SelectedItem.ToString(),
-                this.cmbActivityLevel.SelectedItem.ToString(),
-                this.cmbDietType.SelectedItem.ToString(),
+                this.cmbGoal.SelectedItem!.ToString(),
+                this.cmbActivityLevel.SelectedItem!.ToString(),
+                this.cmbDietType.SelectedItem!.ToString(),
                 age,
-                this.cmbSex.SelectedItem.ToString());
+                this.cmbSex.SelectedItem!.ToString());
 
-            var result = this.loginController.UpdateUser(updatedUser);
+            bool result = this.loginController.UpdateUser(updatedUser);
 
             if (result)
             {

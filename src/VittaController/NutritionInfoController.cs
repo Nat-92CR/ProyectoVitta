@@ -2,6 +2,7 @@
 {
     using System;
     using VittaController.Abstractions;
+    using VittaController.Strategies;
     using VittaModel;
 
     /// <summary>
@@ -104,7 +105,8 @@
         }
 
         /// <summary>
-        /// Calcula la distribución recomendada de macronutrientes.
+        /// Calcula la distribución recomendada de macronutrientes
+        /// utilizando la estrategia nutricional correspondiente.
         /// </summary>
         /// <param name="user">Usuario a evaluar.</param>
         /// <param name="proteinGrams">Proteínas recomendadas en gramos.</param>
@@ -132,7 +134,9 @@
                 return;
             }
 
-            this.GetMacronutrientPercentages(
+            INutritionStrategy nutritionStrategy = this.ResolveNutritionStrategy(user);
+
+            nutritionStrategy.GetMacronutrientPercentages(
                 user,
                 out double proteinPercentage,
                 out double carbohydratesPercentage,
@@ -174,48 +178,28 @@
         }
 
         /// <summary>
-        /// Obtiene los porcentajes recomendados de macronutrientes según objetivo y tipo de dieta.
+        /// Selecciona la estrategia nutricional de acuerdo con el tipo de dieta del usuario.
         /// </summary>
         /// <param name="user">Usuario a evaluar.</param>
-        /// <param name="proteinPercentage">Porcentaje de proteínas.</param>
-        /// <param name="carbohydratesPercentage">Porcentaje de carbohidratos.</param>
-        /// <param name="fatPercentage">Porcentaje de grasas.</param>
-        private void GetMacronutrientPercentages(
-            User user,
-            out double proteinPercentage,
-            out double carbohydratesPercentage,
-            out double fatPercentage)
+        /// <returns>Estrategia nutricional correspondiente.</returns>
+        private INutritionStrategy ResolveNutritionStrategy(User user)
         {
-            proteinPercentage = 0.25;
-            carbohydratesPercentage = 0.50;
-            fatPercentage = 0.25;
-
-            if (user.Goal.Equals("Perder grasa", StringComparison.OrdinalIgnoreCase))
+            if (user == null || string.IsNullOrWhiteSpace(user.DietType))
             {
-                proteinPercentage = 0.30;
-                carbohydratesPercentage = 0.40;
-                fatPercentage = 0.30;
-            }
-            else if (user.Goal.Equals("Ganar masa", StringComparison.OrdinalIgnoreCase))
-            {
-                proteinPercentage = 0.25;
-                carbohydratesPercentage = 0.55;
-                fatPercentage = 0.20;
+                return new StandardNutritionStrategy();
             }
 
             if (user.DietType.Equals("Keto", StringComparison.OrdinalIgnoreCase))
             {
-                proteinPercentage = 0.30;
-                carbohydratesPercentage = 0.10;
-                fatPercentage = 0.60;
+                return new KetoNutritionStrategy();
             }
-            else if (user.DietType.Equals("Vegetariana", StringComparison.OrdinalIgnoreCase) &&
-                     user.Goal.Equals("Mantener", StringComparison.OrdinalIgnoreCase))
+
+            if (user.DietType.Equals("Vegetariana", StringComparison.OrdinalIgnoreCase))
             {
-                proteinPercentage = 0.20;
-                carbohydratesPercentage = 0.55;
-                fatPercentage = 0.25;
+                return new VegetarianNutritionStrategy();
             }
+
+            return new StandardNutritionStrategy();
         }
 
         /// <summary>

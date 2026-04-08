@@ -66,14 +66,6 @@
         }
 
         /// <summary>
-        /// Recarga la información nutricional del usuario.
-        /// </summary>
-        private void btnRefresh_Click(object sender, System.EventArgs e)
-        {
-            this.LoadNutritionInformation();
-        }
-
-        /// <summary>
         /// Cierra la vista de información nutricional.
         /// </summary>
         private void btnClose_Click(object sender, System.EventArgs e)

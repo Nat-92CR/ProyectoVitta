@@ -60,15 +60,10 @@
             txtCarbohydratesGrams = new TextBox();
             lblFatGrams = new Label();
             txtFatGrams = new TextBox();
-            btnRefresh = new Button();
             btnClose = new Button();
-            pnlHelp = new Panel();
-            lblHelpTitle = new Label();
-            lblHelpText = new Label();
             pnlHeader.SuspendLayout();
             pnlUserData.SuspendLayout();
             pnlNutritionResults.SuspendLayout();
-            pnlHelp.SuspendLayout();
             SuspendLayout();
             // 
             // pnlHeader
@@ -420,75 +415,27 @@
             txtFatGrams.Size = new Size(140, 30);
             txtFatGrams.TabIndex = 12;
             // 
-            // btnRefresh
-            // 
-            btnRefresh.BackColor = Color.FromArgb(46, 125, 50);
-            btnRefresh.FlatStyle = FlatStyle.Flat;
-            btnRefresh.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnRefresh.ForeColor = Color.White;
-            btnRefresh.Location = new Point(292, 582);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(180, 44);
-            btnRefresh.TabIndex = 5;
-            btnRefresh.Text = "Actualizar";
-            btnRefresh.UseVisualStyleBackColor = false;
-            btnRefresh.Click += btnRefresh_Click;
-            // 
             // btnClose
             // 
             btnClose.BackColor = Color.White;
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.ForeColor = Color.FromArgb(46, 125, 50);
-            btnClose.Location = new Point(556, 582);
+            btnClose.Location = new Point(430, 582);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(180, 44);
-            btnClose.TabIndex = 6;
+            btnClose.TabIndex = 5;
             btnClose.Text = "Cerrar";
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
-            // 
-            // pnlHelp
-            // 
-            pnlHelp.BackColor = Color.White;
-            pnlHelp.BorderStyle = BorderStyle.FixedSingle;
-            pnlHelp.Controls.Add(lblHelpTitle);
-            pnlHelp.Controls.Add(lblHelpText);
-            pnlHelp.Location = new Point(48, 654);
-            pnlHelp.Name = "pnlHelp";
-            pnlHelp.Size = new Size(944, 94);
-            pnlHelp.TabIndex = 7;
-            // 
-            // lblHelpTitle
-            // 
-            lblHelpTitle.AutoSize = true;
-            lblHelpTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblHelpTitle.ForeColor = Color.FromArgb(46, 125, 50);
-            lblHelpTitle.Location = new Point(28, 18);
-            lblHelpTitle.Name = "lblHelpTitle";
-            lblHelpTitle.Size = new Size(167, 28);
-            lblHelpTitle.TabIndex = 0;
-            lblHelpTitle.Text = "¿Qué significa?";
-            // 
-            // lblHelpText
-            // 
-            lblHelpText.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblHelpText.ForeColor = Color.FromArgb(66, 66, 66);
-            lblHelpText.Location = new Point(28, 50);
-            lblHelpText.Name = "lblHelpText";
-            lblHelpText.Size = new Size(881, 23);
-            lblHelpText.TabIndex = 1;
-            lblHelpText.Text = "Aquí puedes revisar los datos base del usuario y los cálculos nutricionales estimados según su perfil.";
             // 
             // NutritionInfoView
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(245, 245, 245);
-            ClientSize = new Size(1040, 780);
-            Controls.Add(pnlHelp);
+            ClientSize = new Size(1040, 660);
             Controls.Add(btnClose);
-            Controls.Add(btnRefresh);
             Controls.Add(pnlNutritionResults);
             Controls.Add(pnlUserData);
             Controls.Add(lblSubtitle);
@@ -505,8 +452,6 @@
             pnlUserData.PerformLayout();
             pnlNutritionResults.ResumeLayout(false);
             pnlNutritionResults.PerformLayout();
-            pnlHelp.ResumeLayout(false);
-            pnlHelp.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -545,10 +490,6 @@
         private TextBox txtProteinGrams;
         private TextBox txtCarbohydratesGrams;
         private TextBox txtFatGrams;
-        private Button btnRefresh;
         private Button btnClose;
-        private Panel pnlHelp;
-        private Label lblHelpTitle;
-        private Label lblHelpText;
     }
 }
