@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VittaView", "src\VittaView\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VittaModel", "src\VittaModel\VittaModel.csproj", "{717669B8-36D4-FB0F-9822-F92D1DEAC5E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VittaBlazor", "src\VittaBlazor\VittaBlazor.csproj", "{88DE4579-05E1-4017-A16F-D72F19DA9FEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VittaControllerTest", "test\VittaControllerTest\VittaControllerTest.csproj", "{FFAFD6C4-4E65-4D59-AD64-E9CD4F20DF27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{717669B8-36D4-FB0F-9822-F92D1DEAC5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{717669B8-36D4-FB0F-9822-F92D1DEAC5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{717669B8-36D4-FB0F-9822-F92D1DEAC5E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88DE4579-05E1-4017-A16F-D72F19DA9FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88DE4579-05E1-4017-A16F-D72F19DA9FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88DE4579-05E1-4017-A16F-D72F19DA9FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88DE4579-05E1-4017-A16F-D72F19DA9FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFAFD6C4-4E65-4D59-AD64-E9CD4F20DF27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFAFD6C4-4E65-4D59-AD64-E9CD4F20DF27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFAFD6C4-4E65-4D59-AD64-E9CD4F20DF27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFAFD6C4-4E65-4D59-AD64-E9CD4F20DF27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
