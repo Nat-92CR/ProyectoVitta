@@ -1,0 +1,11 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+<PageTitle>Vitta</PageTitle>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo("/login");
+    }
+}
