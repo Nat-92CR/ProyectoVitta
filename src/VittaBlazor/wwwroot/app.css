@@ -1,60 +1,905 @@
+/* =========================================================
+   Define la hoja de estilos global de Vitta.
+   Centraliza la paleta visual, los estilos reutilizables y
+   la presentación principal del sistema web.
+   ========================================================= */
+
+/* =========================================================
+   Define la paleta principal utilizada por la aplicación.
+   Mantiene el verde base de Vitta y agrega variaciones
+   suaves para efectos visuales de brillo y profundidad.
+   ========================================================= */
+:root {
+    --vitta-green: #2E7D32;
+    --vitta-green-dark: #1B5E20;
+    --vitta-green-soft: #43A047;
+    --vitta-green-neon: #00E676;
+    --vitta-green-light: #E8F5E9;
+    --vitta-background: #F5F7F4;
+    --vitta-surface: #FFFFFF;
+    --vitta-text-dark: #212121;
+    --vitta-text-medium: #424242;
+    --vitta-text-light: #616161;
+    --vitta-border: #DCE5DC;
+    --vitta-white: #FFFFFF;
+    --vitta-shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.08);
+    --vitta-shadow-green: 0 14px 32px rgba(46, 125, 50, 0.15);
+}
+
+/* =========================================================
+   Define la configuración base del documento.
+   ========================================================= */
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--vitta-text-dark);
+    background-color: var(--vitta-background);
 }
 
-a, .btn-link {
-    color: #006bb7;
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    color: var(--vitta-text-dark);
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+p {
+    margin-top: 0;
+    color: var(--vitta-text-medium);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+a,
+.btn-link {
+    color: inherit;
+    text-decoration: none;
 }
 
-.content {
-    padding-top: 1.1rem;
+    a:hover,
+    .btn-link:hover {
+        text-decoration: none;
+    }
+
+button {
+    font-family: inherit;
 }
 
-h1:focus {
-    outline: none;
+/* =========================================================
+   Define el contenedor principal reutilizable.
+   ========================================================= */
+.vitta-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 20px;
 }
 
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+/* =========================================================
+   Define la tarjeta reutilizable del sistema.
+   ========================================================= */
+.vitta-card {
+    background-color: var(--vitta-surface);
+    border: none;
+    border-radius: 28px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--vitta-shadow-soft);
 }
 
-.invalid {
-    outline: 1px solid #e50000;
+/* =========================================================
+   Define títulos y subtítulos internos.
+   ========================================================= */
+.vitta-card-title {
+    margin-bottom: 12px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--vitta-text-dark);
 }
 
+.vitta-subtitle {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--vitta-text-light);
+}
+
+/* =========================================================
+   Define la estructura de los campos de formulario.
+   ========================================================= */
+.vitta-field {
+    margin-bottom: 16px;
+}
+
+    .vitta-field label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--vitta-text-dark);
+    }
+
+    .vitta-field input,
+    .vitta-field select,
+    .form-control,
+    .form-select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--vitta-border);
+        border-radius: 14px;
+        background-color: #F8FFF8;
+        color: var(--vitta-text-dark);
+        font-size: 1rem;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+        .vitta-field input:focus,
+        .vitta-field select:focus,
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--vitta-green-neon);
+            box-shadow: 0 0 0 0.2rem rgba(0, 230, 118, 0.16);
+            background-color: var(--vitta-white);
+        }
+
+/* =========================================================
+   Define la zona de acciones de formularios.
+   ========================================================= */
+.vitta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* =========================================================
+   Define el botón principal del sistema.
+   ========================================================= */
+.vitta-btn {
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, var(--vitta-green-neon) 0%, var(--vitta-green-soft) 45%, var(--vitta-green) 100%);
+    color: var(--vitta-white);
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.22), 0 0 16px rgba(0, 230, 118, 0.20);
+    transition: all 0.2s ease;
+}
+
+    .vitta-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.03);
+    }
+
+/* =========================================================
+   Define el botón secundario del sistema.
+   ========================================================= */
+.vitta-btn-secondary {
+    width: 100%;
+    border: 2px solid var(--vitta-green-soft);
+    border-radius: 16px;
+    padding: 14px 18px;
+    background-color: var(--vitta-white);
+    color: var(--vitta-green);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .vitta-btn-secondary:hover {
+        background-color: #F3FFF5;
+        transform: translateY(-1px);
+    }
+
+/* =========================================================
+   Define mensajes informativos o de error.
+   ========================================================= */
+.vitta-message {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-left: 4px solid var(--vitta-green);
+    border-radius: 14px;
+    background-color: #F1FFF4;
+    color: #2F4F2F;
+    font-size: 0.95rem;
+}
+
+/* =========================================================
+   Define la distribución centrada de páginas públicas.
+   ========================================================= */
+.vitta-page-center,
+.vitta-auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+/* =========================================================
+   Define la tarjeta principal de autenticación.
+   Mantiene la estética verde/neón centrada.
+   ========================================================= */
+.vitta-auth-card {
+    width: 100%;
+    max-width: 460px;
+    background-color: var(--vitta-white);
+    border-radius: 30px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.10), 0 0 30px rgba(76, 175, 80, 0.10);
+    text-align: center;
+}
+
+/* =========================================================
+   Define el identificador visual principal de Vitta.
+   Integra la marca dentro de login y registro.
+   ========================================================= */
+.vitta-brand-circle {
+    width: 115px;
+    height: 115px;
+    margin: 0 auto 1.25rem auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 30%), linear-gradient(135deg, var(--vitta-green-neon) 0%, var(--vitta-green-soft) 45%, var(--vitta-green) 100%);
+    color: var(--vitta-white);
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 0 10px rgba(0, 230, 118, 0.12), 0 0 24px rgba(0, 230, 118, 0.35), 0 10px 25px rgba(46, 125, 50, 0.25);
+}
+
+/* =========================================================
+   Define el título principal de autenticación.
+   ========================================================= */
+.vitta-auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--vitta-text-dark);
+    margin-bottom: 0.5rem;
+}
+
+/* =========================================================
+   Define el subtítulo de autenticación.
+   ========================================================= */
+.vitta-auth-subtitle {
+    font-size: 1rem;
+    color: var(--vitta-text-light);
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   Define la alineación interna del formulario.
+   ========================================================= */
+.vitta-form {
+    text-align: left;
+}
+
+/* =========================================================
+   Define enlaces de apoyo dentro de formularios.
+   ========================================================= */
+.vitta-link,
+.vitta-link-button {
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--vitta-green);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+    .vitta-link:hover,
+    .vitta-link-button:hover {
+        color: var(--vitta-green-dark);
+        text-decoration: underline;
+    }
+
+/* =========================================================
+   Define el color de mensajes de validación.
+   ========================================================= */
 .validation-message {
-    color: #e50000;
+    color: #C62828;
 }
 
-.blazor-error-boundary {
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
-    padding: 1rem 1rem 1rem 3.7rem;
+/* =========================================================
+   Define el mensaje de error propio de Blazor.
+   ========================================================= */
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    background: #FDECEA;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.75rem;
+        cursor: pointer;
+    }
+
+/* =========================================================
+   Define los estilos visuales del dashboard principal.
+   Organiza el contenido en una barra lateral y un panel
+   principal manteniendo la línea visual verde de Vitta.
+   ========================================================= */
+
+.vitta-dashboard-page {
+    min-height: 100vh;
+    padding: 2rem 1rem 3rem 1rem;
+}
+
+.vitta-dashboard-layout {
+    max-width: 1450px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: stretch;
+    overflow: visible;
+}
+
+/* =========================================================
+   Define los estilos visuales del dashboard principal.
+   Organiza el contenido en una barra lateral y un panel
+   principal manteniendo la línea visual verde de Vitta.
+   ========================================================= */
+
+.vitta-dashboard-page {
+    min-height: 100vh;
+    padding: 2rem 1rem 3rem 1rem;
+}
+
+.vitta-dashboard-layout {
+    max-width: 1450px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: stretch;
+    overflow: visible;
+}
+
+/* =========================================================
+   Define la barra lateral principal del dashboard.
+   Mantiene los accesos rápidos alineados en toda la altura
+   del panel principal.
+   ========================================================= */
+.vitta-sidebar {
+    background: linear-gradient(180deg, rgba(232, 255, 239, 0.97) 0%, rgba(244, 255, 248, 0.97) 100%);
+    border-radius: 32px;
+    padding: 18px 14px;
+    box-shadow: 0 18px 40px rgba(22, 70, 35, 0.10), 0 0 22px rgba(0, 230, 118, 0.10);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 100%;
+    position: relative;
+    z-index: 30;
+    overflow: visible;
+    border: 1px solid rgba(46, 125, 50, 0.10);
+}
+
+.vitta-sidebar-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.vitta-sidebar-brand-circle {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 0.8rem auto;
+    font-size: 0.95rem;
+}
+
+.vitta-sidebar-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--vitta-text-dark);
+    margin-bottom: 0;
+}
+
+.vitta-sidebar-menu {
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+    flex-grow: 1;
+    align-content: start;
+}
+
+.vitta-sidebar-icon-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: visible;
+}
+
+.vitta-sidebar-icon-btn {
+    width: 54px;
+    height: 54px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #18E06F 0%, #2E7D32 100%);
+    color: white;
+    font-size: 1.15rem;
+    font-weight: 700;
+    box-shadow: 0 10px 22px rgba(46, 125, 50, 0.22), 0 0 16px rgba(24, 224, 111, 0.18);
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+    .vitta-sidebar-icon-btn:hover {
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 14px 28px rgba(46, 125, 50, 0.28), 0 0 18px rgba(24, 224, 111, 0.25);
+    }
+
+.vitta-sidebar-tooltip {
+    position: absolute;
+    left: calc(100% + 14px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #1A2F22 0%, #264833 100%);
+    color: #FFFFFF;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.2s ease;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.vitta-sidebar-icon-wrapper:hover .vitta-sidebar-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.vitta-sidebar-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.vitta-sidebar-logout-btn {
+    background: linear-gradient(135deg, #33E27F 0%, #2E7D32 100%);
+}
+
+/* =========================================================
+   Define el contenedor principal del dashboard.
+   Mantiene el panel general limpio, claro y equilibrado.
+   ========================================================= */
+.vitta-dashboard-content {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.84);
+    border-radius: 34px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(22, 70, 35, 0.10), 0 0 26px rgba(0, 230, 118, 0.06);
+    backdrop-filter: blur(4px);
+    position: relative;
+    z-index: 1;
+}
+
+.vitta-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.vitta-dashboard-welcome {
+    font-size: 0.92rem;
+    color: #2fbf64;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.vitta-dashboard-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: #15202b;
+}
+
+.vitta-dashboard-subtitle {
+    max-width: 620px;
+    color: #5f6e66;
+    margin: 0;
+    line-height: 1.55;
+}
+
+.vitta-dashboard-header-badge {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(46, 125, 50, 0.12);
+    color: #2E7D32;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid rgba(46, 125, 50, 0.10);
+}
+
+/* =========================================================
+   Define las tarjetas generales del dashboard.
+   ========================================================= */
+.vitta-dashboard-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: 0 10px 24px rgba(31, 55, 38, 0.07);
+    height: 100%;
+}
+
+.vitta-dashboard-highlight {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    background: linear-gradient(135deg, #E4F8DD 0%, #F4FFF0 100%);
+    border: 1px solid rgba(46, 125, 50, 0.08);
+}
+
+.vitta-dashboard-badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(46, 125, 50, 0.12);
+    color: #2E7D32;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.vitta-dashboard-card-title {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #15202B;
+    margin-bottom: 8px;
+}
+
+.vitta-dashboard-text {
+    margin: 0;
+    line-height: 1.55;
+    color: #5B6660;
+}
+
+.vitta-dashboard-mini-circle {
+    width: 86px;
+    height: 86px;
+    min-width: 86px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #18E06F 0%, #2E7D32 100%);
+    color: white;
+    font-size: 1.7rem;
+    box-shadow: 0 0 0 8px rgba(24, 224, 111, 0.14), 0 10px 24px rgba(46, 125, 50, 0.24);
+}
+
+/* =========================================================
+   Define la tarjeta oscura de actividad diaria.
+   ========================================================= */
+.vitta-dashboard-dark {
+    background: linear-gradient(145deg, #18222F, #222E3C);
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
+.vitta-dashboard-label {
+    font-size: 0.86rem;
+    opacity: 0.9;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.vitta-dashboard-kcal {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.vitta-dashboard-muted {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.vitta-dashboard-progress-ring {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: conic-gradient(#C8F28E 0deg, #76FFBF 90deg, rgba(255, 255, 255, 0.10) 90deg, rgba(255, 255, 255, 0.10) 360deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vitta-dashboard-progress-inner {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #1F2A36;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+    .vitta-dashboard-progress-inner strong {
+        color: white;
+        font-size: 1rem;
+        line-height: 1;
     }
 
-.darker-border-checkbox.form-check-input {
-    border-color: #929292;
+    .vitta-dashboard-progress-inner span {
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.78rem;
+    }
+
+/* =========================================================
+   Define secciones de resumen nutricional.
+   ========================================================= */
+.vitta-dashboard-section-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1C2430;
+    margin-bottom: 16px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-    color: var(--bs-secondary-color);
-    text-align: end;
+.vitta-dashboard-progress-item {
+    margin-bottom: 16px;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-    text-align: start;
+.vitta-dashboard-progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #324038;
+    font-size: 0.92rem;
+}
+
+.vitta-dashboard-progress-bar {
+    width: 100%;
+    height: 9px;
+    border-radius: 999px;
+    background: #EDF3EE;
+    overflow: hidden;
+}
+
+.vitta-dashboard-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.fill-blue {
+    width: 25%;
+    background: linear-gradient(90deg, #9FDCF7, #64BDF0);
+}
+
+.fill-yellow {
+    width: 25%;
+    background: linear-gradient(90deg, #FFE58A, #F8C84C);
+}
+
+.fill-green {
+    width: 25%;
+    background: linear-gradient(90deg, #B7F3A9, #5BC970);
+}
+
+/* =========================================================
+   Define las comidas del día.
+   ========================================================= */
+.vitta-dashboard-meal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+}
+
+    .vitta-dashboard-meal strong {
+        display: block;
+        color: #1E2722;
+        margin-bottom: 4px;
+    }
+
+    .vitta-dashboard-meal p {
+        margin: 0;
+        color: #607067;
+        font-size: 0.88rem;
+    }
+
+    .vitta-dashboard-meal span {
+        font-weight: 700;
+        color: #334239;
+        font-size: 0.92rem;
+    }
+
+.breakfast {
+    background: #DFF2FB;
+}
+
+.lunch {
+    background: #EEF9CB;
+}
+
+.dinner {
+    background: #F4EBFF;
+}
+
+/* =========================================================
+   Define el indicador de presupuesto calórico.
+   ========================================================= */
+.vitta-dashboard-budget-ring {
+    width: 172px;
+    height: 172px;
+    margin: 18px auto 12px auto;
+    border-radius: 50%;
+    background: conic-gradient(#C8F28E 0deg, #A8F0B6 180deg, #EBF1E8 180deg, #EBF1E8 360deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vitta-dashboard-budget-inner {
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: inset 0 0 0 8px #F1F6F1;
+}
+
+    .vitta-dashboard-budget-inner strong {
+        font-size: 1.8rem;
+        color: #1A2520;
+        line-height: 1;
+    }
+
+    .vitta-dashboard-budget-inner span {
+        color: #66756D;
+        font-weight: 600;
+    }
+
+.vitta-dashboard-budget-caption {
+    text-align: center;
+    color: #57665F;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   Define la tarjeta de hidratación.
+   ========================================================= */
+.vitta-dashboard-water {
+    background: linear-gradient(135deg, #1F2835, #384454);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+}
+
+.vitta-dashboard-water-badge {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D7FFAF, #76FFBF);
+    color: #183126;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(157, 255, 191, 0.24);
+}
+
+/* =========================================================
+   Define la tarjeta de estado general.
+   ========================================================= */
+.vitta-dashboard-status-list {
+    display: grid;
+    gap: 12px;
+}
+
+.vitta-dashboard-status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #F6FBF7;
+    border: 1px solid #E5EEE6;
+}
+
+    .vitta-dashboard-status-item span {
+        color: #5C6A62;
+        font-size: 0.92rem;
+    }
+
+    .vitta-dashboard-status-item strong {
+        color: #1E2A22;
+        font-size: 0.94rem;
+    }
+
+/* =========================================================
+   Ajusta la distribución en pantallas medianas.
+   ========================================================= */
+@media (max-width: 991.98px) {
+    .vitta-dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .vitta-sidebar {
+        height: auto;
+    }
+
+    .vitta-dashboard-content {
+        padding: 24px;
+        border-radius: 26px;
+    }
+
+    .vitta-dashboard-highlight {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .vitta-dashboard-mini-circle {
+        width: 78px;
+        height: 78px;
+        min-width: 78px;
+        font-size: 1.45rem;
+    }
+
+    .vitta-sidebar-tooltip {
+        display: none;
+    }
+}
+
+/* =========================================================
+   Ajusta la distribución en pantallas pequeñas.
+   ========================================================= */
+@media (max-width: 767.98px) {
+    .vitta-dashboard-page {
+        padding: 20px 12px 40px 12px;
+    }
+
+    .vitta-dashboard-content,
+    .vitta-sidebar {
+        padding: 20px;
+    }
+
+    .vitta-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .vitta-dashboard-title {
+        font-size: 1.55rem;
+    }
 }

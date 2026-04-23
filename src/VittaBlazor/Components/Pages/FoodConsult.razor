@@ -1,0 +1,39 @@
+﻿@page "/food-consult"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+@*
+    Presenta la vista base para la consulta de alimentos.
+    Deja preparado el acceso desde el dashboard para continuar
+    con la implementación del módulo correspondiente.
+*@
+
+<PageTitle>Food Consult</PageTitle>
+
+<div class="vitta-page-center">
+    <div class="vitta-card" style="width: 100%; max-width: 760px;">
+        <div class="vitta-brand-circle">Vitta</div>
+        <h1 class="vitta-auth-title">Food Consult</h1>
+        <p class="vitta-auth-subtitle">
+            Esta vista queda lista para integrar la consulta y edición de alimentos.
+        </p>
+
+        <div class="vitta-message">
+            Aquí se mostrará el listado de alimentos y sus acciones de consulta.
+        </div>
+
+        <div class="vitta-actions">
+            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Redirige a la vista principal del dashboard.
+    /// </summary>
+    private void GoToDashboard()
+    {
+        this.Navigation.NavigateTo("/dashboard");
+    }
+}
