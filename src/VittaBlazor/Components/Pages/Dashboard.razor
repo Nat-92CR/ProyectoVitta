@@ -1,7 +1,294 @@
 ﻿@page "/dashboard"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+@*
+    Presenta la vista principal del sistema luego del inicio de sesión.
+    Organiza el panel con una barra lateral de accesos rápidos y muestra
+    un resumen visual del estado general del sistema nutricional.
+*@
 
 <PageTitle>Dashboard</PageTitle>
 
-<h1>Dashboard de Vitta</h1>
+<div class="vitta-dashboard-page">
+    <div class="vitta-dashboard-layout">
+        <aside class="vitta-sidebar">
+            <div class="vitta-sidebar-header">
+                <div class="vitta-brand-circle vitta-sidebar-brand-circle">Vitta</div>
+                <h2 class="vitta-sidebar-title">Vitta</h2>
+            </div>
 
-<p>Bienvenido al sistema de gestión nutricional.</p>
+            <div class="vitta-sidebar-menu">
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn" @onclick="GoToProfile">👤</button>
+                    <span class="vitta-sidebar-tooltip">Profile</span>
+                </div>
+
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn" @onclick="GoToFoodRegister">🍎</button>
+                    <span class="vitta-sidebar-tooltip">Food Register</span>
+                </div>
+
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn" @onclick="GoToFoodConsult">📋</button>
+                    <span class="vitta-sidebar-tooltip">Food Consult</span>
+                </div>
+
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn" @onclick="GoToMenuRegister">🍽️</button>
+                    <span class="vitta-sidebar-tooltip">Menu Register</span>
+                </div>
+
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn" @onclick="GoToNutritionInfo">🧮</button>
+                    <span class="vitta-sidebar-tooltip">Nutrition Info</span>
+                </div>
+
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn" @onclick="GoToStatistics">📈</button>
+                    <span class="vitta-sidebar-tooltip">Statistics</span>
+                </div>
+            </div>
+
+            <div class="vitta-sidebar-footer">
+                <div class="vitta-sidebar-icon-wrapper">
+                    <button type="button" class="vitta-sidebar-icon-btn vitta-sidebar-logout-btn" @onclick="GoToLogin">🚪</button>
+                    <span class="vitta-sidebar-tooltip">Logout</span>
+                </div>
+            </div>
+        </aside>
+
+        <section class="vitta-dashboard-content">
+            <div class="vitta-dashboard-header">
+                <div>
+                    <p class="vitta-dashboard-welcome">Hola, usuario 🌱</p>
+                    <h1 class="vitta-dashboard-title">Dashboard</h1>
+                    <p class="vitta-dashboard-subtitle">
+                        Consulta el estado general del sistema y visualiza el resumen principal del día.
+                    </p>
+                </div>
+
+                <div class="vitta-dashboard-header-badge">
+                    Estado general estable
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12 col-xl-8">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-7">
+                            <div class="vitta-dashboard-card vitta-dashboard-highlight">
+                                <div>
+                                    <span class="vitta-dashboard-badge">Resumen del día</span>
+                                    <h2 class="vitta-dashboard-card-title">5 hábitos saludables</h2>
+                                    <p class="vitta-dashboard-text">
+                                        Mantiene el seguimiento de alimentación, hidratación y metas diarias.
+                                    </p>
+                                </div>
+
+                                <div class="vitta-dashboard-mini-circle">🌿</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                            <div class="vitta-dashboard-card vitta-dashboard-dark">
+                                <p class="vitta-dashboard-label">Actividad diaria</p>
+                                <h3 class="vitta-dashboard-kcal">625 Kcal</h3>
+                                <p class="vitta-dashboard-muted">Consumo estimado del día</p>
+
+                                <div class="vitta-dashboard-progress-ring">
+                                    <div class="vitta-dashboard-progress-inner">
+                                        <strong>25%</strong>
+                                        <span>Meta</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                            <div class="vitta-dashboard-card">
+                                <h3 class="vitta-dashboard-section-title">Resumen nutricional</h3>
+
+                                <div class="vitta-dashboard-progress-item">
+                                    <div class="vitta-dashboard-progress-header">
+                                        <span>Carbohidratos</span>
+                                        <span>25%</span>
+                                    </div>
+                                    <div class="vitta-dashboard-progress-bar">
+                                        <div class="vitta-dashboard-progress-fill fill-blue"></div>
+                                    </div>
+                                </div>
+
+                                <div class="vitta-dashboard-progress-item">
+                                    <div class="vitta-dashboard-progress-header">
+                                        <span>Proteína</span>
+                                        <span>25%</span>
+                                    </div>
+                                    <div class="vitta-dashboard-progress-bar">
+                                        <div class="vitta-dashboard-progress-fill fill-yellow"></div>
+                                    </div>
+                                </div>
+
+                                <div class="vitta-dashboard-progress-item">
+                                    <div class="vitta-dashboard-progress-header">
+                                        <span>Grasas</span>
+                                        <span>25%</span>
+                                    </div>
+                                    <div class="vitta-dashboard-progress-bar">
+                                        <div class="vitta-dashboard-progress-fill fill-green"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-7">
+                            <div class="vitta-dashboard-card">
+                                <h3 class="vitta-dashboard-section-title">Calorías del día</h3>
+
+                                <div class="vitta-dashboard-meal breakfast">
+                                    <div>
+                                        <strong>Desayuno</strong>
+                                        <p>Avena con fruta y yogur</p>
+                                    </div>
+                                    <span>240 Kcal</span>
+                                </div>
+
+                                <div class="vitta-dashboard-meal lunch">
+                                    <div>
+                                        <strong>Almuerzo</strong>
+                                        <p>Vegetales con proteína</p>
+                                    </div>
+                                    <span>320 Kcal</span>
+                                </div>
+
+                                <div class="vitta-dashboard-meal dinner">
+                                    <div>
+                                        <strong>Cena</strong>
+                                        <p>Sopa ligera y acompañamiento</p>
+                                    </div>
+                                    <span>180 Kcal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-4">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="vitta-dashboard-card">
+                                <h3 class="vitta-dashboard-section-title">Presupuesto calórico</h3>
+
+                                <div class="vitta-dashboard-budget-ring">
+                                    <div class="vitta-dashboard-budget-inner">
+                                        <strong>750</strong>
+                                        <span>Kcal</span>
+                                    </div>
+                                </div>
+
+                                <p class="vitta-dashboard-budget-caption">Actividad completada</p>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="vitta-dashboard-card vitta-dashboard-water">
+                                <div>
+                                    <h3 class="vitta-dashboard-section-title text-white mb-2">Agua diaria</h3>
+                                    <p class="mb-0 text-white-50">Meta de 10 vasos de agua</p>
+                                </div>
+
+                                <div class="vitta-dashboard-water-badge">80%</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="vitta-dashboard-card">
+                                <h3 class="vitta-dashboard-section-title">Estado general</h3>
+
+                                <div class="vitta-dashboard-status-list">
+                                    <div class="vitta-dashboard-status-item">
+                                        <span>Menús registrados</span>
+                                        <strong>4</strong>
+                                    </div>
+
+                                    <div class="vitta-dashboard-status-item">
+                                        <span>Objetivo actual</span>
+                                        <strong>Mantener</strong>
+                                    </div>
+
+                                    <div class="vitta-dashboard-status-item">
+                                        <span>Dieta seleccionada</span>
+                                        <strong>Estándar</strong>
+                                    </div>
+
+                                    <div class="vitta-dashboard-status-item">
+                                        <span>Progreso semanal</span>
+                                        <strong>78%</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Redirige al usuario a la vista de Profile.
+    /// </summary>
+    private void GoToProfile()
+    {
+        this.Navigation.NavigateTo("/profile");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de Food Register.
+    /// </summary>
+    private void GoToFoodRegister()
+    {
+        this.Navigation.NavigateTo("/food-register");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de Food Consult.
+    /// </summary>
+    private void GoToFoodConsult()
+    {
+        this.Navigation.NavigateTo("/food-consult");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de Menu Register.
+    /// </summary>
+    private void GoToMenuRegister()
+    {
+        this.Navigation.NavigateTo("/menu-register");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de Nutrition Info.
+    /// </summary>
+    private void GoToNutritionInfo()
+    {
+        this.Navigation.NavigateTo("/nutrition-info");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de Statistics.
+    /// </summary>
+    private void GoToStatistics()
+    {
+        this.Navigation.NavigateTo("/statistics");
+    }
+
+    /// <summary>
+    /// Redirige al usuario a la vista de inicio de sesión.
+    /// </summary>
+    private void GoToLogin()
+    {
+        this.Navigation.NavigateTo("/login");
+    }
+}
