@@ -1,39 +1,171 @@
 ﻿@page "/food-register"
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.WebUtilities
+@using VittaController.Abstractions
+@using VittaModel
+
 @inject NavigationManager Navigation
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@inject IFoodController FoodController
 
 @*
-    Presenta la vista base para el registro de alimentos.
-    Deja preparado el acceso desde el dashboard para continuar
-    con la implementación del módulo correspondiente.
+    Presenta la vista de registro de alimentos.
+    Permite ingresar un nuevo alimento, validar sus datos y
+    almacenarlo mediante el controlador de alimentos.
 *@
 
 <PageTitle>Food Register</PageTitle>
 
 <div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
+    <div class="vitta-card" style="width: 100%; max-width: 820px;">
         <div class="vitta-brand-circle">Vitta</div>
         <h1 class="vitta-auth-title">Food Register</h1>
         <p class="vitta-auth-subtitle">
-            Esta vista queda lista para integrar el formulario de registro de alimentos.
+            Permite registrar nuevos alimentos en el sistema.
         </p>
 
-        <div class="vitta-message">
-            Aquí se implementará el registro de alimentos para Proyecto 2.
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="vitta-field">
+                    <label>Food Name</label>
+                    <input @bind="foodName" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="vitta-field">
+                    <label>Calories</label>
+                    <input type="number" step="0.01" @bind="calories" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="vitta-field">
+                    <label>Protein</label>
+                    <input type="number" step="0.01" @bind="protein" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="vitta-field">
+                    <label>Carbohydrates</label>
+                    <input type="number" step="0.01" @bind="carbohydrates" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="vitta-field">
+                    <label>Fat</label>
+                    <input type="number" step="0.01" @bind="fat" />
+                </div>
+            </div>
         </div>
 
         <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
+            <button type="button" class="vitta-btn" @onclick="SaveFood">
+                Save food
+            </button>
+
+            <button type="button" class="vitta-btn-secondary" @onclick="ClearFields">
+                Clear fields
+            </button>
+
+            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">
+                Volver al dashboard
+            </button>
         </div>
+
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="vitta-message">
+                @message
+            </div>
+        }
     </div>
 </div>
 
 @code {
+    private string userName = string.Empty;
+    private string foodName = string.Empty;
+    private double calories;
+    private double protein;
+    private double carbohydrates;
+    private double fat;
+    private string message = string.Empty;
+
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Obtiene el nombre de usuario desde la URL cuando exista.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Valida y registra un nuevo alimento en el sistema.
+    /// </summary>
+    private void SaveFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.foodName))
+        {
+            this.message = "Debe ingresar el nombre del alimento.";
+            return;
+        }
+
+        if (this.calories < 0 || this.protein < 0 || this.carbohydrates < 0 || this.fat < 0)
+        {
+            this.message = "Los valores nutricionales no pueden ser negativos.";
+            return;
+        }
+
+        Food newFood = new Food(
+            this.foodName,
+            this.calories,
+            this.protein,
+            this.carbohydrates,
+            this.fat);
+
+        bool result = this.FoodController.RegisterFood(newFood);
+
+        if (result)
+        {
+            this.message = "El alimento se registró correctamente.";
+            this.ClearFields();
+            return;
+        }
+
+        this.message = "No se pudo registrar el alimento. Verifique los datos ingresados.";
+    }
+
+    /// <summary>
+    /// Limpia los campos del formulario de registro.
+    /// </summary>
+    private void ClearFields()
+    {
+        this.foodName = string.Empty;
+        this.calories = 0;
+        this.protein = 0;
+        this.carbohydrates = 0;
+        this.fat = 0;
+    }
+
+    /// <summary>
+    /// Redirige al usuario al dashboard conservando el nombre de usuario cuando exista.
     /// </summary>
     private void GoToDashboard()
     {
+        if (!string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.Navigation.NavigateTo($"/dashboard?username={this.userName}");
+            return;
+        }
+
         this.Navigation.NavigateTo("/dashboard");
     }
 }

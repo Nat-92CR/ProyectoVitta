@@ -1,39 +1,323 @@
 ﻿@page "/food-consult"
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.WebUtilities
+@using VittaController.Abstractions
+@using VittaModel
+
 @inject NavigationManager Navigation
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@inject IFoodController FoodController
 
 @*
-    Presenta la vista base para la consulta de alimentos.
-    Deja preparado el acceso desde el dashboard para continuar
-    con la implementación del módulo correspondiente.
+    Presenta la vista de consulta de alimentos.
+    Permite buscar, visualizar, seleccionar, actualizar y eliminar
+    alimentos registrados en el sistema.
 *@
 
 <PageTitle>Food Consult</PageTitle>
 
 <div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
+    <div class="vitta-card" style="width: 100%; max-width: 1100px;">
         <div class="vitta-brand-circle">Vitta</div>
         <h1 class="vitta-auth-title">Food Consult</h1>
         <p class="vitta-auth-subtitle">
-            Esta vista queda lista para integrar la consulta y edición de alimentos.
+            Permite consultar, editar y eliminar alimentos registrados en el sistema.
         </p>
 
-        <div class="vitta-message">
-            Aquí se mostrará el listado de alimentos y sus acciones de consulta.
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="vitta-card" style="margin-bottom: 0;">
+                    <h2 class="vitta-card-title" style="font-size: 1.5rem;">Búsqueda y listado</h2>
+
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-7">
+                            <div class="vitta-field">
+                                <label>Buscar alimento</label>
+                                <input @bind="searchFood" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button type="button" class="vitta-btn" @onclick="SearchFoods">
+                                Buscar
+                            </button>
+                        </div>
+
+                        <div class="col-md-3">
+                            <button type="button" class="vitta-btn-secondary" @onclick="ShowAllFoods">
+                                Mostrar todos
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Calorías</th>
+                                    <th>Proteínas</th>
+                                    <th>Carbohidratos</th>
+                                    <th>Grasas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (foods.Count > 0)
+                                {
+                                    @foreach (Food food in foods)
+                                    {
+                                        <tr class="@(food.Name == selectedFoodName ? "table-success" : string.Empty)"
+                                            style="cursor: pointer;"
+                                            @onclick="() => SelectFood(food)">
+                                            <td>@food.Name</td>
+                                            <td>@food.Calories</td>
+                                            <td>@food.Protein</td>
+                                            <td>@food.Carbohydrates</td>
+                                            <td>@food.Fat</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5">No se encontraron alimentos.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="vitta-actions">
+                        <button type="button" class="vitta-btn-secondary" @onclick="DeleteSelectedFood">
+                            Eliminar alimento seleccionado
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="vitta-card" style="margin-bottom: 0;">
+                    <h2 class="vitta-card-title" style="font-size: 1.5rem;">Edición del alimento</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="vitta-field">
+                                <label>Nombre del alimento</label>
+                                <input @bind="editName" readonly />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Calorías</label>
+                                <input type="number" step="0.01" @bind="editCalories" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Proteínas</label>
+                                <input type="number" step="0.01" @bind="editProtein" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Carbohidratos</label>
+                                <input type="number" step="0.01" @bind="editCarbohydrates" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Grasas</label>
+                                <input type="number" step="0.01" @bind="editFat" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vitta-actions">
+                        <button type="button" class="vitta-btn" @onclick="UpdateSelectedFood">
+                            Guardar cambios
+                        </button>
+
+                        <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">
+                            Volver al dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
-        </div>
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="vitta-message mt-3">
+                @message
+            </div>
+        }
     </div>
 </div>
 
 @code {
+    private string searchFood = string.Empty;
+    private string selectedFoodName = string.Empty;
+    private string editName = string.Empty;
+    private double editCalories;
+    private double editProtein;
+    private double editCarbohydrates;
+    private double editFat;
+    private string message = string.Empty;
+    private string userName = string.Empty;
+    private List<Food> foods = new();
+
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Carga los alimentos y obtiene el nombre de usuario desde la URL.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+        this.ClearEditFields();
+    }
+
+    /// <summary>
+    /// Carga la lista completa de alimentos registrados.
+    /// </summary>
+    private void LoadFoods()
+    {
+        this.foods = this.FoodController.GetFoods();
+    }
+
+    /// <summary>
+    /// Busca alimentos por nombre o parte del nombre.
+    /// </summary>
+    private void SearchFoods()
+    {
+        this.foods = this.FoodController.SearchFoodsByName(this.searchFood);
+        this.ClearEditFields();
+        this.message = string.Empty;
+    }
+
+    /// <summary>
+    /// Muestra nuevamente la lista completa de alimentos.
+    /// </summary>
+    private void ShowAllFoods()
+    {
+        this.searchFood = string.Empty;
+        this.LoadFoods();
+        this.ClearEditFields();
+        this.message = string.Empty;
+    }
+
+    /// <summary>
+    /// Carga en el formulario los datos del alimento seleccionado.
+    /// </summary>
+    /// <param name="food">Alimento seleccionado.</param>
+    private void SelectFood(Food food)
+    {
+        this.selectedFoodName = food.Name;
+        this.editName = food.Name;
+        this.editCalories = food.Calories;
+        this.editProtein = food.Protein;
+        this.editCarbohydrates = food.Carbohydrates;
+        this.editFat = food.Fat;
+        this.message = string.Empty;
+    }
+
+    /// <summary>
+    /// Elimina el alimento actualmente seleccionado.
+    /// </summary>
+    private void DeleteSelectedFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            this.message = "Seleccione un alimento para eliminar.";
+            return;
+        }
+
+        bool result = this.FoodController.DeleteFood(this.selectedFoodName);
+
+        if (result)
+        {
+            this.message = "El alimento se eliminó correctamente.";
+            this.searchFood = string.Empty;
+            this.LoadFoods();
+            this.ClearEditFields();
+            return;
+        }
+
+        this.message = "No se pudo eliminar el alimento.";
+    }
+
+    /// <summary>
+    /// Actualiza la información nutricional del alimento seleccionado.
+    /// </summary>
+    private void UpdateSelectedFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            this.message = "Seleccione un alimento para editar.";
+            return;
+        }
+
+        if (this.editCalories < 0 || this.editProtein < 0 || this.editCarbohydrates < 0 || this.editFat < 0)
+        {
+            this.message = "Los valores nutricionales no pueden ser negativos.";
+            return;
+        }
+
+        Food updatedFood = new Food(
+            this.selectedFoodName,
+            this.editCalories,
+            this.editProtein,
+            this.editCarbohydrates,
+            this.editFat);
+
+        bool result = this.FoodController.UpdateFood(updatedFood);
+
+        if (result)
+        {
+            this.message = "El alimento se actualizó correctamente.";
+            this.searchFood = string.Empty;
+            this.LoadFoods();
+            this.ClearEditFields();
+            return;
+        }
+
+        this.message = "No se pudo actualizar el alimento.";
+    }
+
+    /// <summary>
+    /// Limpia los campos de edición del alimento seleccionado.
+    /// </summary>
+    private void ClearEditFields()
+    {
+        this.selectedFoodName = string.Empty;
+        this.editName = string.Empty;
+        this.editCalories = 0;
+        this.editProtein = 0;
+        this.editCarbohydrates = 0;
+        this.editFat = 0;
+    }
+
+    /// <summary>
+    /// Redirige al usuario al dashboard conservando el nombre de usuario cuando exista.
     /// </summary>
     private void GoToDashboard()
     {
+        if (!string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.Navigation.NavigateTo($"/dashboard?username={this.userName}");
+            return;
+        }
+
         this.Navigation.NavigateTo("/dashboard");
     }
 }

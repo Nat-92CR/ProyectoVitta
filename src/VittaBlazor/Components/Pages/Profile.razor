@@ -1,39 +1,221 @@
-﻿@page "/profile"
+﻿@page "/perfil/{UserName}"
 @rendermode InteractiveServer
+@using VittaController
+@using VittaModel
+@inject LoginController LoginController
 @inject NavigationManager Navigation
-
+@inject IJSRuntime JS
+ 
 @*
-    Presenta la vista base del perfil del usuario.
-    Permite dejar preparada la navegación desde el dashboard
-    para continuar con la implementación del módulo.
+    Presenta la vista del perfil del usuario.
+    Permite consultar y actualizar la información personal del usuario actual.
 *@
-
-<PageTitle>Profile</PageTitle>
-
-<div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
-        <div class="vitta-brand-circle">Vitta</div>
-        <h1 class="vitta-auth-title">Profile</h1>
-        <p class="vitta-auth-subtitle">
-            Esta vista queda lista para mostrar la información personalizada del usuario.
+ 
+<PageTitle>Vitta - Mi perfil</PageTitle>
+ 
+<div class="vitta-header">
+    <span class="vitta-header-title">Vitta</span>
+</div>
+ 
+<div class="vitta-content">
+ 
+    <div class="vitta-card">
+        <h1 class="vitta-card-title">Mi perfil</h1>
+        <p class="vitta-subtitle">
+            Permite consultar y actualizar la información personal del usuario actual.
         </p>
-
-        <div class="vitta-message">
-            Aquí se mostrará la información del perfil y la edición de datos del usuario.
-        </div>
-
-        <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
-        </div>
+ 
+        @if (currentUser is not null)
+        {
+            <div class="vitta-field">
+                <label>Usuario</label>
+                <input @bind="currentUser.UserName" readonly />
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Contraseña</label>
+                <input type="password" @bind="currentUser.Password" />
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Nombre</label>
+                <input @bind="currentUser.Name" />
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Peso</label>
+                <input type="number" step="0.01" @bind="currentUser.Weight" />
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Altura</label>
+                <input type="number" step="0.01" @bind="currentUser.Height" />
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Edad</label>
+                <input type="number" @bind="currentUser.Age" />
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Sexo</label>
+                <select @bind="currentUser.Sex">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="No especificado">No especificado</option>
+                </select>
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Objetivo</label>
+                <select @bind="currentUser.Goal">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Mantener">Mantener</option>
+                    <option value="Perder grasa">Perder grasa</option>
+                    <option value="Ganar masa">Ganar masa</option>
+                </select>
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Nivel de actividad</label>
+                <select @bind="currentUser.ActivityLevel">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Sedentario">Sedentario</option>
+                    <option value="Ligero">Ligero</option>
+                    <option value="Moderado">Moderado</option>
+                    <option value="Alto">Alto</option>
+                </select>
+            </div>
+ 
+            <div class="vitta-field">
+                <label>Tipo de dieta</label>
+                <select @bind="currentUser.DietType">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Estándar">Estándar</option>
+                    <option value="Keto">Keto</option>
+                    <option value="Vegetariana">Vegetariana</option>
+                </select>
+            </div>
+ 
+            <div class="vitta-actions">
+                <button type="button" class="vitta-btn" @onclick="SaveProfile">
+                    Guardar
+                </button>
+ 
+                <button type="button" class="vitta-btn-secondary" @onclick="Cancel">
+                    Cancelar
+                </button>
+            </div>
+        }
+ 
     </div>
 </div>
-
+ 
 @code {
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Obtiene o establece el nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
-    private void GoToDashboard()
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+ 
+    private User? currentUser;
+ 
+    /// <summary>
+    /// Carga los datos actuales del usuario al inicializar la página.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
     {
-        this.Navigation.NavigateTo("/dashboard");
+        this.currentUser = this.LoginController.GetUserByUserName(this.UserName);
+ 
+        if (this.currentUser is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se pudo cargar la información del usuario.");
+            this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+        }
+    }
+ 
+    /// <summary>
+    /// Valida los datos del formulario y, si son correctos, actualiza el perfil del usuario.
+    /// </summary>
+    private async Task SaveProfile()
+    {
+        if (this.currentUser is null)
+        {
+            return;
+        }
+ 
+        if (string.IsNullOrWhiteSpace(this.currentUser.Password))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar la contraseña.");
+            return;
+        }
+ 
+        if (string.IsNullOrWhiteSpace(this.currentUser.Name))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre.");
+            return;
+        }
+ 
+        if (this.currentUser.Weight <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El peso debe ser un número mayor que 0.");
+            return;
+        }
+ 
+        if (this.currentUser.Height <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La altura debe ser un número mayor que 0.");
+            return;
+        }
+ 
+        if (this.currentUser.Age <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La edad debe ser un número entero mayor que 0.");
+            return;
+        }
+ 
+        if (string.IsNullOrWhiteSpace(this.currentUser.Sex))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar el sexo.");
+            return;
+        }
+ 
+        if (string.IsNullOrWhiteSpace(this.currentUser.Goal))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un objetivo.");
+            return;
+        }
+ 
+        if (string.IsNullOrWhiteSpace(this.currentUser.ActivityLevel))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un nivel de actividad.");
+            return;
+        }
+ 
+        if (string.IsNullOrWhiteSpace(this.currentUser.DietType))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un tipo de dieta.");
+            return;
+        }
+ 
+        bool result = this.LoginController.UpdateUser(this.currentUser);
+ 
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Perfil actualizado correctamente.");
+            this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+            return;
+        }
+ 
+        await this.JS.InvokeVoidAsync("alert", "No se pudo actualizar el perfil.");
+    }
+ 
+    /// <summary>
+    /// Cancela la edición y regresa al dashboard del usuario actual.
+    /// </summary>
+    private void Cancel()
+    {
+        this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
     }
 }
