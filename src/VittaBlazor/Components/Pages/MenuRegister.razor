@@ -1,39 +1,797 @@
 ﻿@page "/menu-register"
 @rendermode InteractiveServer
+@using System.Globalization
+@using Microsoft.AspNetCore.WebUtilities
+@using VittaController.Abstractions
+@using VittaModel
+
 @inject NavigationManager Navigation
+@inject Microsoft.AspNetCore.Components.NavigationManager NavigationManager
+@inject IMenuController MenuController
+@inject IFoodController FoodController
 
 @*
-    Presenta la vista base para el registro de menús.
-    Deja preparado el acceso desde el dashboard para continuar
-    con la implementación del módulo correspondiente.
+    Presenta la vista de registro y edición de menús.
+    Permite seleccionar alimentos desde el catálogo, asignarlos
+    a tiempos de comida, calcular sumatorias y guardar cambios.
 *@
 
 <PageTitle>Menu Register</PageTitle>
 
 <div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
+    <div class="vitta-card" style="width: 100%; max-width: 1200px;">
         <div class="vitta-brand-circle">Vitta</div>
         <h1 class="vitta-auth-title">Menu Register</h1>
         <p class="vitta-auth-subtitle">
-            Esta vista queda lista para integrar el registro y edición de menús diarios.
+            Permite registrar, consultar, actualizar y eliminar menús del usuario actual.
         </p>
 
-        <div class="vitta-message">
-            Aquí se implementará el módulo de registro de menús del usuario.
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="vitta-card" style="margin-bottom: 0;">
+                    <h2 class="vitta-card-title" style="font-size: 1.4rem;">Menu data</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="vitta-field">
+                                <label>Menu Date</label>
+                                <input type="date" @bind="menuDate" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="vitta-field">
+                                <label>Existing Menus</label>
+                                <select @bind="selectedExistingMenuDateText">
+                                    <option value="">Seleccione una opción</option>
+                                    @foreach (string existingDate in existingMenuDates)
+                                    {
+                                        <option value="@existingDate">@existingDate</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="vitta-btn-secondary" @onclick="LoadSelectedMenu">
+                                Load menu
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="vitta-actions">
+                        <button type="button" class="vitta-btn" @onclick="SaveMenu">
+                            @(isEditMode ? "Update menu" : "Save menu")
+                        </button>
+
+                        <button type="button" class="vitta-btn-secondary" @onclick="DeleteMenu">
+                            Delete menu
+                        </button>
+
+                        <button type="button" class="vitta-btn-secondary" @onclick="ClearCurrentMenu">
+                            Clear fields
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-5">
+                <div class="vitta-card" style="margin-bottom: 0;">
+                    <h2 class="vitta-card-title" style="font-size: 1.4rem;">Add foods</h2>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="vitta-field">
+                                <label>Available Foods</label>
+                                <select @bind="selectedFoodName">
+                                    <option value="">Seleccione una opción</option>
+                                    @foreach (Food food in foods)
+                                    {
+                                        <option value="@food.Name">@food.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="vitta-field">
+                                <label>Meal Time</label>
+                                <select @bind="selectedMealTime">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Breakfast">Breakfast</option>
+                                    <option value="MorningSnack">Morning Snack</option>
+                                    <option value="Lunch">Lunch</option>
+                                    <option value="AfternoonSnack">Afternoon Snack</option>
+                                    <option value="Dinner">Dinner</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="vitta-field">
+                                <label>Quantity</label>
+                                <input type="number" min="1" max="20" @bind="quantityToAdd" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vitta-actions">
+                        <button type="button" class="vitta-btn" @onclick="AddFoodToMeal">
+                            Add food
+                        </button>
+                    </div>
+
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Total Calories</label>
+                                <input value="@totalCalories.ToString("0.##", CultureInfo.InvariantCulture)" readonly />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Total Protein</label>
+                                <input value="@totalProtein.ToString("0.##", CultureInfo.InvariantCulture)" readonly />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Total Carbohydrates</label>
+                                <input value="@totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture)" readonly />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-field">
+                                <label>Total Fat</label>
+                                <input value="@totalFat.ToString("0.##", CultureInfo.InvariantCulture)" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-7">
+                <div class="vitta-card" style="margin-bottom: 0;">
+                    <h2 class="vitta-card-title" style="font-size: 1.4rem;">Current Menu</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="vitta-card" style="margin-bottom: 0;">
+                                <h3 class="vitta-card-title" style="font-size: 1.1rem;">Breakfast</h3>
+                                @RenderMealEntries(breakfastEntries, "Breakfast")
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-card" style="margin-bottom: 0;">
+                                <h3 class="vitta-card-title" style="font-size: 1.1rem;">Morning Snack</h3>
+                                @RenderMealEntries(morningSnackEntries, "MorningSnack")
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-card" style="margin-bottom: 0;">
+                                <h3 class="vitta-card-title" style="font-size: 1.1rem;">Lunch</h3>
+                                @RenderMealEntries(lunchEntries, "Lunch")
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="vitta-card" style="margin-bottom: 0;">
+                                <h3 class="vitta-card-title" style="font-size: 1.1rem;">Afternoon Snack</h3>
+                                @RenderMealEntries(afternoonSnackEntries, "AfternoonSnack")
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="vitta-card" style="margin-bottom: 0;">
+                                <h3 class="vitta-card-title" style="font-size: 1.1rem;">Dinner</h3>
+                                @RenderMealEntries(dinnerEntries, "Dinner")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
+        <div class="vitta-actions mt-4">
+            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">
+                Volver al dashboard
+            </button>
         </div>
+
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="vitta-message mt-3">
+                @message
+            </div>
+        }
     </div>
 </div>
 
 @code {
+    private sealed class MealEntry
+    {
+        /// <summary>
+        /// Obtiene o establece el nombre del alimento.
+        /// </summary>
+        public string FoodName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Obtiene o establece la cantidad registrada.
+        /// </summary>
+        public int Quantity { get; set; }
+    }
+
+    private string userName = string.Empty;
+    private DateTime menuDate = DateTime.Today;
+    private string selectedExistingMenuDateText = string.Empty;
+    private string selectedFoodName = string.Empty;
+    private string selectedMealTime = string.Empty;
+    private int quantityToAdd = 1;
+    private string message = string.Empty;
+    private bool isEditMode;
+    private DateTime originalMenuDate = DateTime.MinValue;
+
+    private double totalCalories;
+    private double totalProtein;
+    private double totalCarbohydrates;
+    private double totalFat;
+
+    private List<Food> foods = new();
+    private List<string> existingMenuDates = new();
+
+    private List<MealEntry> breakfastEntries = new();
+    private List<MealEntry> morningSnackEntries = new();
+    private List<MealEntry> lunchEntries = new();
+    private List<MealEntry> afternoonSnackEntries = new();
+    private List<MealEntry> dinnerEntries = new();
+
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Carga los datos iniciales del módulo.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+        this.LoadExistingMenus();
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Carga la lista de alimentos disponibles.
+    /// </summary>
+    private void LoadFoods()
+    {
+        this.foods = this.FoodController.GetFoods();
+        this.foods.Sort((firstFood, secondFood) =>
+            string.Compare(firstFood.Name, secondFood.Name, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Carga las fechas de menús existentes del usuario actual.
+    /// </summary>
+    private void LoadExistingMenus()
+    {
+        this.existingMenuDates.Clear();
+
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            return;
+        }
+
+        List<Menu> userMenus = this.MenuController.GetMenusByUser(this.userName);
+        userMenus.Sort((firstMenu, secondMenu) => firstMenu.MenuDate.CompareTo(secondMenu.MenuDate));
+
+        foreach (Menu menu in userMenus)
+        {
+            this.existingMenuDates.Add(menu.MenuDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        }
+    }
+
+    /// <summary>
+    /// Agrega un alimento al tiempo de comida seleccionado.
+    /// </summary>
+    private void AddFoodToMeal()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            this.message = "Seleccione un alimento.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.selectedMealTime))
+        {
+            this.message = "Seleccione un tiempo de comida.";
+            return;
+        }
+
+        if (this.quantityToAdd <= 0)
+        {
+            this.message = "La cantidad debe ser mayor que cero.";
+            return;
+        }
+
+        List<MealEntry> targetMealEntries = this.GetMealEntriesByTime(this.selectedMealTime);
+        MealEntry? existingEntry = null;
+
+        foreach (MealEntry entry in targetMealEntries)
+        {
+            if (entry.FoodName.Equals(this.selectedFoodName, StringComparison.OrdinalIgnoreCase))
+            {
+                existingEntry = entry;
+                break;
+            }
+        }
+
+        if (existingEntry is null)
+        {
+            targetMealEntries.Add(new MealEntry
+            {
+                FoodName = this.selectedFoodName,
+                Quantity = this.quantityToAdd
+            });
+        }
+        else
+        {
+            existingEntry.Quantity += this.quantityToAdd;
+        }
+
+        this.quantityToAdd = 1;
+        this.selectedFoodName = string.Empty;
+        this.selectedMealTime = string.Empty;
+        this.message = string.Empty;
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Aumenta en una unidad la cantidad de un alimento dentro del menú.
+    /// </summary>
+    /// <param name="entry">Elemento a modificar.</param>
+    private void IncreaseEntry(MealEntry entry)
+    {
+        entry.Quantity++;
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Disminuye en una unidad la cantidad de un alimento dentro del menú.
+    /// </summary>
+    /// <param name="entry">Elemento a modificar.</param>
+    /// <param name="mealTime">Tiempo de comida asociado.</param>
+    private void DecreaseEntry(MealEntry entry, string mealTime)
+    {
+        if (entry.Quantity > 1)
+        {
+            entry.Quantity--;
+        }
+        else
+        {
+            this.RemoveEntry(entry, mealTime);
+            return;
+        }
+
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Elimina un alimento del tiempo de comida indicado.
+    /// </summary>
+    /// <param name="entry">Elemento a eliminar.</param>
+    /// <param name="mealTime">Tiempo de comida asociado.</param>
+    private void RemoveEntry(MealEntry entry, string mealTime)
+    {
+        List<MealEntry> targetMealEntries = this.GetMealEntriesByTime(mealTime);
+        targetMealEntries.Remove(entry);
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Guarda un nuevo menú o actualiza uno existente.
+    /// </summary>
+    private void SaveMenu()
+    {
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        DateTime selectedDate = this.menuDate.Date;
+
+        string breakfast = this.BuildMealText(this.breakfastEntries);
+        string morningSnack = this.BuildMealText(this.morningSnackEntries);
+        string lunch = this.BuildMealText(this.lunchEntries);
+        string afternoonSnack = this.BuildMealText(this.afternoonSnackEntries);
+        string dinner = this.BuildMealText(this.dinnerEntries);
+
+        Menu menu = new Menu(
+            this.userName,
+            selectedDate,
+            breakfast,
+            morningSnack,
+            lunch,
+            afternoonSnack,
+            dinner);
+
+        bool result;
+
+        if (this.isEditMode)
+        {
+            result = this.MenuController.UpdateMenu(this.userName, this.originalMenuDate, menu);
+        }
+        else
+        {
+            result = this.MenuController.RegisterMenu(menu);
+        }
+
+        if (result)
+        {
+            this.message = this.isEditMode
+                ? "El menú se actualizó correctamente."
+                : "El menú se registró correctamente.";
+
+            this.isEditMode = true;
+            this.originalMenuDate = selectedDate;
+            this.selectedExistingMenuDateText = selectedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            this.LoadExistingMenus();
+            return;
+        }
+
+        this.message = this.isEditMode
+            ? "No fue posible actualizar el menú. Verifique si la nueva fecha ya existe o si los datos son inválidos."
+            : "No fue posible registrar el menú. Verifique si ya existe un menú para esa fecha o si los datos son inválidos.";
+    }
+
+    /// <summary>
+    /// Carga en pantalla un menú existente del usuario.
+    /// </summary>
+    private void LoadSelectedMenu()
+    {
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.selectedExistingMenuDateText))
+        {
+            this.message = "Seleccione un menú existente.";
+            return;
+        }
+
+        if (!DateTime.TryParseExact(this.selectedExistingMenuDateText, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime selectedDate))
+        {
+            this.message = "No se pudo interpretar la fecha seleccionada.";
+            return;
+        }
+
+        Menu? selectedMenu = this.MenuController.GetMenuByUserAndDate(this.userName, selectedDate);
+
+        if (selectedMenu is null)
+        {
+            this.message = "No se encontró el menú seleccionado.";
+            return;
+        }
+
+        this.menuDate = selectedMenu.MenuDate.Date;
+        this.originalMenuDate = selectedMenu.MenuDate.Date;
+        this.isEditMode = true;
+
+        this.breakfastEntries = this.ParseMealText(selectedMenu.Breakfast);
+        this.morningSnackEntries = this.ParseMealText(selectedMenu.MorningSnack);
+        this.lunchEntries = this.ParseMealText(selectedMenu.Lunch);
+        this.afternoonSnackEntries = this.ParseMealText(selectedMenu.AfternoonSnack);
+        this.dinnerEntries = this.ParseMealText(selectedMenu.Dinner);
+
+        this.message = "Menú cargado correctamente.";
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Elimina el menú actual o el menú seleccionado por fecha.
+    /// </summary>
+    private void DeleteMenu()
+    {
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        DateTime targetDate;
+
+        if (this.isEditMode)
+        {
+            targetDate = this.originalMenuDate;
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(this.selectedExistingMenuDateText))
+            {
+                this.message = "Seleccione un menú para eliminar.";
+                return;
+            }
+
+            if (!DateTime.TryParseExact(this.selectedExistingMenuDateText, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out targetDate))
+            {
+                this.message = "No se pudo interpretar la fecha seleccionada.";
+                return;
+            }
+        }
+
+        bool result = this.MenuController.DeleteMenu(this.userName, targetDate);
+
+        if (result)
+        {
+            this.message = "El menú se eliminó correctamente.";
+            this.ClearCurrentMenu();
+            this.LoadExistingMenus();
+            return;
+        }
+
+        this.message = "No fue posible eliminar el menú seleccionado.";
+    }
+
+    /// <summary>
+    /// Limpia el formulario actual del menú.
+    /// </summary>
+    private void ClearCurrentMenu()
+    {
+        this.menuDate = DateTime.Today;
+        this.selectedExistingMenuDateText = string.Empty;
+        this.selectedFoodName = string.Empty;
+        this.selectedMealTime = string.Empty;
+        this.quantityToAdd = 1;
+        this.isEditMode = false;
+        this.originalMenuDate = DateTime.MinValue;
+
+        this.breakfastEntries = new List<MealEntry>();
+        this.morningSnackEntries = new List<MealEntry>();
+        this.lunchEntries = new List<MealEntry>();
+        this.afternoonSnackEntries = new List<MealEntry>();
+        this.dinnerEntries = new List<MealEntry>();
+
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Recalcula las sumatorias nutricionales del menú actual.
+    /// </summary>
+    private void RecalculateNutritionTotals()
+    {
+        this.totalCalories = 0;
+        this.totalProtein = 0;
+        this.totalCarbohydrates = 0;
+        this.totalFat = 0;
+
+        this.AddMealNutrition(this.breakfastEntries);
+        this.AddMealNutrition(this.morningSnackEntries);
+        this.AddMealNutrition(this.lunchEntries);
+        this.AddMealNutrition(this.afternoonSnackEntries);
+        this.AddMealNutrition(this.dinnerEntries);
+    }
+
+    /// <summary>
+    /// Suma el aporte nutricional de una lista de alimentos.
+    /// </summary>
+    /// <param name="mealEntries">Lista de elementos del tiempo de comida.</param>
+    private void AddMealNutrition(List<MealEntry> mealEntries)
+    {
+        foreach (MealEntry entry in mealEntries)
+        {
+            Food? food = this.FindFoodByName(entry.FoodName);
+
+            if (food is null)
+            {
+                continue;
+            }
+
+            this.totalCalories += food.Calories * entry.Quantity;
+            this.totalProtein += food.Protein * entry.Quantity;
+            this.totalCarbohydrates += food.Carbohydrates * entry.Quantity;
+            this.totalFat += food.Fat * entry.Quantity;
+        }
+    }
+
+    /// <summary>
+    /// Busca un alimento por nombre.
+    /// </summary>
+    /// <param name="foodName">Nombre del alimento.</param>
+    /// <returns>Alimento encontrado o null.</returns>
+    private Food? FindFoodByName(string foodName)
+    {
+        foreach (Food food in this.foods)
+        {
+            if (food.Name.Equals(foodName, StringComparison.OrdinalIgnoreCase))
+            {
+                return food;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Obtiene la lista asociada al tiempo de comida indicado.
+    /// </summary>
+    /// <param name="mealTime">Tiempo de comida.</param>
+    /// <returns>Lista correspondiente.</returns>
+    private List<MealEntry> GetMealEntriesByTime(string mealTime)
+    {
+        switch (mealTime)
+        {
+            case "Breakfast":
+                return this.breakfastEntries;
+            case "MorningSnack":
+                return this.morningSnackEntries;
+            case "Lunch":
+                return this.lunchEntries;
+            case "AfternoonSnack":
+                return this.afternoonSnackEntries;
+            case "Dinner":
+                return this.dinnerEntries;
+            default:
+                return this.breakfastEntries;
+        }
+    }
+
+    /// <summary>
+    /// Convierte una lista de elementos del menú en texto para almacenamiento.
+    /// </summary>
+    /// <param name="mealEntries">Lista a convertir.</param>
+    /// <returns>Texto serializado del tiempo de comida.</returns>
+    private string BuildMealText(List<MealEntry> mealEntries)
+    {
+        if (mealEntries.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        List<string> mealParts = new List<string>();
+
+        foreach (MealEntry entry in mealEntries)
+        {
+            mealParts.Add($"{entry.FoodName} x{entry.Quantity}");
+        }
+
+        return string.Join("|", mealParts);
+    }
+
+    /// <summary>
+    /// Convierte el texto almacenado en archivo a una lista de elementos del menú.
+    /// </summary>
+    /// <param name="mealText">Texto del tiempo de comida.</param>
+    /// <returns>Lista de elementos reconstruida.</returns>
+    private List<MealEntry> ParseMealText(string mealText)
+    {
+        List<MealEntry> parsedEntries = new List<MealEntry>();
+
+        if (string.IsNullOrWhiteSpace(mealText))
+        {
+            return parsedEntries;
+        }
+
+        string[] parts = mealText.Split('|');
+
+        foreach (string part in parts)
+        {
+            string itemText = part.Trim();
+
+            if (string.IsNullOrWhiteSpace(itemText))
+            {
+                continue;
+            }
+
+            int separatorIndex = itemText.LastIndexOf(" x", StringComparison.OrdinalIgnoreCase);
+
+            if (separatorIndex == -1)
+            {
+                parsedEntries.Add(new MealEntry
+                {
+                    FoodName = itemText,
+                    Quantity = 1
+                });
+
+                continue;
+            }
+
+            string parsedFoodName = itemText.Substring(0, separatorIndex).Trim();
+            string quantityText = itemText.Substring(separatorIndex + 2).Trim();
+
+            if (!int.TryParse(quantityText, out int quantity))
+            {
+                quantity = 1;
+            }
+
+            parsedEntries.Add(new MealEntry
+            {
+                FoodName = parsedFoodName,
+                Quantity = quantity
+            });
+        }
+
+        return parsedEntries;
+    }
+
+    /// <summary>
+    /// Redirige al usuario al dashboard conservando el nombre de usuario.
     /// </summary>
     private void GoToDashboard()
     {
+        if (!string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.Navigation.NavigateTo($"/dashboard?username={this.userName}");
+            return;
+        }
+
         this.Navigation.NavigateTo("/dashboard");
     }
+
+    /// <summary>
+    /// Renderiza los elementos de un tiempo de comida.
+    /// </summary>
+    /// <param name="mealEntries">Lista de elementos del tiempo de comida.</param>
+    /// <param name="mealTime">Nombre del tiempo de comida.</param>
+    /// <returns>Contenido renderizado.</returns>
+    private RenderFragment RenderMealEntries(List<MealEntry> mealEntries, string mealTime) => builder =>
+    {
+        int sequence = 0;
+
+        if (mealEntries.Count == 0)
+        {
+            builder.OpenElement(sequence++, "p");
+            builder.AddAttribute(sequence++, "class", "vitta-subtitle");
+            builder.AddContent(sequence++, "Sin alimentos agregados.");
+            builder.CloseElement();
+            return;
+        }
+
+        foreach (MealEntry entry in mealEntries)
+        {
+            builder.OpenElement(sequence++, "div");
+            builder.AddAttribute(sequence++, "class", "d-flex justify-content-between align-items-center border rounded p-2 mb-2");
+
+            builder.OpenElement(sequence++, "div");
+            builder.AddContent(sequence++, $"{entry.FoodName} x{entry.Quantity}");
+            builder.CloseElement();
+
+            builder.OpenElement(sequence++, "div");
+            builder.AddAttribute(sequence++, "class", "d-flex gap-2");
+
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "btn btn-sm btn-outline-secondary");
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => DecreaseEntry(entry, mealTime)));
+            builder.AddContent(sequence++, "-");
+            builder.CloseElement();
+
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "btn btn-sm btn-outline-success");
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => IncreaseEntry(entry)));
+            builder.AddContent(sequence++, "+");
+            builder.CloseElement();
+
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "btn btn-sm btn-outline-danger");
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => RemoveEntry(entry, mealTime)));
+            builder.AddContent(sequence++, "X");
+            builder.CloseElement();
+
+            builder.CloseElement();
+            builder.CloseElement();
+        }
+    };
 }

@@ -3,44 +3,45 @@
 @using VittaController
 @inject LoginController LoginController
 @inject NavigationManager Navigation
-
+ 
 @*
     Presenta la vista de inicio de sesión del sistema.
-    Permite validar las credenciales del usuario antes de ingresar al dashboard.
+    Valida las credenciales del usuario y redirige al dashboard
+    enviando el nombre de usuario para continuar el flujo.
 *@
-
+ 
 <PageTitle>Login</PageTitle>
-
+ 
 <div class="vitta-auth-page">
     <div class="vitta-auth-card">
         <div class="vitta-brand-circle">Vitta</div>
-
+ 
         <h1 class="vitta-auth-title">Inicio de sesión</h1>
         <p class="vitta-auth-subtitle">
             Accede a tu espacio nutricional de manera segura.
         </p>
-
+ 
         <div class="vitta-form">
             <div class="vitta-field">
                 <label>Usuario</label>
                 <input @bind="userName" />
             </div>
-
+ 
             <div class="vitta-field">
                 <label>Contraseña</label>
                 <input type="password" @bind="password" />
             </div>
-
+ 
             <div class="vitta-actions">
                 <button type="button" class="vitta-btn" @onclick="HandleLogin">
                     Iniciar sesión
                 </button>
-
+ 
                 <button type="button" class="vitta-btn-secondary" @onclick="GoToRegister">
                     Registrarse
                 </button>
             </div>
-
+ 
             @if (!string.IsNullOrWhiteSpace(errorMessage))
             {
                 <div class="vitta-message">
@@ -50,29 +51,29 @@
         </div>
     </div>
 </div>
-
+ 
 @code {
     private string userName = string.Empty;
     private string password = string.Empty;
     private string errorMessage = string.Empty;
-
+ 
     /// <summary>
-    /// Ejecuta el proceso de inicio de sesión del usuario.
+    /// Ejecuta la validación de credenciales y redirige al dashboard.
     /// </summary>
     private void HandleLogin()
     {
         bool result = this.LoginController.Login(this.userName, this.password);
-
+ 
         if (result)
         {
             this.errorMessage = string.Empty;
-            this.Navigation.NavigateTo("/dashboard");
+            this.Navigation.NavigateTo($"/dashboard/{this.userName}");
             return;
         }
-
-        this.errorMessage = "El usuario o la contraseña no son correctos.";
+ 
+        this.errorMessage = "Usuario o contraseña incorrectos.";
     }
-
+ 
     /// <summary>
     /// Redirige a la vista de registro de usuario.
     /// </summary>

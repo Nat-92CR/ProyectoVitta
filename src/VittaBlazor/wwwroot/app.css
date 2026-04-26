@@ -902,4 +902,131 @@ button {
     .vitta-dashboard-title {
         font-size: 1.55rem;
     }
+
+    /* =========================================================
+   AGREGAR AL FINAL de wwwroot/app.css
+   Estilos del Dashboard fiel a WinForms (DashboardView).
+   Mantiene la estética verde de Vitta.
+   ========================================================= */
+
+    /* =========================================================
+   Define la barra superior verde con el nombre Vitta.
+   Replica el pnlHeader del DashboardView de WinForms.
+   ========================================================= */
+    .vitta-header {
+        background-color: var(--vitta-green);
+        padding: 16px 32px;
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.20);
+    }
+
+    .vitta-header-title {
+        color: var(--vitta-white);
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* =========================================================
+   Define el título y subtítulo principales del dashboard.
+   Replica label1 y lblSubtitle del DashboardView.
+   ========================================================= */
+    .vitta-dashboard-h1 {
+        text-align: center;
+        margin-top: 36px;
+        margin-bottom: 12px;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--vitta-text-dark);
+    }
+
+    .vitta-dashboard-sub {
+        text-align: center;
+        margin-bottom: 28px;
+        font-size: 1rem;
+        color: var(--vitta-text-light);
+    }
+
+    /* =========================================================
+   Define el panel blanco que agrupa los módulos del sistema.
+   Replica el pnlModules con título lblModulesTitle.
+   ========================================================= */
+    .vitta-modules-panel {
+        padding: 28px 32px;
+    }
+
+    .vitta-modules-title {
+        text-align: center;
+        margin-bottom: 24px;
+        color: var(--vitta-green);
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    /* =========================================================
+   Define la grilla que distribuye los botones de módulos.
+   Mantiene 3 columnas en pantallas amplias y se adapta
+   en pantallas pequeñas.
+   ========================================================= */
+    .vitta-modules-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    /* =========================================================
+   Define el botón verde de cada módulo del dashboard.
+   Replica el estilo de btnProfile, btnOpenMenuRegister, etc.
+   ========================================================= */
+    .vitta-module-btn {
+        border: none;
+        border-radius: 14px;
+        padding: 18px 16px;
+        background: linear-gradient(135deg, var(--vitta-green-soft) 0%, var(--vitta-green) 100%);
+        color: var(--vitta-white);
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(46, 125, 50, 0.20);
+        transition: all 0.2s ease;
+    }
+
+        .vitta-module-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(46, 125, 50, 0.28);
+            filter: brightness(1.05);
+        }
+
+    /* =========================================================
+   Define el contenedor del botón Cerrar sesión.
+   Replica la posición centrada del btnLogout en WinForms.
+   ========================================================= */
+    .vitta-logout-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 28px;
+        margin-bottom: 32px;
+    }
+
+    .vitta-logout-btn {
+        width: auto;
+        min-width: 240px;
+    }
+
+    /* =========================================================
+   Ajusta la grilla de módulos en pantallas medianas.
+   ========================================================= */
+    @media (max-width: 768px) {
+        .vitta-modules-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* =========================================================
+   Ajusta la grilla de módulos en pantallas pequeñas.
+   ========================================================= */
+    @media (max-width: 480px) {
+        .vitta-modules-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 }
