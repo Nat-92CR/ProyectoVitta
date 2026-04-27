@@ -114,6 +114,34 @@
 </div>
 
 @code {
+    private string searchFood = string.Empty;
+    private string selectedFoodName = string.Empty;
+    private string editName = string.Empty;
+    private double editCalories;
+    private double editProtein;
+    private double editCarbohydrates;
+    private double editFat;
+    private string message = string.Empty;
+    private string userName = string.Empty;
+    private List<Food> foods = new();
+
+    /// <summary>
+    /// Carga los alimentos y obtiene el nombre de usuario desde la URL.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+        this.ClearEditFields();
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>

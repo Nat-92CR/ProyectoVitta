@@ -158,6 +158,246 @@
 </div>
 
 @code {
+    private sealed class MealEntry
+    {
+        /// <summary>
+        /// Obtiene o establece el nombre del alimento.
+        /// </summary>
+        public string FoodName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Obtiene o establece la cantidad registrada.
+        /// </summary>
+        public int Quantity { get; set; }
+    }
+
+    private string userName = string.Empty;
+    private DateTime menuDate = DateTime.Today;
+    private string selectedExistingMenuDateText = string.Empty;
+    private string selectedFoodName = string.Empty;
+    private string selectedMealTime = string.Empty;
+    private int quantityToAdd = 1;
+    private string message = string.Empty;
+    private bool isEditMode;
+    private DateTime originalMenuDate = DateTime.MinValue;
+
+    private double totalCalories;
+    private double totalProtein;
+    private double totalCarbohydrates;
+    private double totalFat;
+
+    private List<Food> foods = new();
+    private List<string> existingMenuDates = new();
+
+    private List<MealEntry> breakfastEntries = new();
+    private List<MealEntry> morningSnackEntries = new();
+    private List<MealEntry> lunchEntries = new();
+    private List<MealEntry> afternoonSnackEntries = new();
+    private List<MealEntry> dinnerEntries = new();
+
+    /// <summary>
+    /// Carga los datos iniciales del módulo.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+        this.LoadExistingMenus();
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Carga la lista de alimentos disponibles.
+    /// </summary>
+    private void LoadFoods()
+    {
+        this.foods = this.FoodController.GetFoods();
+        this.foods.Sort((firstFood, secondFood) =>
+            string.Compare(firstFood.Name, secondFood.Name, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Carga las fechas de menús existentes del usuario actual.
+    /// </summary>
+    private void LoadExistingMenus()
+    {
+        this.existingMenuDates.Clear();
+
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            return;
+        }
+
+        List<Menu> userMenus = this.MenuController.GetMenusByUser(this.userName);
+        userMenus.Sort((firstMenu, secondMenu) => firstMenu.MenuDate.CompareTo(secondMenu.MenuDate));
+
+        foreach (Menu menu in userMenus)
+        {
+            this.existingMenuDates.Add(menu.MenuDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+        }
+    }
+
+    /// <summary>
+    /// Agrega un alimento al tiempo de comida seleccionado.
+    /// </summary>
+    private void AddFoodToMeal()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            this.message = "Seleccione un alimento.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.selectedMealTime))
+        {
+            this.message = "Seleccione un tiempo de comida.";
+            return;
+        }
+
+        if (this.quantityToAdd <= 0)
+        {
+            this.message = "La cantidad debe ser mayor que cero.";
+            return;
+        }
+
+        List<MealEntry> targetMealEntries = this.GetMealEntriesByTime(this.selectedMealTime);
+        MealEntry? existingEntry = null;
+
+        foreach (MealEntry entry in targetMealEntries)
+        {
+            if (entry.FoodName.Equals(this.selectedFoodName, StringComparison.OrdinalIgnoreCase))
+            {
+                existingEntry = entry;
+                break;
+            }
+        }
+
+        if (existingEntry is null)
+        {
+            targetMealEntries.Add(new MealEntry
+            {
+                FoodName = this.selectedFoodName,
+                Quantity = this.quantityToAdd
+            });
+        }
+        else
+        {
+            existingEntry.Quantity += this.quantityToAdd;
+        }
+
+        this.quantityToAdd = 1;
+        this.selectedFoodName = string.Empty;
+        this.selectedMealTime = string.Empty;
+        this.message = string.Empty;
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Aumenta en una unidad la cantidad de un alimento dentro del menú.
+    /// </summary>
+    /// <param name="entry">Elemento a modificar.</param>
+    private void IncreaseEntry(MealEntry entry)
+    {
+        entry.Quantity++;
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Disminuye en una unidad la cantidad de un alimento dentro del menú.
+    /// </summary>
+    /// <param name="entry">Elemento a modificar.</param>
+    /// <param name="mealTime">Tiempo de comida asociado.</param>
+    private void DecreaseEntry(MealEntry entry, string mealTime)
+    {
+        if (entry.Quantity > 1)
+        {
+            entry.Quantity--;
+        }
+        else
+        {
+            this.RemoveEntry(entry, mealTime);
+            return;
+        }
+
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Elimina un alimento del tiempo de comida indicado.
+    /// </summary>
+    /// <param name="entry">Elemento a eliminar.</param>
+    /// <param name="mealTime">Tiempo de comida asociado.</param>
+    private void RemoveEntry(MealEntry entry, string mealTime)
+    {
+        List<MealEntry> targetMealEntries = this.GetMealEntriesByTime(mealTime);
+        targetMealEntries.Remove(entry);
+        this.RecalculateNutritionTotals();
+    }
+
+    /// <summary>
+    /// Guarda un nuevo menú o actualiza uno existente.
+    /// </summary>
+    private void SaveMenu()
+    {
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        DateTime selectedDate = this.menuDate.Date;
+
+        string breakfast = this.BuildMealText(this.breakfastEntries);
+        string morningSnack = this.BuildMealText(this.morningSnackEntries);
+        string lunch = this.BuildMealText(this.lunchEntries);
+        string afternoonSnack = this.BuildMealText(this.afternoonSnackEntries);
+        string dinner = this.BuildMealText(this.dinnerEntries);
+
+        Menu menu = new Menu(
+            this.userName,
+            selectedDate,
+            breakfast,
+            morningSnack,
+            lunch,
+            afternoonSnack,
+            dinner);
+
+        bool result;
+
+        if (this.isEditMode)
+        {
+            result = this.MenuController.UpdateMenu(this.userName, this.originalMenuDate, menu);
+        }
+        else
+        {
+            result = this.MenuController.RegisterMenu(menu);
+        }
+
+        if (result)
+        {
+            this.message = this.isEditMode
+                ? "El menú se actualizó correctamente."
+                : "El menú se registró correctamente.";
+
+            this.isEditMode = true;
+            this.originalMenuDate = selectedDate;
+            this.selectedExistingMenuDateText = selectedDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+            this.LoadExistingMenus();
+            return;
+        }
+
+        this.message = this.isEditMode
+            ? "No fue posible actualizar el menú. Verifique si la nueva fecha ya existe o si los datos son inválidos."
+            : "No fue posible registrar el menú. Verifique si ya existe un menú para esa fecha o si los datos son inválidos.";
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
@@ -619,4 +859,61 @@
     {
         this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
     }
+
+    /// <summary>
+    /// Renderiza los elementos de un tiempo de comida.
+    /// </summary>
+    /// <param name="mealEntries">Lista de elementos del tiempo de comida.</param>
+    /// <param name="mealTime">Nombre del tiempo de comida.</param>
+    /// <returns>Contenido renderizado.</returns>
+    private RenderFragment RenderMealEntries(List<MealEntry> mealEntries, string mealTime) => builder =>
+    {
+        int sequence = 0;
+
+        if (mealEntries.Count == 0)
+        {
+            builder.OpenElement(sequence++, "p");
+            builder.AddAttribute(sequence++, "class", "vitta-subtitle");
+            builder.AddContent(sequence++, "Sin alimentos agregados.");
+            builder.CloseElement();
+            return;
+        }
+
+        foreach (MealEntry entry in mealEntries)
+        {
+            builder.OpenElement(sequence++, "div");
+            builder.AddAttribute(sequence++, "class", "d-flex justify-content-between align-items-center border rounded p-2 mb-2");
+
+            builder.OpenElement(sequence++, "div");
+            builder.AddContent(sequence++, $"{entry.FoodName} x{entry.Quantity}");
+            builder.CloseElement();
+
+            builder.OpenElement(sequence++, "div");
+            builder.AddAttribute(sequence++, "class", "d-flex gap-2");
+
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "btn btn-sm btn-outline-secondary");
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => DecreaseEntry(entry, mealTime)));
+            builder.AddContent(sequence++, "-");
+            builder.CloseElement();
+
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "btn btn-sm btn-outline-success");
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => IncreaseEntry(entry)));
+            builder.AddContent(sequence++, "+");
+            builder.CloseElement();
+
+            builder.OpenElement(sequence++, "button");
+            builder.AddAttribute(sequence++, "type", "button");
+            builder.AddAttribute(sequence++, "class", "btn btn-sm btn-outline-danger");
+            builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => RemoveEntry(entry, mealTime)));
+            builder.AddContent(sequence++, "X");
+            builder.CloseElement();
+
+            builder.CloseElement();
+            builder.CloseElement();
+        }
+    };
 }

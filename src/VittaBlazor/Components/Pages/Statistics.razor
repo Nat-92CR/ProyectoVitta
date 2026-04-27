@@ -147,6 +147,280 @@
 </div>
 
 @code {
+    private sealed class MealEntry
+    {
+        /// <summary>
+        /// Obtiene o establece el nombre del alimento.
+        /// </summary>
+        public string FoodName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Obtiene o establece la cantidad registrada.
+        /// </summary>
+        public int Quantity { get; set; }
+    }
+
+    private string userName = string.Empty;
+    private string message = string.Empty;
+
+    private DateTime dailyDate = DateTime.Today;
+    private DateTime startDate = DateTime.Today.AddDays(-7);
+    private DateTime endDate = DateTime.Today;
+
+    private double dailyCalories;
+    private double dailyProtein;
+    private double dailyCarbohydrates;
+    private double dailyFat;
+
+    private int periodMenuCount;
+    private double periodCalories;
+    private double periodProtein;
+    private double periodCarbohydrates;
+    private double periodFat;
+    private double averagePeriodCalories;
+
+    private List<Food> foods = new();
+
+    /// <summary>
+    /// Carga el nombre de usuario y el catálogo de alimentos.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+    }
+
+    /// <summary>
+    /// Carga la lista de alimentos disponibles.
+    /// </summary>
+    private void LoadFoods()
+    {
+        this.foods = this.FoodController.GetFoods();
+    }
+
+    /// <summary>
+    /// Calcula las estadísticas del menú registrado en una fecha específica.
+    /// </summary>
+    private void CalculateDailyStatistics()
+    {
+        this.message = string.Empty;
+        this.dailyCalories = 0;
+        this.dailyProtein = 0;
+        this.dailyCarbohydrates = 0;
+        this.dailyFat = 0;
+
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        Menu? selectedMenu = this.MenuController.GetMenuByUserAndDate(this.userName, this.dailyDate.Date);
+
+        if (selectedMenu is null)
+        {
+            this.message = "No se encontró un menú registrado para la fecha seleccionada.";
+            return;
+        }
+
+        this.AddMenuNutrition(
+            selectedMenu,
+            ref this.dailyCalories,
+            ref this.dailyProtein,
+            ref this.dailyCarbohydrates,
+            ref this.dailyFat);
+
+        this.message = "Consulta diaria realizada correctamente.";
+    }
+
+    /// <summary>
+    /// Calcula las estadísticas nutricionales dentro de un rango de fechas.
+    /// </summary>
+    private void CalculatePeriodStatistics()
+    {
+        this.message = string.Empty;
+        this.periodMenuCount = 0;
+        this.periodCalories = 0;
+        this.periodProtein = 0;
+        this.periodCarbohydrates = 0;
+        this.periodFat = 0;
+        this.averagePeriodCalories = 0;
+
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        if (this.startDate.Date > this.endDate.Date)
+        {
+            this.message = "La fecha inicial no puede ser mayor que la fecha final.";
+            return;
+        }
+
+        List<Menu> userMenus = this.MenuController.GetMenusByUser(this.userName);
+
+        foreach (Menu menu in userMenus)
+        {
+            if (menu.MenuDate.Date >= this.startDate.Date && menu.MenuDate.Date <= this.endDate.Date)
+            {
+                this.periodMenuCount++;
+
+                this.AddMenuNutrition(
+                    menu,
+                    ref this.periodCalories,
+                    ref this.periodProtein,
+                    ref this.periodCarbohydrates,
+                    ref this.periodFat);
+            }
+        }
+
+        if (this.periodMenuCount == 0)
+        {
+            this.message = "No se encontraron menús en el período seleccionado.";
+            return;
+        }
+
+        this.averagePeriodCalories = this.periodCalories / this.periodMenuCount;
+        this.message = "Consulta por período realizada correctamente.";
+    }
+
+    /// <summary>
+    /// Suma el aporte nutricional completo de un menú.
+    /// </summary>
+    /// <param name="menu">Menú a procesar.</param>
+    /// <param name="calories">Acumulador de calorías.</param>
+    /// <param name="protein">Acumulador de proteínas.</param>
+    /// <param name="carbohydrates">Acumulador de carbohidratos.</param>
+    /// <param name="fat">Acumulador de grasas.</param>
+    private void AddMenuNutrition(
+        Menu menu,
+        ref double calories,
+        ref double protein,
+        ref double carbohydrates,
+        ref double fat)
+    {
+        this.AddMealNutrition(menu.Breakfast, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.MorningSnack, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.Lunch, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.AfternoonSnack, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.Dinner, ref calories, ref protein, ref carbohydrates, ref fat);
+    }
+
+    /// <summary>
+    /// Suma el aporte nutricional de un tiempo de comida.
+    /// </summary>
+    /// <param name="mealText">Texto del tiempo de comida.</param>
+    /// <param name="calories">Acumulador de calorías.</param>
+    /// <param name="protein">Acumulador de proteínas.</param>
+    /// <param name="carbohydrates">Acumulador de carbohidratos.</param>
+    /// <param name="fat">Acumulador de grasas.</param>
+    private void AddMealNutrition(
+        string mealText,
+        ref double calories,
+        ref double protein,
+        ref double carbohydrates,
+        ref double fat)
+    {
+        List<MealEntry> mealEntries = this.ParseMealText(mealText);
+
+        foreach (MealEntry entry in mealEntries)
+        {
+            Food? food = this.FindFoodByName(entry.FoodName);
+
+            if (food is null)
+            {
+                continue;
+            }
+
+            calories += food.Calories * entry.Quantity;
+            protein += food.Protein * entry.Quantity;
+            carbohydrates += food.Carbohydrates * entry.Quantity;
+            fat += food.Fat * entry.Quantity;
+        }
+    }
+
+    /// <summary>
+    /// Convierte el texto almacenado del menú a una lista de alimentos con cantidad.
+    /// </summary>
+    /// <param name="mealText">Texto del tiempo de comida.</param>
+    /// <returns>Lista de elementos reconstruida.</returns>
+    private List<MealEntry> ParseMealText(string mealText)
+    {
+        List<MealEntry> parsedEntries = new List<MealEntry>();
+
+        if (string.IsNullOrWhiteSpace(mealText))
+        {
+            return parsedEntries;
+        }
+
+        string[] parts = mealText.Split('|');
+
+        foreach (string part in parts)
+        {
+            string itemText = part.Trim();
+
+            if (string.IsNullOrWhiteSpace(itemText))
+            {
+                continue;
+            }
+
+            int separatorIndex = itemText.LastIndexOf(" x", StringComparison.OrdinalIgnoreCase);
+
+            if (separatorIndex == -1)
+            {
+                parsedEntries.Add(new MealEntry
+                {
+                    FoodName = itemText,
+                    Quantity = 1
+                });
+
+                continue;
+            }
+
+            string foodName = itemText.Substring(0, separatorIndex).Trim();
+            string quantityText = itemText.Substring(separatorIndex + 2).Trim();
+
+            if (!int.TryParse(quantityText, out int quantity))
+            {
+                quantity = 1;
+            }
+
+            parsedEntries.Add(new MealEntry
+            {
+                FoodName = foodName,
+                Quantity = quantity
+            });
+        }
+
+        return parsedEntries;
+    }
+
+    /// <summary>
+    /// Busca un alimento por nombre en el catálogo actual.
+    /// </summary>
+    /// <param name="foodName">Nombre del alimento.</param>
+    /// <returns>Alimento encontrado o null.</returns>
+    private Food? FindFoodByName(string foodName)
+    {
+        foreach (Food food in this.foods)
+        {
+            if (food.Name.Equals(foodName, StringComparison.OrdinalIgnoreCase))
+            {
+                return food;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>

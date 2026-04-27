@@ -111,7 +111,7 @@
     </div>
 
 </div>
-
+ 
 @code {
     /// <summary>
     /// Obtiene o establece el nombre del usuario autenticado, recibido como parámetro de la ruta.
@@ -141,7 +141,7 @@
     {
         this.Navigation.NavigateTo($"/admin/alimentos/{this.UserName}");
     }
-
+ 
     /// <summary>
     /// Redirige a la vista de consulta de alimentos solo lectura (usuario regular).
     /// </summary>
@@ -149,7 +149,7 @@
     {
         this.Navigation.NavigateTo($"/alimentos/{this.UserName}");
     }
-
+ 
     /// <summary>
     /// Redirige a la vista de registro de menús del usuario actual.
     /// </summary>
@@ -157,7 +157,7 @@
     {
         this.Navigation.NavigateTo($"/registrar-menu/{this.UserName}");
     }
-
+ 
     /// <summary>
     /// Redirige a la vista de información nutricional del usuario actual.
     /// </summary>
@@ -165,7 +165,7 @@
     {
         this.Navigation.NavigateTo($"/informacion-nutricional/{this.UserName}");
     }
-
+ 
     /// <summary>
     /// Redirige a la vista de estadísticas nutricionales del usuario actual.
     /// </summary>
@@ -173,7 +173,7 @@
     {
         this.Navigation.NavigateTo($"/estadisticas/{this.UserName}");
     }
-
+ 
     /// <summary>
     /// Solicita confirmación al usuario y, si acepta, cierra la sesión actual y regresa al login.
     /// </summary>

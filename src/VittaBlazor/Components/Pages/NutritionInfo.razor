@@ -119,6 +119,257 @@
 </div>
 
 @code {
+    private string userName = string.Empty;
+    private User? currentUser;
+
+    private double bodyMassIndex;
+    private string bmiStatus = string.Empty;
+    private double maintenanceCalories;
+    private double recommendedCalories;
+    private string generalRecommendation = string.Empty;
+
+    private double proteinPercentage;
+    private double carbohydratesPercentage;
+    private double fatPercentage;
+
+    private double proteinGrams;
+    private double carbohydratesGrams;
+    private double fatGrams;
+
+    /// <summary>
+    /// Obtiene el nombre de usuario desde la URL y carga sus datos nutricionales.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+            this.currentUser = this.LoginController.GetUserByUserName(this.userName);
+        }
+
+        if (this.currentUser is not null)
+        {
+            this.CalculateNutritionData();
+        }
+    }
+
+    /// <summary>
+    /// Calcula los principales indicadores nutricionales del usuario.
+    /// </summary>
+    private void CalculateNutritionData()
+    {
+        this.bodyMassIndex = this.CalculateBodyMassIndex();
+        this.bmiStatus = this.GetBmiStatus();
+        this.maintenanceCalories = this.CalculateMaintenanceCalories();
+        this.recommendedCalories = this.CalculateRecommendedCalories();
+        this.SetMacronutrientDistribution();
+        this.CalculateMacronutrientGrams();
+        this.generalRecommendation = this.BuildGeneralRecommendation();
+    }
+
+    /// <summary>
+    /// Calcula el índice de masa corporal del usuario.
+    /// </summary>
+    /// <returns>Valor de IMC calculado.</returns>
+    private double CalculateBodyMassIndex()
+    {
+        if (this.currentUser is null || this.currentUser.Height <= 0)
+        {
+            return 0;
+        }
+
+        double heightInMeters = this.currentUser.Height / 100.0;
+        return this.currentUser.Weight / (heightInMeters * heightInMeters);
+    }
+
+    /// <summary>
+    /// Obtiene la clasificación del IMC calculado.
+    /// </summary>
+    /// <returns>Texto descriptivo del estado del IMC.</returns>
+    private string GetBmiStatus()
+    {
+        if (this.bodyMassIndex <= 0)
+        {
+            return "Sin cálculo";
+        }
+
+        if (this.bodyMassIndex < 18.5)
+        {
+            return "Bajo peso";
+        }
+
+        if (this.bodyMassIndex < 25)
+        {
+            return "Normal";
+        }
+
+        if (this.bodyMassIndex < 30)
+        {
+            return "Sobrepeso";
+        }
+
+        return "Obesidad";
+    }
+
+    /// <summary>
+    /// Calcula las calorías de mantenimiento del usuario.
+    /// </summary>
+    /// <returns>Calorías aproximadas de mantenimiento.</returns>
+    private double CalculateMaintenanceCalories()
+    {
+        if (this.currentUser is null)
+        {
+            return 0;
+        }
+
+        double baseCalories;
+
+        if (this.currentUser.Sex == "Masculino")
+        {
+            baseCalories = 10 * this.currentUser.Weight
+                + 6.25 * this.currentUser.Height
+                - 5 * this.currentUser.Age
+                + 5;
+        }
+        else
+        {
+            baseCalories = 10 * this.currentUser.Weight
+                + 6.25 * this.currentUser.Height
+                - 5 * this.currentUser.Age
+                - 161;
+        }
+
+        return baseCalories * this.GetActivityFactor();
+    }
+
+    /// <summary>
+    /// Obtiene el factor de actividad según el nivel registrado.
+    /// </summary>
+    /// <returns>Factor multiplicador de actividad.</returns>
+    private double GetActivityFactor()
+    {
+        if (this.currentUser is null)
+        {
+            return 1.2;
+        }
+
+        switch (this.currentUser.ActivityLevel)
+        {
+            case "Sedentario":
+                return 1.2;
+            case "Ligero":
+                return 1.375;
+            case "Moderado":
+                return 1.55;
+            case "Activo":
+                return 1.725;
+            default:
+                return 1.2;
+        }
+    }
+
+    /// <summary>
+    /// Calcula las calorías recomendadas según el objetivo del usuario.
+    /// </summary>
+    /// <returns>Calorías recomendadas diarias.</returns>
+    private double CalculateRecommendedCalories()
+    {
+        if (this.currentUser is null)
+        {
+            return 0;
+        }
+
+        if (this.currentUser.Goal == "Perder peso")
+        {
+            return this.maintenanceCalories - 300;
+        }
+
+        if (this.currentUser.Goal == "Ganar masa muscular")
+        {
+            return this.maintenanceCalories + 300;
+        }
+
+        return this.maintenanceCalories;
+    }
+
+    /// <summary>
+    /// Define la distribución porcentual de macronutrientes según el tipo de dieta.
+    /// </summary>
+    private void SetMacronutrientDistribution()
+    {
+        if (this.currentUser is null)
+        {
+            this.proteinPercentage = 25;
+            this.carbohydratesPercentage = 50;
+            this.fatPercentage = 25;
+            return;
+        }
+
+        switch (this.currentUser.DietType)
+        {
+            case "Alta en proteína":
+                this.proteinPercentage = 30;
+                this.carbohydratesPercentage = 40;
+                this.fatPercentage = 30;
+                break;
+
+            case "Vegetariana":
+                this.proteinPercentage = 20;
+                this.carbohydratesPercentage = 50;
+                this.fatPercentage = 30;
+                break;
+
+            case "Vegana":
+                this.proteinPercentage = 20;
+                this.carbohydratesPercentage = 55;
+                this.fatPercentage = 25;
+                break;
+
+            default:
+                this.proteinPercentage = 25;
+                this.carbohydratesPercentage = 50;
+                this.fatPercentage = 25;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Calcula los gramos de macronutrientes según las calorías recomendadas.
+    /// </summary>
+    private void CalculateMacronutrientGrams()
+    {
+        this.proteinGrams = (this.recommendedCalories * (this.proteinPercentage / 100.0)) / 4.0;
+        this.carbohydratesGrams = (this.recommendedCalories * (this.carbohydratesPercentage / 100.0)) / 4.0;
+        this.fatGrams = (this.recommendedCalories * (this.fatPercentage / 100.0)) / 9.0;
+    }
+
+    /// <summary>
+    /// Construye una recomendación general según el objetivo nutricional.
+    /// </summary>
+    /// <returns>Texto de recomendación general.</returns>
+    private string BuildGeneralRecommendation()
+    {
+        if (this.currentUser is null)
+        {
+            return string.Empty;
+        }
+
+        if (this.currentUser.Goal == "Perder peso")
+        {
+            return "Se recomienda un ligero déficit calórico para favorecer la pérdida de peso.";
+        }
+
+        if (this.currentUser.Goal == "Ganar masa muscular")
+        {
+            return "Se recomienda un ligero superávit calórico para favorecer el aumento de masa muscular.";
+        }
+
+        return "Se recomienda mantener un consumo calórico equilibrado para conservar el estado actual.";
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>

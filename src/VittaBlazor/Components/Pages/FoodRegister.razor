@@ -61,10 +61,39 @@
                 Cancelar
             </button>
         </div>
+
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="vitta-message">
+                @message
+            </div>
+        }
     </div>
 </div>
 
 @code {
+    private string userName = string.Empty;
+    private string foodName = string.Empty;
+    private double calories;
+    private double protein;
+    private double carbohydrates;
+    private double fat;
+    private string message = string.Empty;
+
+    /// <summary>
+    /// Obtiene el nombre de usuario desde la URL cuando exista.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
