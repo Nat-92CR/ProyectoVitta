@@ -147,6 +147,528 @@
 </div>
 
 @code {
+    private sealed class MealEntry
+    {
+        /// <summary>
+        /// Obtiene o establece el nombre del alimento.
+        /// </summary>
+        public string FoodName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Obtiene o establece la cantidad registrada.
+        /// </summary>
+        public int Quantity { get; set; }
+    }
+
+    private string userName = string.Empty;
+    private string message = string.Empty;
+
+    private DateTime dailyDate = DateTime.Today;
+    private DateTime startDate = DateTime.Today.AddDays(-7);
+    private DateTime endDate = DateTime.Today;
+
+    private double dailyCalories;
+    private double dailyProtein;
+    private double dailyCarbohydrates;
+    private double dailyFat;
+
+    private int periodMenuCount;
+    private double periodCalories;
+    private double periodProtein;
+    private double periodCarbohydrates;
+    private double periodFat;
+    private double averagePeriodCalories;
+
+    private List<Food> foods = new();
+
+    /// <summary>
+    /// Carga el nombre de usuario y el catálogo de alimentos.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+    }
+
+    /// <summary>
+    /// Carga la lista de alimentos disponibles.
+    /// </summary>
+    private void LoadFoods()
+    {
+        this.foods = this.FoodController.GetFoods();
+    }
+
+    /// <summary>
+    /// Calcula las estadísticas del menú registrado en una fecha específica.
+    /// </summary>
+    private void CalculateDailyStatistics()
+    {
+        this.message = string.Empty;
+        this.dailyCalories = 0;
+        this.dailyProtein = 0;
+        this.dailyCarbohydrates = 0;
+        this.dailyFat = 0;
+
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        Menu? selectedMenu = this.MenuController.GetMenuByUserAndDate(this.userName, this.dailyDate.Date);
+
+        if (selectedMenu is null)
+        {
+            this.message = "No se encontró un menú registrado para la fecha seleccionada.";
+            return;
+        }
+
+        this.AddMenuNutrition(
+            selectedMenu,
+            ref this.dailyCalories,
+            ref this.dailyProtein,
+            ref this.dailyCarbohydrates,
+            ref this.dailyFat);
+
+        this.message = "Consulta diaria realizada correctamente.";
+    }
+
+    /// <summary>
+    /// Calcula las estadísticas nutricionales dentro de un rango de fechas.
+    /// </summary>
+    private void CalculatePeriodStatistics()
+    {
+        this.message = string.Empty;
+        this.periodMenuCount = 0;
+        this.periodCalories = 0;
+        this.periodProtein = 0;
+        this.periodCarbohydrates = 0;
+        this.periodFat = 0;
+        this.averagePeriodCalories = 0;
+
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            this.message = "No se encontró el usuario actual.";
+            return;
+        }
+
+        if (this.startDate.Date > this.endDate.Date)
+        {
+            this.message = "La fecha inicial no puede ser mayor que la fecha final.";
+            return;
+        }
+
+        List<Menu> userMenus = this.MenuController.GetMenusByUser(this.userName);
+
+        foreach (Menu menu in userMenus)
+        {
+            if (menu.MenuDate.Date >= this.startDate.Date && menu.MenuDate.Date <= this.endDate.Date)
+            {
+                this.periodMenuCount++;
+
+                this.AddMenuNutrition(
+                    menu,
+                    ref this.periodCalories,
+                    ref this.periodProtein,
+                    ref this.periodCarbohydrates,
+                    ref this.periodFat);
+            }
+        }
+
+        if (this.periodMenuCount == 0)
+        {
+            this.message = "No se encontraron menús en el período seleccionado.";
+            return;
+        }
+
+        this.averagePeriodCalories = this.periodCalories / this.periodMenuCount;
+        this.message = "Consulta por período realizada correctamente.";
+    }
+
+    /// <summary>
+    /// Suma el aporte nutricional completo de un menú.
+    /// </summary>
+    /// <param name="menu">Menú a procesar.</param>
+    /// <param name="calories">Acumulador de calorías.</param>
+    /// <param name="protein">Acumulador de proteínas.</param>
+    /// <param name="carbohydrates">Acumulador de carbohidratos.</param>
+    /// <param name="fat">Acumulador de grasas.</param>
+    private void AddMenuNutrition(
+        Menu menu,
+        ref double calories,
+        ref double protein,
+        ref double carbohydrates,
+        ref double fat)
+    {
+        this.AddMealNutrition(menu.Breakfast, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.MorningSnack, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.Lunch, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.AfternoonSnack, ref calories, ref protein, ref carbohydrates, ref fat);
+        this.AddMealNutrition(menu.Dinner, ref calories, ref protein, ref carbohydrates, ref fat);
+    }
+
+    /// <summary>
+    /// Suma el aporte nutricional de un tiempo de comida.
+    /// </summary>
+    /// <param name="mealText">Texto del tiempo de comida.</param>
+    /// <param name="calories">Acumulador de calorías.</param>
+    /// <param name="protein">Acumulador de proteínas.</param>
+    /// <param name="carbohydrates">Acumulador de carbohidratos.</param>
+    /// <param name="fat">Acumulador de grasas.</param>
+    private void AddMealNutrition(
+        string mealText,
+        ref double calories,
+        ref double protein,
+        ref double carbohydrates,
+        ref double fat)
+    {
+        List<MealEntry> mealEntries = this.ParseMealText(mealText);
+
+        foreach (MealEntry entry in mealEntries)
+        {
+            Food? food = this.FindFoodByName(entry.FoodName);
+
+            if (food is null)
+            {
+                continue;
+            }
+
+            calories += food.Calories * entry.Quantity;
+            protein += food.Protein * entry.Quantity;
+            carbohydrates += food.Carbohydrates * entry.Quantity;
+            fat += food.Fat * entry.Quantity;
+        }
+    }
+
+    /// <summary>
+    /// Convierte el texto almacenado del menú a una lista de alimentos con cantidad.
+    /// </summary>
+    /// <param name="mealText">Texto del tiempo de comida.</param>
+    /// <returns>Lista de elementos reconstruida.</returns>
+    private List<MealEntry> ParseMealText(string mealText)
+    {
+        List<MealEntry> parsedEntries = new List<MealEntry>();
+
+        if (string.IsNullOrWhiteSpace(mealText))
+        {
+            return parsedEntries;
+        }
+
+        string[] parts = mealText.Split('|');
+
+        foreach (string part in parts)
+        {
+            string itemText = part.Trim();
+
+            if (string.IsNullOrWhiteSpace(itemText))
+            {
+                continue;
+            }
+
+            int separatorIndex = itemText.LastIndexOf(" x", StringComparison.OrdinalIgnoreCase);
+
+            if (separatorIndex == -1)
+            {
+                parsedEntries.Add(new MealEntry
+                {
+                    FoodName = itemText,
+                    Quantity = 1
+                });
+
+                continue;
+            }
+
+            string foodName = itemText.Substring(0, separatorIndex).Trim();
+            string quantityText = itemText.Substring(separatorIndex + 2).Trim();
+
+            if (!int.TryParse(quantityText, out int quantity))
+            {
+                quantity = 1;
+            }
+
+            parsedEntries.Add(new MealEntry
+            {
+                FoodName = foodName,
+                Quantity = quantity
+            });
+        }
+
+        return parsedEntries;
+    }
+
+    /// <summary>
+    /// Busca un alimento por nombre en el catálogo actual.
+    /// </summary>
+    /// <param name="foodName">Nombre del alimento.</param>
+    /// <returns>Alimento encontrado o null.</returns>
+    private Food? FindFoodByName(string foodName)
+    {
+        foreach (Food food in this.foods)
+        {
+            if (food.Name.Equals(foodName, StringComparison.OrdinalIgnoreCase))
+            {
+                return food;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
+    /// </summary>
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private DateTime selectedDate = DateTime.Today;
+    private DateTime startDate = DateTime.Today.AddDays(-6);
+    private DateTime endDate = DateTime.Today;
+
+    private string consumedCalories = "0";
+    private string calorieGoal = "0";
+    private string remainingCalories = "0";
+    private string consumedProtein = "0";
+    private string proteinGoal = "0";
+    private string remainingProtein = "0";
+    private string consumedCarbohydrates = "0";
+    private string carbohydratesGoal = "0";
+    private string remainingCarbohydrates = "0";
+    private string consumedFat = "0";
+    private string fatGoal = "0";
+    private string remainingFat = "0";
+
+    private string rangeCalories = "0";
+    private string rangeProtein = "0";
+    private string rangeCarbohydrates = "0";
+    private string rangeFat = "0";
+    private string totalDaysInRange = "0";
+    private string registeredDays = "0";
+    private string daysMeetingGoal = "0";
+
+    private string dailySummary = string.Empty;
+    private string periodSummary = string.Empty;
+
+    /// <summary>
+    /// Carga inicial de estadísticas con los rangos por defecto.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
+    {
+        await this.LoadStatistics();
+    }
+
+    /// <summary>
+    /// Recalcula las estadísticas diarias y por rango usando las fechas seleccionadas.
+    /// </summary>
+    private async Task LoadStatistics()
+    {
+        if (string.IsNullOrWhiteSpace(this.UserName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se pudo identificar el usuario actual.");
+            return;
+        }
+
+        if (this.startDate > this.endDate)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La fecha inicial no puede ser mayor que la fecha final.");
+            return;
+        }
+
+        this.dailySummary = this.LoadDailyStatistics(this.selectedDate);
+        this.periodSummary = this.LoadRangeStatistics(this.startDate, this.endDate);
+    }
+
+    /// <summary>
+    /// Calcula las estadísticas diarias del día seleccionado.
+    /// </summary>
+    private string LoadDailyStatistics(DateTime selected)
+    {
+        this.StatisticsController.CalculateDailyConsumption(
+            this.UserName,
+            selected,
+            out double totalCalories,
+            out double totalProtein,
+            out double totalCarbohydrates,
+            out double totalFat);
+
+        double calorieGoalValue = this.StatisticsController.CalculateDailyCalorieGoal(this.UserName);
+
+        this.StatisticsController.CalculateDailyMacronutrientGoal(
+            this.UserName,
+            out double proteinGoalValue,
+            out double carbsGoalValue,
+            out double fatGoalValue);
+
+        double remainingCal = this.StatisticsController.CalculateRemainingCalories(this.UserName, selected);
+
+        this.StatisticsController.CalculateRemainingMacronutrients(
+            this.UserName,
+            selected,
+            out double remainingProt,
+            out double remainingCarb,
+            out double remainingFatValue);
+
+        this.consumedCalories = totalCalories.ToString("0.##", CultureInfo.InvariantCulture);
+        this.calorieGoal = calorieGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
+        this.remainingCalories = remainingCal.ToString("0.##", CultureInfo.InvariantCulture);
+
+        this.consumedProtein = totalProtein.ToString("0.##", CultureInfo.InvariantCulture);
+        this.proteinGoal = proteinGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
+        this.remainingProtein = remainingProt.ToString("0.##", CultureInfo.InvariantCulture);
+
+        this.consumedCarbohydrates = totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture);
+        this.carbohydratesGoal = carbsGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
+        this.remainingCarbohydrates = remainingCarb.ToString("0.##", CultureInfo.InvariantCulture);
+
+        this.consumedFat = totalFat.ToString("0.##", CultureInfo.InvariantCulture);
+        this.fatGoal = fatGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
+        this.remainingFat = remainingFatValue.ToString("0.##", CultureInfo.InvariantCulture);
+
+        return this.BuildDailySummaryMessage(remainingCal, remainingProt, remainingCarb, remainingFatValue);
+    }
+
+    /// <summary>
+    /// Calcula las estadísticas por rango de fechas.
+    /// </summary>
+    private string LoadRangeStatistics(DateTime start, DateTime end)
+    {
+        this.StatisticsController.CalculateConsumptionByDateRange(
+            this.UserName,
+            start,
+            end,
+            out double totalCalories,
+            out double totalProtein,
+            out double totalCarbohydrates,
+            out double totalFat);
+
+        var menusInRange = this.StatisticsController.GetMenusByDateRange(this.UserName, start, end);
+
+        int totalDays = (end - start).Days + 1;
+        int registered = menusInRange.Count;
+        int daysMeeting = this.StatisticsController.CountDaysMeetingCalorieGoal(this.UserName, start, end);
+
+        this.rangeCalories = totalCalories.ToString("0.##", CultureInfo.InvariantCulture);
+        this.rangeProtein = totalProtein.ToString("0.##", CultureInfo.InvariantCulture);
+        this.rangeCarbohydrates = totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture);
+        this.rangeFat = totalFat.ToString("0.##", CultureInfo.InvariantCulture);
+        this.totalDaysInRange = totalDays.ToString(CultureInfo.InvariantCulture);
+        this.registeredDays = registered.ToString(CultureInfo.InvariantCulture);
+        this.daysMeetingGoal = daysMeeting.ToString(CultureInfo.InvariantCulture);
+
+        if (registered == 0)
+        {
+            return "Período consultado: " +
+                   start.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
+                   " a " +
+                   end.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
+                   Environment.NewLine +
+                   "No hay menús registrados en ese rango de fechas.";
+        }
+
+        double dailyCalorieGoal = this.StatisticsController.CalculateDailyCalorieGoal(this.UserName);
+        double accumulatedGoal = dailyCalorieGoal * registered;
+        double periodDifference = accumulatedGoal - totalCalories;
+        double averageCaloriesPerDay = totalCalories / registered;
+        double compliance = (double)daysMeeting / registered * 100;
+
+        return this.BuildRangeSummaryMessage(
+            start,
+            end,
+            totalDays,
+            registered,
+            daysMeeting,
+            periodDifference,
+            averageCaloriesPerDay,
+            compliance);
+    }
+
+    /// <summary>
+    /// Construye el mensaje resumen del día.
+    /// </summary>
+    private string BuildDailySummaryMessage(
+        double remainingCalories,
+        double remainingProtein,
+        double remainingCarbohydrates,
+        double remainingFat)
+    {
+        return this.GetDifferenceMessage("calorías", remainingCalories) + Environment.NewLine +
+               this.GetDifferenceMessage("proteínas", remainingProtein) + Environment.NewLine +
+               this.GetDifferenceMessage("carbohidratos", remainingCarbohydrates) + Environment.NewLine +
+               this.GetDifferenceMessage("grasas", remainingFat);
+    }
+
+    /// <summary>
+    /// Construye el mensaje resumen del período.
+    /// </summary>
+    private string BuildRangeSummaryMessage(
+        DateTime start,
+        DateTime end,
+        int totalDays,
+        int registered,
+        int daysMeeting,
+        double periodDifference,
+        double averageCalories,
+        double compliance)
+    {
+        return "Período consultado: " +
+               start.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
+               " a " +
+               end.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) +
+               Environment.NewLine +
+               "Se registraron menús en " + registered.ToString(CultureInfo.InvariantCulture) +
+               " de " + totalDays.ToString(CultureInfo.InvariantCulture) + " días." +
+               Environment.NewLine +
+               "Días que cumplieron la meta calórica: " + daysMeeting.ToString(CultureInfo.InvariantCulture) + "." +
+               Environment.NewLine +
+               "Porcentaje de cumplimiento: " + compliance.ToString("0.##", CultureInfo.InvariantCulture) + "%." +
+               Environment.NewLine +
+               this.GetPeriodDifferenceMessage(periodDifference) +
+               Environment.NewLine +
+               "Promedio de calorías por día registrado: " + averageCalories.ToString("0.##", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Genera mensajes según diferencia diaria.
+    /// </summary>
+    private string GetDifferenceMessage(string label, double difference)
+    {
+        if (difference > 0)
+        {
+            return "Aún faltan " + difference.ToString("0.##", CultureInfo.InvariantCulture) + " de " + label + ".";
+        }
+
+        if (difference < 0)
+        {
+            return "Se excedió la meta por " + Math.Abs(difference).ToString("0.##", CultureInfo.InvariantCulture) + " de " + label + ".";
+        }
+
+        return "La meta de " + label + " se cumplió exactamente.";
+    }
+
+    /// <summary>
+    /// Genera el mensaje de diferencia del período.
+    /// </summary>
+    private string GetPeriodDifferenceMessage(double periodDifference)
+    {
+        if (periodDifference > 0)
+        {
+            return "En el período aún faltaron " + periodDifference.ToString("0.##", CultureInfo.InvariantCulture) + " calorías para alcanzar la meta acumulada.";
+        }
+
+        if (periodDifference < 0)
+        {
+            return "En el período se excedió la meta acumulada por " + Math.Abs(periodDifference).ToString("0.##", CultureInfo.InvariantCulture) + " calorías.";
+        }
+
+        return "En el período se cumplió exactamente la meta acumulada.";
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>

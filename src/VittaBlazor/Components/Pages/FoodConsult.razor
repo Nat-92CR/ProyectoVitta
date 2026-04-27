@@ -114,6 +114,190 @@
 </div>
 
 @code {
+    private string searchFood = string.Empty;
+    private string selectedFoodName = string.Empty;
+    private string editName = string.Empty;
+    private double editCalories;
+    private double editProtein;
+    private double editCarbohydrates;
+    private double editFat;
+    private string message = string.Empty;
+    private string userName = string.Empty;
+    private List<Food> foods = new();
+
+    /// <summary>
+    /// Carga los alimentos y obtiene el nombre de usuario desde la URL.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+
+        this.LoadFoods();
+        this.ClearEditFields();
+    }
+
+    /// <summary>
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
+    /// </summary>
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private List<Food> foods = new();
+    private string searchText = string.Empty;
+    private string selectedFoodName = string.Empty;
+    private string editName = string.Empty;
+    private double editCalories;
+    private double editProtein;
+    private double editCarbohydrates;
+    private double editFat;
+
+    /// <summary>
+    /// Carga la lista inicial de alimentos.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        this.foods = this.FoodController.GetFoods();
+    }
+
+    /// <summary>
+    /// Indica si la fila está actualmente seleccionada para edición.
+    /// </summary>
+    private bool IsRowSelected(string name)
+    {
+        return string.Equals(this.selectedFoodName, name, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Marca un alimento como seleccionado y completa los campos de edición.
+    /// </summary>
+    private void SelectFood(Food food)
+    {
+        this.selectedFoodName = food.Name;
+        this.editName = food.Name;
+        this.editCalories = food.Calories;
+        this.editProtein = food.Protein;
+        this.editCarbohydrates = food.Carbohydrates;
+        this.editFat = food.Fat;
+    }
+
+    /// <summary>
+    /// Limpia los campos de edición.
+    /// </summary>
+    private void ClearEditFields()
+    {
+        this.selectedFoodName = string.Empty;
+        this.editName = string.Empty;
+        this.editCalories = 0;
+        this.editProtein = 0;
+        this.editCarbohydrates = 0;
+        this.editFat = 0;
+    }
+
+    /// <summary>
+    /// Busca alimentos por nombre.
+    /// </summary>
+    private void SearchFoods()
+    {
+        this.foods = this.FoodController.SearchFoodsByName(this.searchText ?? string.Empty);
+        this.ClearEditFields();
+    }
+
+    /// <summary>
+    /// Muestra todos los alimentos disponibles.
+    /// </summary>
+    private void ShowAll()
+    {
+        this.searchText = string.Empty;
+        this.foods = this.FoodController.GetFoods();
+        this.ClearEditFields();
+    }
+
+    /// <summary>
+    /// Edita el alimento seleccionado.
+    /// </summary>
+    private async Task EditFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un alimento para editar.");
+            return;
+        }
+
+        if (this.editCalories < 0 || this.editProtein < 0 || this.editCarbohydrates < 0 || this.editFat < 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Los valores nutricionales no pueden ser negativos.");
+            return;
+        }
+
+        var updatedFood = new Food(
+            this.selectedFoodName,
+            this.editCalories,
+            this.editProtein,
+            this.editCarbohydrates,
+            this.editFat);
+
+        bool isUpdated = this.FoodController.UpdateFood(updatedFood);
+
+        if (isUpdated)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El alimento se actualizó correctamente.");
+            this.searchText = string.Empty;
+            this.foods = this.FoodController.GetFoods();
+            this.ClearEditFields();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo actualizar el alimento.");
+    }
+
+    /// <summary>
+    /// Elimina el alimento seleccionado, previa confirmación del usuario.
+    /// </summary>
+    private async Task DeleteFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un alimento para eliminar.");
+            return;
+        }
+
+        bool confirmed = await this.JS.InvokeAsync<bool>(
+            "confirm",
+            $"¿Desea eliminar el alimento '{this.selectedFoodName}'?");
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        bool isDeleted = this.FoodController.DeleteFood(this.selectedFoodName);
+
+        if (isDeleted)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El alimento se eliminó correctamente.");
+            this.searchText = string.Empty;
+            this.foods = this.FoodController.GetFoods();
+            this.ClearEditFields();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo eliminar el alimento.");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de registro de alimentos.
+    /// </summary>
+    private void GoToFoodRegister()
+    {
+        this.Navigation.NavigateTo($"/registrar-alimento/{this.UserName}");
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>

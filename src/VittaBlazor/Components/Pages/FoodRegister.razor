@@ -61,10 +61,93 @@
                 Cancelar
             </button>
         </div>
+
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="vitta-message">
+                @message
+            </div>
+        }
     </div>
 </div>
 
 @code {
+    private string userName = string.Empty;
+    private string foodName = string.Empty;
+    private double calories;
+    private double protein;
+    private double carbohydrates;
+    private double fat;
+    private string message = string.Empty;
+
+    /// <summary>
+    /// Obtiene el nombre de usuario desde la URL cuando exista.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        Uri uri = this.NavigationManager.ToAbsoluteUri(this.NavigationManager.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+
+        if (query.TryGetValue("username", out var usernameValue))
+        {
+            this.userName = usernameValue.ToString();
+        }
+    }
+
+    /// <summary>
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
+    /// </summary>
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private string foodName = string.Empty;
+    private double calories;
+    private double protein;
+    private double carbohydrates;
+    private double fat;
+
+    /// <summary>
+    /// Valida los campos y registra un nuevo alimento.
+    /// </summary>
+    private async Task SaveFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.foodName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre del alimento.");
+            return;
+        }
+
+        if (this.calories < 0 || this.protein < 0 || this.carbohydrates < 0 || this.fat < 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Los valores nutricionales no pueden ser negativos.");
+            return;
+        }
+
+        var food = new Food(this.foodName.Trim(), this.calories, this.protein, this.carbohydrates, this.fat);
+        bool result = this.FoodController.RegisterFood(food);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El alimento se registró correctamente.");
+            this.ClearFields();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No fue posible registrar el alimento. Verifique si ya existe o si los datos son inválidos.");
+    }
+
+    /// <summary>
+    /// Limpia los campos del formulario.
+    /// </summary>
+    private void ClearFields()
+    {
+        this.foodName = string.Empty;
+        this.calories = 0;
+        this.protein = 0;
+        this.carbohydrates = 0;
+        this.fat = 0;
+    }
+
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
