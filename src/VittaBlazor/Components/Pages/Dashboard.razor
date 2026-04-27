@@ -1,54 +1,115 @@
-﻿@* Panel principal de la aplicación. Muestra los accesos a los distintos módulos del sistema. *@
+﻿@* Panel principal de la aplicación. Muestra tiles diferentes según rol (admin vs usuario regular). *@
 @page "/dashboard/{UserName}"
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
- 
+
 <PageTitle>Vitta - Panel principal</PageTitle>
- 
-<div class="vitta-header">
-    <span class="vitta-header-title">Vitta</span>
-</div>
- 
-<div class="vitta-content">
- 
-    <h1 class="vitta-dashboard-h1">Bienvenido a nuestro sistema</h1>
-    <p class="vitta-dashboard-sub">
-        Desde aquí puedes acceder a los módulos principales de Vitta para gestionar tu información.
-    </p>
- 
-    <div class="vitta-card vitta-modules-panel">
-        <h2 class="vitta-modules-title">Módulos del sistema</h2>
- 
-        <div class="vitta-modules-grid">
-            <button type="button" class="vitta-module-btn" @onclick="GoToProfile">
-                Mi perfil
-            </button>
- 
-            <button type="button" class="vitta-module-btn" @onclick="GoToMenuRegister">
-                Registrar menú
-            </button>
- 
-            <button type="button" class="vitta-module-btn" @onclick="GoToFoodConsult">
-                Consultar alimentos
-            </button>
- 
-            <button type="button" class="vitta-module-btn" @onclick="GoToNutritionInfo">
-                Información nutricional
-            </button>
- 
-            <button type="button" class="vitta-module-btn" @onclick="GoToStatistics">
-                Estadísticas nutricionales
-            </button>
+
+<div class="dash-header">
+    <div class="dash-header-inner">
+        <div class="dash-brand">
+            <span class="dash-brand-circle">V</span>
+            <span class="dash-brand-text">@(IsAdmin ? "Vitta - Admin" : "Vitta")</span>
+        </div>
+        <div class="dash-user-pill">
+            <span class="dash-user-icon">@(IsAdmin ? "🛠️" : "👤")</span>
+            <span class="dash-user-name">@UserName</span>
         </div>
     </div>
- 
-    <div class="vitta-logout-row">
-        <button type="button" class="vitta-btn-secondary vitta-logout-btn" @onclick="Logout">
+</div>
+
+<div class="dash-content">
+
+    <section class="dash-hero">
+        <h1 class="dash-hero-title">
+            @(IsAdmin ? "Panel de administración" : "Bienvenido a nuestro sistema")
+        </h1>
+        <p class="dash-hero-sub">
+            @(IsAdmin
+                ? "Gestiona los alimentos disponibles para todos los usuarios del sistema."
+                : "Desde aquí puedes acceder a los módulos principales de Vitta para gestionar tu información nutricional.")
+        </p>
+    </section>
+
+    <section class="dash-modules-card">
+        <h2 class="dash-modules-title">Módulos del sistema</h2>
+        <p class="dash-modules-sub">Selecciona un módulo para comenzar</p>
+
+        <div class="dash-grid">
+
+            @if (IsAdmin)
+            {
+                @* ============== TILES ADMIN ============== *@
+                <button type="button" class="dash-tile" @onclick="GoToProfile">
+                    <div class="dash-tile-icon">👤</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Mi perfil</span>
+                        <span class="dash-tile-desc">Consulta y actualiza tus datos</span>
+                    </div>
+                </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToFoodAdmin">
+                    <div class="dash-tile-icon">🍎</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Administrar alimentos</span>
+                        <span class="dash-tile-desc">Crear, editar y eliminar alimentos</span>
+                    </div>
+                </button>
+            }
+            else
+            {
+                @* ============== TILES USUARIO REGULAR ============== *@
+                <button type="button" class="dash-tile" @onclick="GoToProfile">
+                    <div class="dash-tile-icon">👤</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Mi perfil</span>
+                        <span class="dash-tile-desc">Consulta y actualiza tus datos</span>
+                    </div>
+                </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToMenuRegister">
+                    <div class="dash-tile-icon">📋</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Registrar menú</span>
+                        <span class="dash-tile-desc">Anota tus comidas del día</span>
+                    </div>
+                </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToFoodView">
+                    <div class="dash-tile-icon">🍎</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Consultar alimentos</span>
+                        <span class="dash-tile-desc">Busca alimentos disponibles</span>
+                    </div>
+                </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToNutritionInfo">
+                    <div class="dash-tile-icon">📊</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Información nutricional</span>
+                        <span class="dash-tile-desc">IMC, calorías y macros</span>
+                    </div>
+                </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToStatistics">
+                    <div class="dash-tile-icon">📈</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Estadísticas nutricionales</span>
+                        <span class="dash-tile-desc">Tu progreso diario y por rango</span>
+                    </div>
+                </button>
+            }
+
+        </div>
+    </section>
+
+    <div class="dash-logout-row">
+        <button type="button" class="dash-logout-btn" @onclick="Logout">
             Cerrar sesión
         </button>
     </div>
- 
+
 </div>
  
 @code {
@@ -57,21 +118,36 @@
     /// </summary>
     [Parameter]
     public string UserName { get; set; } = string.Empty;
- 
+
+    /// <summary>
+    /// Indica si el usuario actual tiene rol de administrador.
+    /// Por ahora se determina por el nombre de usuario "admin" (Fase 1).
+    /// En Fase 2 se reemplazará por un campo Role en el modelo User.
+    /// </summary>
+    private bool IsAdmin => string.Equals(this.UserName, "admin", StringComparison.OrdinalIgnoreCase);
+
     /// <summary>
     /// Redirige a la vista de perfil del usuario actual.
     /// </summary>
     private void GoToProfile()
     {
-        Navigation.NavigateTo($"/perfil/{UserName}");
+        this.Navigation.NavigateTo($"/perfil/{this.UserName}");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de administración de alimentos (solo admin).
+    /// </summary>
+    private void GoToFoodAdmin()
+    {
+        this.Navigation.NavigateTo($"/admin/alimentos/{this.UserName}");
     }
  
     /// <summary>
-    /// Redirige a la vista de consulta de alimentos.
+    /// Redirige a la vista de consulta de alimentos solo lectura (usuario regular).
     /// </summary>
-    private void GoToFoodConsult()
+    private void GoToFoodView()
     {
-        Navigation.NavigateTo($"/consultar-alimentos/{UserName}");
+        this.Navigation.NavigateTo($"/alimentos/{this.UserName}");
     }
  
     /// <summary>
@@ -79,7 +155,7 @@
     /// </summary>
     private void GoToMenuRegister()
     {
-        Navigation.NavigateTo($"/registrar-menu/{UserName}");
+        this.Navigation.NavigateTo($"/registrar-menu/{this.UserName}");
     }
  
     /// <summary>
@@ -87,7 +163,7 @@
     /// </summary>
     private void GoToNutritionInfo()
     {
-        Navigation.NavigateTo($"/informacion-nutricional/{UserName}");
+        this.Navigation.NavigateTo($"/informacion-nutricional/{this.UserName}");
     }
  
     /// <summary>
@@ -95,21 +171,19 @@
     /// </summary>
     private void GoToStatistics()
     {
-        Navigation.NavigateTo($"/estadisticas/{UserName}");
+        this.Navigation.NavigateTo($"/estadisticas/{this.UserName}");
     }
  
     /// <summary>
-    /// Solicita confirmación al usuario y, si acepta, cierra la sesión actual y regresa a la pantalla de inicio de sesión.
+    /// Solicita confirmación al usuario y, si acepta, cierra la sesión actual y regresa al login.
     /// </summary>
     private async Task Logout()
     {
-        bool confirmed = await JS.InvokeAsync<bool>("confirm", "¿Deseas cerrar la sesión actual?");
- 
+        bool confirmed = await this.JS.InvokeAsync<bool>("confirm", "¿Deseas cerrar la sesión actual?");
+
         if (confirmed)
         {
-            Navigation.NavigateTo("/login");
+            this.Navigation.NavigateTo("/login");
         }
     }
 }
-
- 

@@ -1,0 +1,338 @@
+﻿/* ============================================
+   FoodAdmin - Estilos aislados (scoped CSS)
+   ============================================ */
+
+.fa-header {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 18px 0;
+}
+
+.fa-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fa-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fa-brand-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    font-weight: 800;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.fa-brand-text {
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.fa-back-btn {
+    background: rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .fa-back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+.fa-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 48px 24px;
+}
+
+.fa-card {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E0E0E0;
+}
+
+.fa-title {
+    color: #2E7D32;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+}
+
+.fa-subtitle {
+    color: #616161;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+}
+
+.fa-section {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px dashed #E0E0E0;
+}
+
+    .fa-section:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+.fa-section-title {
+    color: #2E7D32;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+
+/* Grid de campos */
+.fa-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px 18px;
+    margin-bottom: 16px;
+}
+
+.fa-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fa-field-full {
+    grid-column: 1 / -1;
+}
+
+.fa-field label {
+    font-weight: 600;
+    color: #424242;
+    font-size: 13px;
+}
+
+.fa-field input {
+    padding: 10px 12px;
+    border: 1px solid #BDBDBD;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #FAFAFA;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .fa-field input:focus {
+        outline: none;
+        border-color: #2E7D32;
+        background-color: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .fa-field input[readonly] {
+        background-color: #F5F5F5;
+        color: #424242;
+    }
+
+/* Search row */
+.fa-search-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.fa-search-input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 14px;
+    border: 1px solid #BDBDBD;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #FAFAFA;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .fa-search-input:focus {
+        outline: none;
+        border-color: #2E7D32;
+        background-color: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+/* Tabla */
+.fa-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #E0E0E0;
+}
+
+.fa-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+    .fa-table thead {
+        background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+        color: #FFFFFF;
+    }
+
+    .fa-table th {
+        padding: 12px 14px;
+        text-align: left;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.4px;
+    }
+
+    .fa-table td {
+        padding: 11px 14px;
+        border-top: 1px solid #EEEEEE;
+        color: #212121;
+    }
+
+    .fa-table tbody tr {
+        background-color: #FFFFFF;
+        transition: background-color 0.15s ease;
+    }
+
+        .fa-table tbody tr:hover {
+            background-color: #F4FAF4;
+        }
+
+.fa-row-selected {
+    background-color: #E8F5E9 !important;
+}
+
+.fa-row-btn {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    border: 1.5px solid #2E7D32;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+}
+
+    .fa-row-btn:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+.fa-empty {
+    text-align: center;
+    color: #9E9E9E;
+    font-style: italic;
+    padding: 24px 0;
+}
+
+/* Botones */
+.fa-actions-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.fa-btn-primary,
+.fa-btn-secondary,
+.fa-btn-danger {
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.18s ease, color 0.18s ease;
+    font-family: inherit;
+    border: 2px solid #2E7D32;
+    white-space: nowrap;
+}
+
+.fa-btn-primary {
+    background-color: #2E7D32;
+    color: #FFFFFF;
+}
+
+    .fa-btn-primary:hover {
+        background-color: #1B5E20;
+        transform: translateY(-1px);
+    }
+
+.fa-btn-secondary {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+}
+
+    .fa-btn-secondary:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+.fa-btn-danger {
+    background-color: #FFFFFF;
+    color: #C62828;
+    border-color: #C62828;
+}
+
+    .fa-btn-danger:hover {
+        background-color: #C62828;
+        color: #FFFFFF;
+    }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .fa-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .fa-card {
+        padding: 22px;
+    }
+
+    .fa-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fa-search-row {
+        flex-direction: column;
+    }
+
+    .fa-search-input {
+        min-width: 100%;
+    }
+
+    .fa-actions-row {
+        justify-content: stretch;
+    }
+
+        .fa-actions-row button {
+            width: 100%;
+        }
+}

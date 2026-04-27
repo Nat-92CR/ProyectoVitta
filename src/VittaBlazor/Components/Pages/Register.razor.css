@@ -1,0 +1,144 @@
+﻿/* ============================================
+   Register - Estilos aislados (scoped CSS)
+   ============================================ */
+
+.reg-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #F5F5F5 0%, #E8F5E9 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.reg-card {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 36px;
+    width: 100%;
+    max-width: 720px;
+    border: 1px solid #E0E0E0;
+}
+
+.reg-brand-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+}
+
+.reg-title {
+    color: #2E7D32;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 6px 0;
+}
+
+.reg-subtitle {
+    color: #616161;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 0 24px 0;
+}
+
+.reg-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 18px;
+}
+
+.reg-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .reg-field label {
+        font-weight: 600;
+        color: #424242;
+        font-size: 13px;
+    }
+
+    .reg-field input,
+    .reg-field select {
+        padding: 10px 12px;
+        border: 1px solid #BDBDBD;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: #FAFAFA;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        font-family: inherit;
+    }
+
+        .reg-field input:focus,
+        .reg-field select:focus {
+            outline: none;
+            border-color: #2E7D32;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+        }
+
+.reg-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.reg-btn-primary,
+.reg-btn-secondary {
+    padding: 11px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.18s ease, color 0.18s ease;
+    font-family: inherit;
+    border: 2px solid #2E7D32;
+}
+
+.reg-btn-primary {
+    background-color: #2E7D32;
+    color: #FFFFFF;
+}
+
+    .reg-btn-primary:hover {
+        background-color: #1B5E20;
+        transform: translateY(-1px);
+    }
+
+.reg-btn-secondary {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+}
+
+    .reg-btn-secondary:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+/* Responsive */
+@media (max-width: 600px) {
+    .reg-card {
+        padding: 24px;
+    }
+
+    .reg-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reg-title {
+        font-size: 20px;
+    }
+}
