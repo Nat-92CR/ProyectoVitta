@@ -1,0 +1,378 @@
+﻿@* Página unificada de administración de alimentos. Solo visible para el usuario admin. *@
+@page "/admin/alimentos/{UserName}"
+@rendermode InteractiveServer
+@using VittaController.Abstractions
+@using VittaModel
+@inject IFoodController FoodController
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Vitta - Administrar alimentos</PageTitle>
+
+<div class="fa-header">
+    <div class="fa-header-inner">
+        <div class="fa-brand">
+            <span class="fa-brand-circle">V</span>
+            <span class="fa-brand-text">Vitta - Admin</span>
+        </div>
+        <button type="button" class="fa-back-btn" @onclick="GoBack">← Volver</button>
+    </div>
+</div>
+
+<div class="fa-content">
+    <div class="fa-card">
+        <h1 class="fa-title">Administrar alimentos</h1>
+        <p class="fa-subtitle">
+            Crea, busca, edita o elimina los alimentos disponibles en el sistema.
+        </p>
+
+        @* SECCIÓN: NUEVO ALIMENTO *@
+        <section class="fa-section">
+            <h2 class="fa-section-title">+ Nuevo alimento</h2>
+
+            <div class="fa-grid">
+                <div class="fa-field fa-field-full">
+                    <label>Nombre</label>
+                    <input @bind="newName" placeholder="Ej: Manzana 1 unidad" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Calorías</label>
+                    <input type="number" step="0.01" @bind="newCalories" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Proteínas</label>
+                    <input type="number" step="0.01" @bind="newProtein" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Carbohidratos</label>
+                    <input type="number" step="0.01" @bind="newCarbohydrates" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Grasas</label>
+                    <input type="number" step="0.01" @bind="newFat" />
+                </div>
+            </div>
+
+            <div class="fa-actions-row">
+                <button type="button" class="fa-btn-primary" @onclick="HandleAddFood">Agregar alimento</button>
+                <button type="button" class="fa-btn-secondary" @onclick="ClearNewFields">Limpiar</button>
+            </div>
+        </section>
+
+        @* SECCIÓN: BUSCAR + TABLA *@
+        <section class="fa-section">
+            <h2 class="fa-section-title">Buscar y administrar</h2>
+
+            <div class="fa-search-row">
+                <input class="fa-search-input" placeholder="Buscar alimento por nombre..." @bind="searchText" />
+                <button type="button" class="fa-btn-primary" @onclick="SearchFoods">Buscar</button>
+                <button type="button" class="fa-btn-secondary" @onclick="ShowAll">Mostrar todos</button>
+            </div>
+
+            <div class="fa-table-wrapper">
+                <table class="fa-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Calorías</th>
+                            <th>Proteínas</th>
+                            <th>Carbohidratos</th>
+                            <th>Grasas</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (foods is null || foods.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="6" class="fa-empty">No se encontraron alimentos.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var food in foods)
+                            {
+                                <tr class="@(IsRowSelected(food.Name) ? "fa-row-selected" : "")">
+                                    <td>@food.Name</td>
+                                    <td>@food.Calories</td>
+                                    <td>@food.Protein</td>
+                                    <td>@food.Carbohydrates</td>
+                                    <td>@food.Fat</td>
+                                    <td>
+                                        <button type="button" class="fa-row-btn" @onclick="@(() => SelectFood(food))">
+                                            Seleccionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        @* SECCIÓN: EDITAR / ELIMINAR *@
+        <section class="fa-section">
+            <h2 class="fa-section-title">Editar alimento seleccionado</h2>
+
+            <div class="fa-grid">
+                <div class="fa-field fa-field-full">
+                    <label>Nombre</label>
+                    <input @bind="editName" readonly />
+                </div>
+
+                <div class="fa-field">
+                    <label>Calorías</label>
+                    <input type="number" step="0.01" @bind="editCalories" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Proteínas</label>
+                    <input type="number" step="0.01" @bind="editProtein" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Carbohidratos</label>
+                    <input type="number" step="0.01" @bind="editCarbohydrates" />
+                </div>
+
+                <div class="fa-field">
+                    <label>Grasas</label>
+                    <input type="number" step="0.01" @bind="editFat" />
+                </div>
+            </div>
+
+            <div class="fa-actions-row">
+                <button type="button" class="fa-btn-primary" @onclick="EditFood">Actualizar</button>
+                <button type="button" class="fa-btn-danger" @onclick="DeleteFood">Eliminar</button>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
+    /// </summary>
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private List<Food> foods = new();
+    private string searchText = string.Empty;
+
+    // Campos de "Nuevo alimento"
+    private string newName = string.Empty;
+    private double newCalories;
+    private double newProtein;
+    private double newCarbohydrates;
+    private double newFat;
+
+    // Campos de "Editar"
+    private string selectedFoodName = string.Empty;
+    private string editName = string.Empty;
+    private double editCalories;
+    private double editProtein;
+    private double editCarbohydrates;
+    private double editFat;
+
+    /// <summary>
+    /// Carga la lista inicial de alimentos. Bloquea acceso si el usuario no es admin.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        if (!string.Equals(this.UserName, "admin", StringComparison.OrdinalIgnoreCase))
+        {
+            this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+            return;
+        }
+
+        this.foods = this.FoodController.GetFoods();
+    }
+
+    /// <summary>
+    /// Indica si la fila está actualmente seleccionada para edición.
+    /// </summary>
+    private bool IsRowSelected(string name)
+    {
+        return string.Equals(this.selectedFoodName, name, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Marca un alimento como seleccionado y completa los campos de edición.
+    /// </summary>
+    private void SelectFood(Food food)
+    {
+        this.selectedFoodName = food.Name;
+        this.editName = food.Name;
+        this.editCalories = food.Calories;
+        this.editProtein = food.Protein;
+        this.editCarbohydrates = food.Carbohydrates;
+        this.editFat = food.Fat;
+    }
+
+    /// <summary>
+    /// Limpia los campos del formulario de edición.
+    /// </summary>
+    private void ClearEditFields()
+    {
+        this.selectedFoodName = string.Empty;
+        this.editName = string.Empty;
+        this.editCalories = 0;
+        this.editProtein = 0;
+        this.editCarbohydrates = 0;
+        this.editFat = 0;
+    }
+
+    /// <summary>
+    /// Limpia los campos del formulario de nuevo alimento.
+    /// </summary>
+    private void ClearNewFields()
+    {
+        this.newName = string.Empty;
+        this.newCalories = 0;
+        this.newProtein = 0;
+        this.newCarbohydrates = 0;
+        this.newFat = 0;
+    }
+
+    /// <summary>
+    /// Registra un nuevo alimento en el sistema.
+    /// </summary>
+    private async Task HandleAddFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.newName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre del alimento.");
+            return;
+        }
+
+        if (this.newCalories < 0 || this.newProtein < 0 || this.newCarbohydrates < 0 || this.newFat < 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Los valores nutricionales no pueden ser negativos.");
+            return;
+        }
+
+        var food = new Food(
+            this.newName.Trim(),
+            this.newCalories,
+            this.newProtein,
+            this.newCarbohydrates,
+            this.newFat);
+
+        bool result = this.FoodController.RegisterFood(food);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Alimento registrado correctamente.");
+            this.ClearNewFields();
+            this.foods = this.FoodController.GetFoods();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo registrar el alimento. Verifique si ya existe.");
+    }
+
+    /// <summary>
+    /// Busca alimentos por nombre.
+    /// </summary>
+    private void SearchFoods()
+    {
+        this.foods = this.FoodController.SearchFoodsByName(this.searchText ?? string.Empty);
+        this.ClearEditFields();
+    }
+
+    /// <summary>
+    /// Muestra todos los alimentos disponibles.
+    /// </summary>
+    private void ShowAll()
+    {
+        this.searchText = string.Empty;
+        this.foods = this.FoodController.GetFoods();
+        this.ClearEditFields();
+    }
+
+    /// <summary>
+    /// Edita el alimento seleccionado.
+    /// </summary>
+    private async Task EditFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un alimento para editar.");
+            return;
+        }
+
+        if (this.editCalories < 0 || this.editProtein < 0 || this.editCarbohydrates < 0 || this.editFat < 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Los valores nutricionales no pueden ser negativos.");
+            return;
+        }
+
+        var updatedFood = new Food(
+            this.selectedFoodName,
+            this.editCalories,
+            this.editProtein,
+            this.editCarbohydrates,
+            this.editFat);
+
+        bool isUpdated = this.FoodController.UpdateFood(updatedFood);
+
+        if (isUpdated)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El alimento se actualizó correctamente.");
+            this.searchText = string.Empty;
+            this.foods = this.FoodController.GetFoods();
+            this.ClearEditFields();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo actualizar el alimento.");
+    }
+
+    /// <summary>
+    /// Elimina el alimento seleccionado, previa confirmación.
+    /// </summary>
+    private async Task DeleteFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFoodName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un alimento para eliminar.");
+            return;
+        }
+
+        bool confirmed = await this.JS.InvokeAsync<bool>(
+            "confirm",
+            $"¿Desea eliminar el alimento '{this.selectedFoodName}'?");
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        bool isDeleted = this.FoodController.DeleteFood(this.selectedFoodName);
+
+        if (isDeleted)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El alimento se eliminó correctamente.");
+            this.searchText = string.Empty;
+            this.foods = this.FoodController.GetFoods();
+            this.ClearEditFields();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo eliminar el alimento.");
+    }
+
+    /// <summary>
+    /// Regresa al dashboard del usuario actual.
+    /// </summary>
+    private void GoBack()
+    {
+        this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+    }
+}

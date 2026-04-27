@@ -1,0 +1,228 @@
+﻿@* Página para el registro de un nuevo usuario, fiel a RegisterView de WinForms. *@
+@page "/register"
+@rendermode InteractiveServer
+@using VittaController
+@using VittaModel
+@inject LoginController LoginController
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Vitta - Registro</PageTitle>
+
+<div class="reg-page">
+    <div class="reg-card">
+        <div class="reg-brand-circle">V</div>
+        <h1 class="reg-title">Registro de usuario</h1>
+        <p class="reg-subtitle">
+            Completa tus datos para crear una nueva cuenta en Vitta.
+        </p>
+
+        <div class="reg-grid">
+
+            <div class="reg-field">
+                <label>Usuario</label>
+                <input @bind="userName" />
+            </div>
+
+            <div class="reg-field">
+                <label>Contraseña</label>
+                <input type="password" @bind="password" />
+            </div>
+
+            <div class="reg-field">
+                <label>Nombre</label>
+                <input @bind="name" />
+            </div>
+
+            <div class="reg-field">
+                <label>Peso</label>
+                <input type="number" step="0.01" @bind="weight" />
+            </div>
+
+            <div class="reg-field">
+                <label>Altura</label>
+                <input type="number" step="0.01" @bind="height" />
+            </div>
+
+            <div class="reg-field">
+                <label>Edad</label>
+                <input type="number" @bind="age" />
+            </div>
+
+            <div class="reg-field">
+                <label>Sexo</label>
+                <select @bind="sex">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="No especificado">No especificado</option>
+                </select>
+            </div>
+
+            <div class="reg-field">
+                <label>Objetivo</label>
+                <select @bind="goal">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Mantener">Mantener</option>
+                    <option value="Perder grasa">Perder grasa</option>
+                    <option value="Ganar masa">Ganar masa</option>
+                </select>
+            </div>
+
+            <div class="reg-field">
+                <label>Nivel de actividad</label>
+                <select @bind="activityLevel">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Sedentario">Sedentario</option>
+                    <option value="Ligero">Ligero</option>
+                    <option value="Moderado">Moderado</option>
+                    <option value="Alto">Alto</option>
+                </select>
+            </div>
+
+            <div class="reg-field">
+                <label>Tipo de dieta</label>
+                <select @bind="dietType">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Estándar">Estándar</option>
+                    <option value="Keto">Keto</option>
+                    <option value="Vegetariana">Vegetariana</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="reg-actions">
+            <button type="button" class="reg-btn-primary" @onclick="HandleRegister">
+                Registrarse
+            </button>
+            <button type="button" class="reg-btn-secondary" @onclick="GoToLogin">
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private string userName = string.Empty;
+    private string password = string.Empty;
+    private string name = string.Empty;
+    private double weight;
+    private double height;
+    private int age;
+    private string sex = string.Empty;
+    private string goal = string.Empty;
+    private string activityLevel = string.Empty;
+    private string dietType = string.Empty;
+
+    /// <summary>
+    /// Valida los campos del formulario respetando las validaciones de RegisterView (WinForms).
+    /// </summary>
+    private async Task<bool> ValidateFieldsAsync()
+    {
+        if (string.IsNullOrWhiteSpace(this.userName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre de usuario.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.password))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar la contraseña.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.name))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre.");
+            return false;
+        }
+
+        if (this.weight <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El peso debe ser un número mayor que 0.");
+            return false;
+        }
+
+        if (this.height <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La altura debe ser un número mayor que 0.");
+            return false;
+        }
+
+        if (this.age <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La edad debe ser un número entero mayor que 0.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.sex))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar el sexo.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.goal))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un objetivo.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.activityLevel))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un nivel de actividad.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.dietType))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un tipo de dieta.");
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Ejecuta el proceso de registro de un nuevo usuario.
+    /// </summary>
+    private async Task HandleRegister()
+    {
+        if (!await this.ValidateFieldsAsync())
+        {
+            return;
+        }
+
+        var user = new User(
+            this.userName.Trim(),
+            this.password.Trim(),
+            this.name.Trim(),
+            this.weight,
+            this.height,
+            this.goal,
+            this.activityLevel,
+            this.dietType,
+            this.age,
+            this.sex);
+
+        bool result = this.LoginController.Register(user);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Usuario registrado correctamente.");
+            this.Navigation.NavigateTo("/login");
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo registrar el usuario. Verifique si el nombre de usuario ya existe.");
+    }
+
+    /// <summary>
+    /// Cancela el registro y regresa a la pantalla de inicio de sesión.
+    /// </summary>
+    private void GoToLogin()
+    {
+        this.Navigation.NavigateTo("/login");
+    }
+}

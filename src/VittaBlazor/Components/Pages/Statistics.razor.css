@@ -1,0 +1,314 @@
+﻿/* ============================================
+   Statistics - Estilos aislados (scoped CSS)
+   ============================================ */
+
+.st-header {
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    padding: 18px 0;
+}
+
+.st-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.st-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.st-brand-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    font-weight: 800;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.st-brand-text {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.st-back-btn {
+    background: rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .st-back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+.st-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 48px 24px;
+}
+
+.st-card {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E0E0E0;
+}
+
+.st-title {
+    color: #2E7D32;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+}
+
+.st-subtitle {
+    color: #616161;
+    font-size: 14px;
+    margin: 0 0 20px 0;
+}
+
+.st-user-row {
+    margin-bottom: 12px;
+}
+
+.st-section {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px dashed #E0E0E0;
+}
+
+.st-section-title {
+    color: #2E7D32;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 14px 0;
+}
+
+.st-filter-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.st-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+}
+
+    .st-field label {
+        font-weight: 600;
+        color: #424242;
+        font-size: 13px;
+    }
+
+    .st-field input {
+        padding: 9px 12px;
+        border: 1px solid #BDBDBD;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: #FAFAFA;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        font-family: inherit;
+    }
+
+        .st-field input:focus {
+            outline: none;
+            border-color: #2E7D32;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+        }
+
+        .st-field input[readonly] {
+            background-color: #F5F5F5;
+            color: #424242;
+        }
+
+/* Daily stats */
+.st-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.st-stat-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f4faf4 100%);
+    border: 1px solid #C8E6C9;
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 4px solid #2E7D32;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .st-stat-card.st-protein {
+        border-left-color: #C62828;
+    }
+
+    .st-stat-card.st-carbs {
+        border-left-color: #F57F17;
+    }
+
+    .st-stat-card.st-fat {
+        border-left-color: #43A047;
+    }
+
+.st-stat-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 700;
+    color: #616161;
+}
+
+.st-stat-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    color: #212121;
+}
+
+    .st-stat-numbers strong {
+        color: #424242;
+        font-weight: 600;
+    }
+
+/* Range stats */
+.st-range-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.st-range-item {
+    background-color: #F9FBF9;
+    border: 1px solid #C8E6C9;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.st-range-label {
+    font-size: 12px;
+    color: #616161;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+}
+
+.st-range-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2E7D32;
+}
+
+/* Summary box */
+.st-summary-box {
+    background-color: #F5FBF5;
+    border: 1px solid #C8E6C9;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.st-summary-title {
+    color: #2E7D32;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.st-summary-text {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 13px;
+    color: #424242;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Actions */
+.st-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.st-btn-primary,
+.st-btn-secondary {
+    padding: 11px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.18s ease, color 0.18s ease;
+    font-family: inherit;
+    border: 2px solid #2E7D32;
+}
+
+.st-btn-primary {
+    background-color: #2E7D32;
+    color: #FFFFFF;
+}
+
+    .st-btn-primary:hover {
+        background-color: #1B5E20;
+        transform: translateY(-1px);
+    }
+
+.st-btn-secondary {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+}
+
+    .st-btn-secondary:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+@media (max-width: 700px) {
+    .st-card {
+        padding: 22px;
+    }
+
+    .st-filter-row {
+        flex-direction: column;
+    }
+
+    .st-field {
+        min-width: 100%;
+    }
+}

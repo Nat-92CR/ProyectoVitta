@@ -6,7 +6,8 @@
 
 @*
     Presenta la vista de inicio de sesión del sistema.
-    Permite validar las credenciales del usuario antes de ingresar al dashboard.
+    Valida las credenciales del usuario y redirige al dashboard
+    enviando el nombre de usuario para continuar el flujo.
 *@
 
 <PageTitle>Login</PageTitle>
@@ -57,7 +58,7 @@
     private string errorMessage = string.Empty;
 
     /// <summary>
-    /// Ejecuta el proceso de inicio de sesión del usuario.
+    /// Ejecuta la validación de credenciales y redirige al dashboard.
     /// </summary>
     private void HandleLogin()
     {
@@ -66,11 +67,11 @@
         if (result)
         {
             this.errorMessage = string.Empty;
-            this.Navigation.NavigateTo("/dashboard");
+            this.Navigation.NavigateTo($"/dashboard/{this.userName}");
             return;
         }
 
-        this.errorMessage = "El usuario o la contraseña no son correctos.";
+        this.errorMessage = "Usuario o contraseña incorrectos.";
     }
 
     /// <summary>
@@ -78,6 +79,6 @@
     /// </summary>
     private void GoToRegister()
     {
-        this.Navigation.NavigateTo("/registro");
+        this.Navigation.NavigateTo("/register");
     }
 }

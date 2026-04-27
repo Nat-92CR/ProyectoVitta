@@ -1,5 +1,5 @@
 UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType,Age,Sex
-Nat,1234,Natalia Tobal,60,160,Mantener,Moderado,Estándar,33,Femenino
+Nat,1234,Natalia Tobal,60,160,Perder grasa,Sedentario,Estándar,33,Femenino
 CarlosT,1234,Carlos Villalobos,60,160,Ganar masa,Sedentario,Estándar,28,Masculino
 DiegoR,1234,Diego Rodríguez,72,175,Mantener,Moderado,Estándar,31,Masculino
 SantiagoV,1234,Santiago Vargas,80,170,Ganar masa,Ligero,Vegetariana,26,Masculino
@@ -26,3 +26,4 @@ MauricioE,1234,Mauricio Esquivel,81,181,Mantener,Moderado,Estándar,35,Masculino
 RebecaI,1234,Rebeca Ibarra,60,166,Perder grasa,Ligero,Estándar,30,Femenino
 Cam,1234,Camilo,75,180,Ganar masa,Moderado,Estándar,26,Masculino
 Tat,1234,Tatiana,70,1.6,Perder grasa,Ligero,Vegetariana,25,Femenino
+admin,admin123,Administrador,70,170,Mantener,Sedentario,Estándar,30,No especificado

@@ -1,0 +1,261 @@
+﻿/* ============================================
+   NutritionInfo - Estilos aislados (scoped CSS)
+   ============================================ */
+
+.ni-header {
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    padding: 18px 0;
+}
+
+.ni-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ni-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ni-brand-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    font-weight: 800;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.ni-brand-text {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.ni-back-btn {
+    background: rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .ni-back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+.ni-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 48px 24px;
+}
+
+.ni-card {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E0E0E0;
+}
+
+.ni-title {
+    color: #2E7D32;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+}
+
+.ni-subtitle {
+    color: #616161;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+}
+
+.ni-section {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px dashed #E0E0E0;
+}
+
+    .ni-section:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+.ni-section-title {
+    color: #424242;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 14px 0;
+}
+
+/* Datos personales */
+.ni-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px 18px;
+}
+
+.ni-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .ni-field label {
+        font-weight: 600;
+        color: #424242;
+        font-size: 13px;
+    }
+
+    .ni-field input {
+        padding: 9px 12px;
+        border: 1px solid #BDBDBD;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: #F5F5F5;
+        color: #424242;
+        font-family: inherit;
+    }
+
+/* Stat cards */
+.ni-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.ni-stat-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f4faf4 100%);
+    border: 1px solid #C8E6C9;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+    .ni-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(46, 125, 50, 0.12);
+    }
+
+.ni-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2E7D32 0%, #43A047 100%);
+    color: #FFFFFF;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.25);
+}
+
+.ni-stat-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ni-stat-label {
+    font-size: 12px;
+    color: #616161;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.ni-stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #212121;
+}
+
+.ni-stat-unit {
+    font-size: 13px;
+    color: #616161;
+    font-weight: 600;
+}
+
+.ni-stat-extra {
+    font-size: 12px;
+    color: #2E7D32;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.ni-protein .ni-stat-icon {
+    background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+}
+
+.ni-carbs .ni-stat-icon {
+    background: linear-gradient(135deg, #F9A825 0%, #F57F17 100%);
+}
+
+.ni-fat .ni-stat-icon {
+    background: linear-gradient(135deg, #43A047 0%, #2E7D32 100%);
+}
+
+/* Actions */
+.ni-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+.ni-btn-secondary {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    border: 2px solid #2E7D32;
+    padding: 11px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease;
+    font-family: inherit;
+}
+
+    .ni-btn-secondary:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+.ni-empty {
+    color: #9E9E9E;
+    font-style: italic;
+    text-align: center;
+    padding: 40px 0;
+}
+
+@media (max-width: 700px) {
+    .ni-card {
+        padding: 22px;
+    }
+
+    .ni-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,39 +1,190 @@
-﻿@page "/nutrition-info"
+﻿@* Página de información nutricional del usuario. Fiel a NutritionInfoView de WinForms. *@
+@page "/informacion-nutricional/{UserName}"
 @rendermode InteractiveServer
+@using System.Globalization
+@using VittaController.Abstractions
+@using VittaModel
+@inject INutritionInfoController NutritionInfoController
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-@*
-    Presenta la vista base de información nutricional.
-    Deja preparado el acceso desde el dashboard para continuar
-    con la implementación del módulo correspondiente.
-*@
+<PageTitle>Vitta - Información nutricional</PageTitle>
 
-<PageTitle>Nutrition Info</PageTitle>
+<div class="ni-header">
+    <div class="ni-header-inner">
+        <div class="ni-brand">
+            <span class="ni-brand-circle">V</span>
+            <span class="ni-brand-text">Vitta</span>
+        </div>
+        <button type="button" class="ni-back-btn" @onclick="GoBack">← Volver</button>
+    </div>
+</div>
 
-<div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
-        <div class="vitta-brand-circle">Vitta</div>
-        <h1 class="vitta-auth-title">Nutrition Info</h1>
-        <p class="vitta-auth-subtitle">
-            Esta vista queda lista para mostrar los datos metabólicos y nutricionales del usuario.
+<div class="ni-content">
+    <div class="ni-card">
+        <h1 class="ni-title">Información nutricional</h1>
+        <p class="ni-subtitle">
+            Resumen calculado de tus datos personales y necesidades diarias.
         </p>
 
-        <div class="vitta-message">
-            Aquí se mostrará la información nutricional calculada según el perfil del usuario.
-        </div>
+        @if (loaded)
+        {
+            <section class="ni-section">
+                <h2 class="ni-section-title">Datos personales</h2>
+                <div class="ni-grid">
+                    <div class="ni-field">
+                        <label>Usuario</label>
+                        <input value="@userName" readonly />
+                    </div>
+                    <div class="ni-field">
+                        <label>Peso</label>
+                        <input value="@weight" readonly />
+                    </div>
+                    <div class="ni-field">
+                        <label>Altura</label>
+                        <input value="@height" readonly />
+                    </div>
+                    <div class="ni-field">
+                        <label>Objetivo</label>
+                        <input value="@goal" readonly />
+                    </div>
+                    <div class="ni-field">
+                        <label>Nivel de actividad</label>
+                        <input value="@activityLevel" readonly />
+                    </div>
+                    <div class="ni-field">
+                        <label>Tipo de dieta</label>
+                        <input value="@dietType" readonly />
+                    </div>
+                </div>
+            </section>
 
-        <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
-        </div>
+            <section class="ni-section">
+                <h2 class="ni-section-title">Indicadores</h2>
+                <div class="ni-stats-grid">
+                    <div class="ni-stat-card">
+                        <div class="ni-stat-icon">🔥</div>
+                        <div class="ni-stat-text">
+                            <span class="ni-stat-label">Calorías de mantenimiento</span>
+                            <span class="ni-stat-value">@maintenanceCalories <span class="ni-stat-unit">kcal</span></span>
+                        </div>
+                    </div>
+                    <div class="ni-stat-card">
+                        <div class="ni-stat-icon">⚖️</div>
+                        <div class="ni-stat-text">
+                            <span class="ni-stat-label">Índice de masa corporal</span>
+                            <span class="ni-stat-value">@bodyMassIndex</span>
+                            <span class="ni-stat-extra">@bodyMassIndexCategory</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="ni-section">
+                <h2 class="ni-section-title">Distribución diaria de macronutrientes</h2>
+                <div class="ni-stats-grid">
+                    <div class="ni-stat-card ni-protein">
+                        <div class="ni-stat-icon">🥩</div>
+                        <div class="ni-stat-text">
+                            <span class="ni-stat-label">Proteínas</span>
+                            <span class="ni-stat-value">@proteinGrams <span class="ni-stat-unit">g</span></span>
+                        </div>
+                    </div>
+                    <div class="ni-stat-card ni-carbs">
+                        <div class="ni-stat-icon">🌾</div>
+                        <div class="ni-stat-text">
+                            <span class="ni-stat-label">Carbohidratos</span>
+                            <span class="ni-stat-value">@carbohydratesGrams <span class="ni-stat-unit">g</span></span>
+                        </div>
+                    </div>
+                    <div class="ni-stat-card ni-fat">
+                        <div class="ni-stat-icon">🥑</div>
+                        <div class="ni-stat-text">
+                            <span class="ni-stat-label">Grasas</span>
+                            <span class="ni-stat-value">@fatGrams <span class="ni-stat-unit">g</span></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="ni-actions">
+                <button type="button" class="ni-btn-secondary" @onclick="GoBack">Cerrar</button>
+            </div>
+        }
+        else
+        {
+            <p class="ni-empty">No se pudo cargar la información del usuario.</p>
+        }
     </div>
 </div>
 
 @code {
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
-    private void GoToDashboard()
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private bool loaded;
+    private string userName = string.Empty;
+    private string weight = string.Empty;
+    private string height = string.Empty;
+    private string goal = string.Empty;
+    private string activityLevel = string.Empty;
+    private string dietType = string.Empty;
+    private string maintenanceCalories = "0";
+    private string bodyMassIndex = "0";
+    private string bodyMassIndexCategory = string.Empty;
+    private string proteinGrams = "0";
+    private string carbohydratesGrams = "0";
+    private string fatGrams = "0";
+
+    /// <summary>
+    /// Carga los datos del usuario y calcula la información nutricional al inicializar la página.
+    /// </summary>
+    protected override async Task OnInitializedAsync()
     {
-        this.Navigation.NavigateTo("/dashboard");
+        User? user = this.NutritionInfoController.GetUserByUserName(this.UserName);
+
+        if (user is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se pudo cargar la información del usuario.");
+            this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+            return;
+        }
+
+        this.userName = user.UserName;
+        this.weight = user.Weight.ToString("0.##", CultureInfo.InvariantCulture);
+        this.height = user.Height.ToString("0.##", CultureInfo.InvariantCulture);
+        this.goal = user.Goal;
+        this.activityLevel = user.ActivityLevel;
+        this.dietType = user.DietType;
+
+        double maintenance = this.NutritionInfoController.CalculateMaintenanceCalories(user);
+        this.maintenanceCalories = maintenance.ToString("0.##", CultureInfo.InvariantCulture);
+
+        double bmi = this.NutritionInfoController.CalculateBodyMassIndex(user);
+        this.bodyMassIndex = bmi.ToString("0.##", CultureInfo.InvariantCulture);
+        this.bodyMassIndexCategory = this.NutritionInfoController.GetBodyMassIndexCategory(bmi);
+
+        this.NutritionInfoController.CalculateMacronutrients(
+            user,
+            out double proteinG,
+            out double carbsG,
+            out double fatG);
+
+        this.proteinGrams = proteinG.ToString("0.##", CultureInfo.InvariantCulture);
+        this.carbohydratesGrams = carbsG.ToString("0.##", CultureInfo.InvariantCulture);
+        this.fatGrams = fatG.ToString("0.##", CultureInfo.InvariantCulture);
+
+        this.loaded = true;
+    }
+
+    /// <summary>
+    /// Regresa al dashboard del usuario actual.
+    /// </summary>
+    private void GoBack()
+    {
+        this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
     }
 }

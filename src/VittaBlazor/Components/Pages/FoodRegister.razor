@@ -1,39 +1,129 @@
-﻿@page "/food-register"
+﻿@* Página para el registro de alimentos. Fiel a FoodRegisterView de WinForms. *@
+@page "/registrar-alimento/{UserName}"
 @rendermode InteractiveServer
+@using VittaController.Abstractions
+@using VittaModel
+@inject IFoodController FoodController
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-@*
-    Presenta la vista base para el registro de alimentos.
-    Deja preparado el acceso desde el dashboard para continuar
-    con la implementación del módulo correspondiente.
-*@
+<PageTitle>Vitta - Registrar alimento</PageTitle>
 
-<PageTitle>Food Register</PageTitle>
+<div class="food-header">
+    <div class="food-header-inner">
+        <div class="food-brand">
+            <span class="food-brand-circle">V</span>
+            <span class="food-brand-text">Vitta</span>
+        </div>
+        <button type="button" class="food-back-btn" @onclick="GoBack">← Volver</button>
+    </div>
+</div>
 
-<div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
-        <div class="vitta-brand-circle">Vitta</div>
-        <h1 class="vitta-auth-title">Food Register</h1>
-        <p class="vitta-auth-subtitle">
-            Esta vista queda lista para integrar el formulario de registro de alimentos.
+<div class="food-content">
+    <div class="food-card">
+        <h1 class="food-title">Registrar alimento</h1>
+        <p class="food-subtitle">
+            Ingresa la información nutricional del alimento que deseas agregar al sistema.
         </p>
 
-        <div class="vitta-message">
-            Aquí se implementará el registro de alimentos para Proyecto 2.
+        <div class="food-grid">
+            <div class="food-field food-field-full">
+                <label>Nombre</label>
+                <input @bind="foodName" placeholder="Ej: Manzana" />
+            </div>
+
+            <div class="food-field">
+                <label>Calorías</label>
+                <input type="number" step="0.01" @bind="calories" />
+            </div>
+
+            <div class="food-field">
+                <label>Proteínas</label>
+                <input type="number" step="0.01" @bind="protein" />
+            </div>
+
+            <div class="food-field">
+                <label>Carbohidratos</label>
+                <input type="number" step="0.01" @bind="carbohydrates" />
+            </div>
+
+            <div class="food-field">
+                <label>Grasas</label>
+                <input type="number" step="0.01" @bind="fat" />
+            </div>
         </div>
 
-        <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
+        <div class="food-actions">
+            <button type="button" class="food-btn-primary" @onclick="SaveFood">
+                Guardar
+            </button>
+            <button type="button" class="food-btn-secondary" @onclick="GoBack">
+                Cancelar
+            </button>
         </div>
     </div>
 </div>
 
 @code {
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
-    private void GoToDashboard()
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private string foodName = string.Empty;
+    private double calories;
+    private double protein;
+    private double carbohydrates;
+    private double fat;
+
+    /// <summary>
+    /// Valida los campos y registra un nuevo alimento.
+    /// </summary>
+    private async Task SaveFood()
     {
-        this.Navigation.NavigateTo("/dashboard");
+        if (string.IsNullOrWhiteSpace(this.foodName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre del alimento.");
+            return;
+        }
+
+        if (this.calories < 0 || this.protein < 0 || this.carbohydrates < 0 || this.fat < 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Los valores nutricionales no pueden ser negativos.");
+            return;
+        }
+
+        var food = new Food(this.foodName.Trim(), this.calories, this.protein, this.carbohydrates, this.fat);
+        bool result = this.FoodController.RegisterFood(food);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El alimento se registró correctamente.");
+            this.ClearFields();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No fue posible registrar el alimento. Verifique si ya existe o si los datos son inválidos.");
+    }
+
+    /// <summary>
+    /// Limpia los campos del formulario.
+    /// </summary>
+    private void ClearFields()
+    {
+        this.foodName = string.Empty;
+        this.calories = 0;
+        this.protein = 0;
+        this.carbohydrates = 0;
+        this.fat = 0;
+    }
+
+    /// <summary>
+    /// Regresa a la vista de consulta de alimentos.
+    /// </summary>
+    private void GoBack()
+    {
+        this.Navigation.NavigateTo($"/consultar-alimentos/{this.UserName}");
     }
 }

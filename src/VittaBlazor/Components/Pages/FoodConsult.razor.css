@@ -1,0 +1,325 @@
+﻿/* ============================================
+   FoodConsult - Estilos aislados (scoped CSS)
+   ============================================ */
+
+.fc-header {
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    padding: 18px 0;
+}
+
+.fc-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fc-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fc-brand-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    font-weight: 800;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.fc-brand-text {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.fc-back-btn {
+    background: rgba(255, 255, 255, 0.18);
+    color: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .fc-back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+.fc-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 48px 24px;
+}
+
+.fc-card {
+    background-color: #FFFFFF;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E0E0E0;
+}
+
+.fc-title {
+    color: #2E7D32;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+}
+
+.fc-subtitle {
+    color: #616161;
+    font-size: 14px;
+    margin: 0 0 20px 0;
+}
+
+/* Search row */
+.fc-search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.fc-search-input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 14px;
+    border: 1px solid #BDBDBD;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #FAFAFA;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+    font-family: inherit;
+}
+
+    .fc-search-input:focus {
+        outline: none;
+        border-color: #2E7D32;
+        background-color: #FFFFFF;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+/* Buttons */
+.fc-btn-primary,
+.fc-btn-secondary,
+.fc-btn-add,
+.fc-btn-danger {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.18s ease, color 0.18s ease;
+    font-family: inherit;
+    border: 2px solid #2E7D32;
+    white-space: nowrap;
+}
+
+.fc-btn-primary {
+    background-color: #2E7D32;
+    color: #FFFFFF;
+}
+
+    .fc-btn-primary:hover {
+        background-color: #1B5E20;
+        transform: translateY(-1px);
+    }
+
+.fc-btn-secondary {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+}
+
+    .fc-btn-secondary:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+.fc-btn-add {
+    background-color: #43A047;
+    color: #FFFFFF;
+    border-color: #43A047;
+}
+
+    .fc-btn-add:hover {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+        transform: translateY(-1px);
+    }
+
+.fc-btn-danger {
+    background-color: #FFFFFF;
+    color: #C62828;
+    border-color: #C62828;
+}
+
+    .fc-btn-danger:hover {
+        background-color: #C62828;
+        color: #FFFFFF;
+    }
+
+/* Table */
+.fc-table-wrapper {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid #E0E0E0;
+    margin-bottom: 24px;
+}
+
+.fc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+    .fc-table thead {
+        background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    }
+
+    .fc-table th {
+        color: #FFFFFF;
+        font-weight: 700;
+        text-align: left;
+        padding: 12px 14px;
+        white-space: nowrap;
+    }
+
+    .fc-table td {
+        padding: 11px 14px;
+        border-bottom: 1px solid #F0F0F0;
+        color: #212121;
+    }
+
+    .fc-table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+        .fc-table tbody tr:hover {
+            background-color: #F5FBF5;
+        }
+
+.fc-row-selected {
+    background-color: #E8F5E9 !important;
+}
+
+.fc-empty {
+    text-align: center;
+    color: #9E9E9E;
+    padding: 22px !important;
+    font-style: italic;
+}
+
+.fc-row-btn {
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    border: 1px solid #2E7D32;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+}
+
+    .fc-row-btn:hover {
+        background-color: #2E7D32;
+        color: #FFFFFF;
+    }
+
+/* Edit card */
+.fc-edit-card {
+    background-color: #F9FBF9;
+    border: 1px solid #C8E6C9;
+    border-radius: 12px;
+    padding: 22px;
+}
+
+.fc-edit-title {
+    color: #2E7D32;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+}
+
+.fc-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 18px;
+}
+
+.fc-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fc-field-full {
+    grid-column: 1 / -1;
+}
+
+.fc-field label {
+    font-weight: 600;
+    color: #424242;
+    font-size: 13px;
+}
+
+.fc-field input {
+    padding: 9px 12px;
+    border: 1px solid #BDBDBD;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #FFFFFF;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    font-family: inherit;
+}
+
+    .fc-field input:focus {
+        outline: none;
+        border-color: #2E7D32;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .fc-field input[readonly] {
+        background-color: #F5F5F5;
+        color: #616161;
+    }
+
+.fc-edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+    .fc-card {
+        padding: 22px;
+    }
+
+    .fc-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fc-search-input {
+        flex-basis: 100%;
+    }
+}

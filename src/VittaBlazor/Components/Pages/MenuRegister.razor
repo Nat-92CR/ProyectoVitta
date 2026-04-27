@@ -1,39 +1,622 @@
-﻿@page "/menu-register"
+﻿@* Página para el registro y edición de menús diarios. Fiel a MenuRegisterView de WinForms. *@
+@page "/registrar-menu/{UserName}"
 @rendermode InteractiveServer
+@using System.Globalization
+@using VittaController.Abstractions
+@using VittaModel
+@inject IMenuController MenuController
+@inject IFoodController FoodController
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-@*
-    Presenta la vista base para el registro de menús.
-    Deja preparado el acceso desde el dashboard para continuar
-    con la implementación del módulo correspondiente.
-*@
+<PageTitle>Vitta - Registrar menú</PageTitle>
 
-<PageTitle>Menu Register</PageTitle>
+<div class="mr-header">
+    <div class="mr-header-inner">
+        <div class="mr-brand">
+            <span class="mr-brand-circle">V</span>
+            <span class="mr-brand-text">Vitta</span>
+        </div>
+        <button type="button" class="mr-back-btn" @onclick="GoBack">← Volver</button>
+    </div>
+</div>
 
-<div class="vitta-page-center">
-    <div class="vitta-card" style="width: 100%; max-width: 760px;">
-        <div class="vitta-brand-circle">Vitta</div>
-        <h1 class="vitta-auth-title">Menu Register</h1>
-        <p class="vitta-auth-subtitle">
-            Esta vista queda lista para integrar el registro y edición de menús diarios.
+<div class="mr-content">
+    <div class="mr-card">
+        <h1 class="mr-title">Registrar menú</h1>
+        <p class="mr-subtitle">
+            Registra un menú nuevo o carga uno existente para editarlo. Los totales se actualizan automáticamente.
         </p>
 
-        <div class="vitta-message">
-            Aquí se implementará el módulo de registro de menús del usuario.
+        <section class="mr-section">
+            <h2 class="mr-section-title">Datos del menú</h2>
+            <div class="mr-row">
+                <div class="mr-field">
+                    <label>Fecha del menú</label>
+                    <input type="date" @bind="menuDate" />
+                </div>
+
+                <div class="mr-field mr-flex-grow">
+                    <label>Menús existentes</label>
+                    <select @bind="selectedExistingMenu">
+                        <option value="">Seleccione un menú existente...</option>
+                        @foreach (var date in existingMenuDates)
+                        {
+                            <option value="@date">@date</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mr-field-actions">
+                    <button type="button" class="mr-btn-secondary" @onclick="LoadExistingMenu">Cargar menú</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mr-section">
+            <h2 class="mr-section-title">Agregar alimento al menú</h2>
+            <div class="mr-row">
+                <div class="mr-field mr-flex-grow">
+                    <label>Alimento</label>
+                    <select @bind="selectedFood">
+                        <option value="">Seleccione un alimento...</option>
+                        @foreach (var food in availableFoods)
+                        {
+                            <option value="@food.Name">@food.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mr-field">
+                    <label>Tiempo de comida</label>
+                    <select @bind="selectedMealTime">
+                        <option value="">Seleccione...</option>
+                        <option value="Desayuno">Desayuno</option>
+                        <option value="Merienda mañana">Merienda mañana</option>
+                        <option value="Almuerzo">Almuerzo</option>
+                        <option value="Merienda tarde">Merienda tarde</option>
+                        <option value="Cena">Cena</option>
+                    </select>
+                </div>
+
+                <div class="mr-field mr-field-small">
+                    <label>Cantidad</label>
+                    <input type="number" min="1" max="20" @bind="quantity" />
+                </div>
+
+                <div class="mr-field-actions">
+                    <button type="button" class="mr-btn-primary" @onclick="AddFood">Agregar</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mr-section">
+            <h2 class="mr-section-title">Tiempos de comida</h2>
+            <div class="mr-meals-grid">
+                @foreach (var meal in mealOrder)
+                {
+                    <div class="mr-meal-card">
+                        <h3 class="mr-meal-title">@meal</h3>
+                        @if (meals[meal].Count == 0)
+                        {
+                            <p class="mr-meal-empty">Sin alimentos registrados.</p>
+                        }
+                        else
+                        {
+                            <ul class="mr-meal-list">
+                                @foreach (var item in meals[meal])
+                                {
+                                    <li>
+                                        <span>@item.FoodName <strong>x@item.Quantity</strong></span>
+                                        <button type="button" class="mr-remove-btn" @onclick="@(() => RemoveItem(meal, item))" title="Quitar">×</button>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="mr-section">
+            <h2 class="mr-section-title">Totales nutricionales</h2>
+            <div class="mr-totals-grid">
+                <div class="mr-total-card">
+                    <span class="mr-total-label">Calorías</span>
+                    <span class="mr-total-value">@FormatNumber(totalCalories)</span>
+                </div>
+                <div class="mr-total-card">
+                    <span class="mr-total-label">Proteínas</span>
+                    <span class="mr-total-value">@FormatNumber(totalProtein)</span>
+                </div>
+                <div class="mr-total-card">
+                    <span class="mr-total-label">Carbohidratos</span>
+                    <span class="mr-total-value">@FormatNumber(totalCarbohydrates)</span>
+                </div>
+                <div class="mr-total-card">
+                    <span class="mr-total-label">Grasas</span>
+                    <span class="mr-total-value">@FormatNumber(totalFat)</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="mr-actions">
+            @if (isEditMode)
+            {
+                <button type="button" class="mr-btn-primary" @onclick="UpdateMenu">Actualizar menú</button>
+                <button type="button" class="mr-btn-danger" @onclick="DeleteMenu">Eliminar menú</button>
+            }
+            else
+            {
+                <button type="button" class="mr-btn-primary" @onclick="SaveMenu">Guardar menú</button>
+            }
+            <button type="button" class="mr-btn-secondary" @onclick="ClearForm">Limpiar</button>
+            <button type="button" class="mr-btn-secondary" @onclick="GoBack">Cancelar</button>
         </div>
 
-        <div class="vitta-actions">
-            <button type="button" class="vitta-btn-secondary" @onclick="GoToDashboard">Volver al dashboard</button>
-        </div>
     </div>
 </div>
 
 @code {
     /// <summary>
-    /// Redirige a la vista principal del dashboard.
+    /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
-    private void GoToDashboard()
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Representa un alimento dentro del menú con su cantidad.
+    /// </summary>
+    private class MealItem
     {
-        this.Navigation.NavigateTo("/dashboard");
+        public string FoodName { get; set; } = string.Empty;
+        public int Quantity { get; set; }
+    }
+
+    private readonly string[] mealOrder = new[]
+    {
+        "Desayuno",
+        "Merienda mañana",
+        "Almuerzo",
+        "Merienda tarde",
+        "Cena"
+    };
+
+    private Dictionary<string, List<MealItem>> meals = new();
+    private List<Food> availableFoods = new();
+    private List<string> existingMenuDates = new();
+
+    private DateTime menuDate = DateTime.Today;
+    private string selectedExistingMenu = string.Empty;
+    private string selectedFood = string.Empty;
+    private string selectedMealTime = string.Empty;
+    private int quantity = 1;
+
+    private bool isEditMode;
+    private DateTime selectedOriginalMenuDate = DateTime.MinValue;
+
+    private double totalCalories;
+    private double totalProtein;
+    private double totalCarbohydrates;
+    private double totalFat;
+
+    /// <summary>
+    /// Inicializa los datos del módulo: alimentos disponibles, meals vacíos, menús existentes.
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        foreach (var meal in this.mealOrder)
+        {
+            this.meals[meal] = new List<MealItem>();
+        }
+
+        this.availableFoods = this.FoodController.GetFoods();
+        this.availableFoods.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase));
+
+        this.LoadExistingMenuDates();
+    }
+
+    /// <summary>
+    /// Carga la lista de fechas de los menús existentes del usuario actual.
+    /// </summary>
+    private void LoadExistingMenuDates()
+    {
+        var userMenus = this.MenuController.GetMenusByUser(this.UserName);
+        userMenus.Sort((a, b) => a.MenuDate.CompareTo(b.MenuDate));
+
+        this.existingMenuDates = userMenus
+            .Select(m => m.MenuDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Agrega el alimento seleccionado al tiempo de comida correspondiente.
+    /// </summary>
+    private async Task AddFood()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedFood))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un alimento.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.selectedMealTime))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un tiempo de comida.");
+            return;
+        }
+
+        if (this.quantity <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La cantidad debe ser mayor que cero.");
+            return;
+        }
+
+        if (this.selectedFood.Contains(","))
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se permiten comas porque el sistema guarda la información en archivo CSV.");
+            return;
+        }
+
+        var list = this.meals[this.selectedMealTime];
+        var existing = list.FirstOrDefault(i => i.FoodName.Equals(this.selectedFood, StringComparison.OrdinalIgnoreCase));
+
+        if (existing != null)
+        {
+            existing.Quantity += this.quantity;
+        }
+        else
+        {
+            list.Add(new MealItem { FoodName = this.selectedFood, Quantity = this.quantity });
+        }
+
+        this.RefreshTotals();
+        this.ResetFoodSelection();
+    }
+
+    /// <summary>
+    /// Elimina un alimento puntual del tiempo de comida.
+    /// </summary>
+    private void RemoveItem(string mealTime, MealItem item)
+    {
+        this.meals[mealTime].Remove(item);
+        this.RefreshTotals();
+    }
+
+    /// <summary>
+    /// Calcula los totales nutricionales sumando todos los alimentos cargados en los tiempos de comida.
+    /// </summary>
+    private void RefreshTotals()
+    {
+        double cal = 0;
+        double prot = 0;
+        double carb = 0;
+        double fat = 0;
+
+        foreach (var meal in this.meals)
+        {
+            foreach (var item in meal.Value)
+            {
+                var food = this.availableFoods.FirstOrDefault(f =>
+                    f.Name.Equals(item.FoodName, StringComparison.OrdinalIgnoreCase));
+
+                if (food is not null)
+                {
+                    cal += food.Calories * item.Quantity;
+                    prot += food.Protein * item.Quantity;
+                    carb += food.Carbohydrates * item.Quantity;
+                    fat += food.Fat * item.Quantity;
+                }
+            }
+        }
+
+        this.totalCalories = cal;
+        this.totalProtein = prot;
+        this.totalCarbohydrates = carb;
+        this.totalFat = fat;
+    }
+
+    /// <summary>
+    /// Carga el menú seleccionado en el formulario para su edición.
+    /// </summary>
+    private async Task LoadExistingMenu()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedExistingMenu))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Seleccione un menú existente.");
+            return;
+        }
+
+        if (!DateTime.TryParseExact(
+                this.selectedExistingMenu,
+                "yyyy-MM-dd",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime parsedDate))
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se pudo interpretar la fecha del menú seleccionado.");
+            return;
+        }
+
+        var menu = this.MenuController.GetMenuByUserAndDate(this.UserName, parsedDate);
+
+        if (menu is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se encontró el menú seleccionado.");
+            return;
+        }
+
+        this.LoadMenuIntoForm(menu);
+        this.isEditMode = true;
+        this.selectedOriginalMenuDate = menu.MenuDate.Date;
+    }
+
+    /// <summary>
+    /// Carga la información de un menú en los campos del formulario.
+    /// </summary>
+    private void LoadMenuIntoForm(Menu menu)
+    {
+        this.menuDate = menu.MenuDate.Date;
+
+        this.meals["Desayuno"] = this.ParseMealText(menu.Breakfast);
+        this.meals["Merienda mañana"] = this.ParseMealText(menu.MorningSnack);
+        this.meals["Almuerzo"] = this.ParseMealText(menu.Lunch);
+        this.meals["Merienda tarde"] = this.ParseMealText(menu.AfternoonSnack);
+        this.meals["Cena"] = this.ParseMealText(menu.Dinner);
+
+        this.RefreshTotals();
+    }
+
+    /// <summary>
+    /// Convierte el texto del menú almacenado al formato de lista de alimentos.
+    /// </summary>
+    private List<MealItem> ParseMealText(string mealText)
+    {
+        var result = new List<MealItem>();
+
+        if (string.IsNullOrWhiteSpace(mealText))
+        {
+            return result;
+        }
+
+        var parts = mealText
+            .Replace("\r\n", "|")
+            .Replace("\n", "|")
+            .Replace("\r", "|")
+            .Replace(" | ", "|")
+            .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var part in parts)
+        {
+            var clean = part.Trim();
+            if (string.IsNullOrWhiteSpace(clean))
+            {
+                continue;
+            }
+
+            int markerIndex = clean.LastIndexOf(" x", StringComparison.OrdinalIgnoreCase);
+            string foodName = clean;
+            int qty = 1;
+
+            if (markerIndex > -1)
+            {
+                string possibleName = clean.Substring(0, markerIndex).Trim();
+                string possibleQty = clean.Substring(markerIndex + 2).Trim();
+
+                if (!string.IsNullOrWhiteSpace(possibleName) &&
+                    int.TryParse(possibleQty, out int parsedQty) &&
+                    parsedQty > 0)
+                {
+                    foodName = possibleName;
+                    qty = parsedQty;
+                }
+            }
+
+            result.Add(new MealItem { FoodName = foodName, Quantity = qty });
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Convierte la lista interna de alimentos al formato de almacenamiento (separado por " | ").
+    /// </summary>
+    private string SerializeMeal(string mealTime)
+    {
+        var items = this.meals[mealTime]
+            .Select(i => $"{i.FoodName} x{i.Quantity}");
+
+        return string.Join(" | ", items);
+    }
+
+    /// <summary>
+    /// Valida los datos del formulario antes de guardar o actualizar.
+    /// </summary>
+    private async Task<(bool Valid, string Breakfast, string MorningSnack, string Lunch, string AfternoonSnack, string Dinner)> ValidateAndSerializeAsync()
+    {
+        string breakfast = this.SerializeMeal("Desayuno");
+        string morning = this.SerializeMeal("Merienda mañana");
+        string lunch = this.SerializeMeal("Almuerzo");
+        string afternoon = this.SerializeMeal("Merienda tarde");
+        string dinner = this.SerializeMeal("Cena");
+
+        if (string.IsNullOrWhiteSpace(breakfast) &&
+            string.IsNullOrWhiteSpace(morning) &&
+            string.IsNullOrWhiteSpace(lunch) &&
+            string.IsNullOrWhiteSpace(afternoon) &&
+            string.IsNullOrWhiteSpace(dinner))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe registrar al menos un tiempo de comida.");
+            return (false, breakfast, morning, lunch, afternoon, dinner);
+        }
+
+        if (this.ContainsComma(breakfast) ||
+            this.ContainsComma(morning) ||
+            this.ContainsComma(lunch) ||
+            this.ContainsComma(afternoon) ||
+            this.ContainsComma(dinner))
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se permiten comas en los tiempos de comida porque el sistema guarda la información en archivo CSV.");
+            return (false, breakfast, morning, lunch, afternoon, dinner);
+        }
+
+        return (true, breakfast, morning, lunch, afternoon, dinner);
+    }
+
+    /// <summary>
+    /// Guarda un menú nuevo en el sistema.
+    /// </summary>
+    private async Task SaveMenu()
+    {
+        var (valid, breakfast, morning, lunch, afternoon, dinner) = await this.ValidateAndSerializeAsync();
+        if (!valid)
+        {
+            return;
+        }
+
+        var menu = new Menu(
+            this.UserName,
+            this.menuDate.Date,
+            breakfast,
+            morning,
+            lunch,
+            afternoon,
+            dinner);
+
+        bool result = this.MenuController.RegisterMenu(menu);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El menú se registró correctamente.");
+            this.ClearForm();
+            this.LoadExistingMenuDates();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No fue posible registrar el menú. Verifique si ya existe un menú para esa fecha o si los datos son inválidos.");
+    }
+
+    /// <summary>
+    /// Actualiza el menú que se está editando.
+    /// </summary>
+    private async Task UpdateMenu()
+    {
+        if (!this.isEditMode || this.selectedOriginalMenuDate == DateTime.MinValue)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Primero debe cargar un menú existente para editarlo.");
+            return;
+        }
+
+        var (valid, breakfast, morning, lunch, afternoon, dinner) = await this.ValidateAndSerializeAsync();
+        if (!valid)
+        {
+            return;
+        }
+
+        var updated = new Menu(
+            this.UserName,
+            this.menuDate.Date,
+            breakfast,
+            morning,
+            lunch,
+            afternoon,
+            dinner);
+
+        bool result = this.MenuController.UpdateMenu(this.UserName, this.selectedOriginalMenuDate, updated);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El menú se actualizó correctamente.");
+            this.selectedOriginalMenuDate = updated.MenuDate.Date;
+            this.LoadExistingMenuDates();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No fue posible actualizar el menú. Verifique si la nueva fecha ya existe o si los datos son inválidos.");
+    }
+
+    /// <summary>
+    /// Elimina el menú actualmente cargado, previa confirmación del usuario.
+    /// </summary>
+    private async Task DeleteMenu()
+    {
+        if (!this.isEditMode || this.selectedOriginalMenuDate == DateTime.MinValue)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Primero debe cargar un menú existente para eliminarlo.");
+            return;
+        }
+
+        bool confirmed = await this.JS.InvokeAsync<bool>(
+            "confirm",
+            "¿Está seguro de que desea eliminar este menú?");
+
+        if (!confirmed)
+        {
+            return;
+        }
+
+        bool result = this.MenuController.DeleteMenu(this.UserName, this.selectedOriginalMenuDate);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El menú se eliminó correctamente.");
+            this.ClearForm();
+            this.LoadExistingMenuDates();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No fue posible eliminar el menú seleccionado.");
+    }
+
+    /// <summary>
+    /// Limpia los datos del formulario y desactiva el modo edición.
+    /// </summary>
+    private void ClearForm()
+    {
+        foreach (var meal in this.mealOrder)
+        {
+            this.meals[meal] = new List<MealItem>();
+        }
+
+        this.menuDate = DateTime.Today;
+        this.selectedExistingMenu = string.Empty;
+        this.isEditMode = false;
+        this.selectedOriginalMenuDate = DateTime.MinValue;
+        this.ResetFoodSelection();
+        this.RefreshTotals();
+    }
+
+    /// <summary>
+    /// Resetea los campos de selección de alimento.
+    /// </summary>
+    private void ResetFoodSelection()
+    {
+        this.selectedFood = string.Empty;
+        this.selectedMealTime = string.Empty;
+        this.quantity = 1;
+    }
+
+    /// <summary>
+    /// Indica si el texto contiene una coma.
+    /// </summary>
+    private bool ContainsComma(string text)
+    {
+        return !string.IsNullOrEmpty(text) && text.Contains(",");
+    }
+
+    /// <summary>
+    /// Formatea un número con dos decimales como en WinForms.
+    /// </summary>
+    private string FormatNumber(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Regresa al dashboard del usuario actual.
+    /// </summary>
+    private void GoBack()
+    {
+        this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
     }
 }
