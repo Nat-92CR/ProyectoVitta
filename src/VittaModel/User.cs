@@ -1,5 +1,6 @@
 ﻿namespace VittaModel
 {
+    using System;
     using System.Globalization;
 
     /// <summary>
@@ -18,8 +19,16 @@
         /// <param name="goal">Objetivo.</param>
         /// <param name="activityLevel">Nivel de actividad.</param>
         /// <param name="dietType">Tipo de dieta.</param>
-        public User(string userName, string password, string name, double weight, double height, string goal, string activityLevel, string dietType)
-            : this(userName, password, name, weight, height, goal, activityLevel, dietType, 0, "No especificado")
+        public User(
+            string userName,
+            string password,
+            string name,
+            double weight,
+            double height,
+            string goal,
+            string activityLevel,
+            string dietType)
+            : this(userName, password, name, weight, height, goal, activityLevel, dietType, 0, "No especificado", true, false)
         {
         }
 
@@ -36,7 +45,49 @@
         /// <param name="dietType">Tipo de dieta.</param>
         /// <param name="age">Edad.</param>
         /// <param name="sex">Sexo.</param>
-        public User(string userName, string password, string name, double weight, double height, string goal, string activityLevel, string dietType, int age, string sex)
+        public User(
+            string userName,
+            string password,
+            string name,
+            double weight,
+            double height,
+            string goal,
+            string activityLevel,
+            string dietType,
+            int age,
+            string sex)
+            : this(userName, password, name, weight, height, goal, activityLevel, dietType, age, sex, true, false)
+        {
+        }
+
+        /// <summary>
+        /// Inicializa un usuario con todos sus datos administrativos.
+        /// </summary>
+        /// <param name="userName">Nombre de usuario.</param>
+        /// <param name="password">Contraseña.</param>
+        /// <param name="name">Nombre completo.</param>
+        /// <param name="weight">Peso.</param>
+        /// <param name="height">Altura.</param>
+        /// <param name="goal">Objetivo.</param>
+        /// <param name="activityLevel">Nivel de actividad.</param>
+        /// <param name="dietType">Tipo de dieta.</param>
+        /// <param name="age">Edad.</param>
+        /// <param name="sex">Sexo.</param>
+        /// <param name="isActive">Indica si el usuario está activo.</param>
+        /// <param name="isAdmin">Indica si el usuario es administrador.</param>
+        public User(
+            string userName,
+            string password,
+            string name,
+            double weight,
+            double height,
+            string goal,
+            string activityLevel,
+            string dietType,
+            int age,
+            string sex,
+            bool isActive,
+            bool isAdmin)
         {
             this.UserName = userName;
             this.Password = password;
@@ -48,6 +99,8 @@
             this.DietType = dietType;
             this.Age = age;
             this.Sex = sex;
+            this.IsActive = isActive;
+            this.IsAdmin = isAdmin;
         }
 
         /// <summary>
@@ -82,6 +135,24 @@
             else
             {
                 this.Sex = "No especificado";
+            }
+
+            if (userData.Length > 10 && bool.TryParse(userData[10], out bool parsedIsActive))
+            {
+                this.IsActive = parsedIsActive;
+            }
+            else
+            {
+                this.IsActive = true;
+            }
+
+            if (userData.Length > 11 && bool.TryParse(userData[11], out bool parsedIsAdmin))
+            {
+                this.IsAdmin = parsedIsAdmin;
+            }
+            else
+            {
+                this.IsAdmin = string.Equals(this.UserName, "admin", StringComparison.OrdinalIgnoreCase);
             }
         }
 
@@ -134,5 +205,15 @@
         /// Obtiene o establece el sexo.
         /// </summary>
         public string Sex { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece un valor que indica si el usuario está activo.
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Obtiene o establece un valor que indica si el usuario es administrador.
+        /// </summary>
+        public bool IsAdmin { get; set; }
     }
 }

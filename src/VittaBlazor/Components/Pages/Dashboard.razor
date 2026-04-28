@@ -1,8 +1,10 @@
-﻿@* Panel principal de la aplicación. Muestra tiles diferentes según rol (admin vs usuario regular). *@
-@page "/dashboard/{UserName}"
+﻿@page "/dashboard/{UserName}"
 @rendermode InteractiveServer
+@using VittaController
+@using VittaModel
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
+@inject UserController UserController
 
 <PageTitle>Vitta - Panel principal</PageTitle>
 
@@ -27,7 +29,7 @@
         </h1>
         <p class="dash-hero-sub">
             @(IsAdmin
-                ? "Gestiona los alimentos disponibles para todos los usuarios del sistema."
+                ? "Gestiona los alimentos, los usuarios y las estadísticas globales del sistema."
                 : "Desde aquí puedes acceder a los módulos principales de Vitta para gestionar tu información nutricional.")
         </p>
     </section>
@@ -40,7 +42,6 @@
 
             @if (IsAdmin)
             {
-                @* ============== TILES ADMIN ============== *@
                 <button type="button" class="dash-tile" @onclick="GoToProfile">
                     <div class="dash-tile-icon">👤</div>
                     <div class="dash-tile-text">
@@ -56,10 +57,25 @@
                         <span class="dash-tile-desc">Crear, editar y eliminar alimentos</span>
                     </div>
                 </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToAdminUsers">
+                    <div class="dash-tile-icon">👥</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Administrar usuarios</span>
+                        <span class="dash-tile-desc">Registrar, resetear, cambiar tipo y desactivar usuarios</span>
+                    </div>
+                </button>
+
+                <button type="button" class="dash-tile" @onclick="GoToAdminStatistics">
+                    <div class="dash-tile-icon">📊</div>
+                    <div class="dash-tile-text">
+                        <span class="dash-tile-title">Estadísticas globales</span>
+                        <span class="dash-tile-desc">Consulta el comportamiento general del sistema</span>
+                    </div>
+                </button>
             }
             else
             {
-                @* ============== TILES USUARIO REGULAR ============== *@
                 <button type="button" class="dash-tile" @onclick="GoToProfile">
                     <div class="dash-tile-icon">👤</div>
                     <div class="dash-tile-text">
@@ -113,70 +129,64 @@
 </div>
 
 @code {
-    /// <summary>
-    /// Obtiene o establece el nombre del usuario autenticado, recibido como parámetro de la ruta.
-    /// </summary>
     [Parameter]
     public string UserName { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Indica si el usuario actual tiene rol de administrador.
-    /// Por ahora se determina por el nombre de usuario "admin" (Fase 1).
-    /// En Fase 2 se reemplazará por un campo Role en el modelo User.
-    /// </summary>
-    private bool IsAdmin => string.Equals(this.UserName, "admin", StringComparison.OrdinalIgnoreCase);
+    private User? currentUser;
 
-    /// <summary>
-    /// Redirige a la vista de perfil del usuario actual.
-    /// </summary>
+    private bool IsAdmin => this.currentUser?.IsAdmin ?? false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.currentUser = this.UserController.GetUserByUserName(this.UserName);
+
+        if (this.currentUser is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se pudo cargar la sesión del usuario.");
+            this.Navigation.NavigateTo("/login");
+        }
+    }
+
     private void GoToProfile()
     {
         this.Navigation.NavigateTo($"/perfil/{this.UserName}");
     }
 
-    /// <summary>
-    /// Redirige a la vista de administración de alimentos (solo admin).
-    /// </summary>
     private void GoToFoodAdmin()
     {
         this.Navigation.NavigateTo($"/admin/alimentos/{this.UserName}");
     }
 
-    /// <summary>
-    /// Redirige a la vista de consulta de alimentos solo lectura (usuario regular).
-    /// </summary>
+    private void GoToAdminUsers()
+    {
+        this.Navigation.NavigateTo($"/admin/usuarios/{this.UserName}");
+    }
+
+    private void GoToAdminStatistics()
+    {
+        this.Navigation.NavigateTo($"/admin/estadisticas/{this.UserName}");
+    }
+
     private void GoToFoodView()
     {
         this.Navigation.NavigateTo($"/alimentos/{this.UserName}");
     }
 
-    /// <summary>
-    /// Redirige a la vista de registro de menús del usuario actual.
-    /// </summary>
     private void GoToMenuRegister()
     {
         this.Navigation.NavigateTo($"/registrar-menu/{this.UserName}");
     }
 
-    /// <summary>
-    /// Redirige a la vista de información nutricional del usuario actual.
-    /// </summary>
     private void GoToNutritionInfo()
     {
         this.Navigation.NavigateTo($"/informacion-nutricional/{this.UserName}");
     }
 
-    /// <summary>
-    /// Redirige a la vista de estadísticas nutricionales del usuario actual.
-    /// </summary>
     private void GoToStatistics()
     {
         this.Navigation.NavigateTo($"/estadisticas/{this.UserName}");
     }
 
-    /// <summary>
-    /// Solicita confirmación al usuario y, si acepta, cierra la sesión actual y regresa al login.
-    /// </summary>
     private async Task Logout()
     {
         bool confirmed = await this.JS.InvokeAsync<bool>("confirm", "¿Deseas cerrar la sesión actual?");

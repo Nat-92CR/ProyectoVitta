@@ -1,72 +1,65 @@
-﻿.rg-page {
+﻿.lg-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #F4F8F4 0%, #EAF4EC 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 34px 18px;
+    padding: 32px 18px;
 }
 
-.rg-card {
+.lg-card {
     width: 100%;
-    max-width: 980px;
+    max-width: 620px;
     background-color: #FFFFFF;
     border-radius: 28px;
-    padding: 36px 36px 30px 36px;
-    box-shadow: 0 18px 42px rgba(46, 125, 50, 0.10);
+    padding: 42px 34px 34px 34px;
+    box-shadow: 0 18px 40px rgba(46, 125, 50, 0.10);
     border: 1px solid #E2E8E2;
 }
 
-.rg-brand-circle {
-    width: 92px;
-    height: 92px;
+.lg-brand-circle {
+    width: 126px;
+    height: 126px;
     border-radius: 50%;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 26px auto;
     background: linear-gradient(135deg, #34C759 0%, #2E7D32 100%);
     color: #FFFFFF;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
+    font-size: 22px;
     font-weight: 800;
-    box-shadow: 0 10px 24px rgba(46, 125, 50, 0.18);
+    box-shadow: 0 0 0 10px rgba(52, 199, 89, 0.12), 0 10px 24px rgba(46, 125, 50, 0.18);
 }
 
-.rg-title {
-    margin: 0;
-    text-align: center;
-    color: #2E7D32;
-    font-size: 24px;
+.lg-title {
+    margin: 0 0 10px 0;
+    font-size: 28px;
     font-weight: 800;
+    color: #212121;
 }
 
-.rg-subtitle {
-    margin: 10px 0 28px 0;
-    text-align: center;
+.lg-subtitle {
+    margin: 0 0 30px 0;
     color: #616161;
-    font-size: 15px;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-.rg-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px 20px;
-}
-
-.rg-field {
+.lg-field {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 22px;
 }
 
-    .rg-field label {
-        color: #212121;
+    .lg-field label {
         font-size: 15px;
         font-weight: 700;
+        color: #212121;
     }
 
-    .rg-field input,
-    .rg-field select {
+    .lg-field input {
         height: 50px;
         border: 1px solid #CFE0D1;
         background-color: #F7FBF7;
@@ -78,67 +71,61 @@
         transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     }
 
-        .rg-field input:focus,
-        .rg-field select:focus {
+        .lg-field input:focus {
             border-color: #2E7D32;
             background-color: #FFFFFF;
             box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.12);
         }
 
-.rg-actions {
+.lg-actions {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     gap: 14px;
-    margin-top: 28px;
-    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
-.rg-btn-primary,
-.rg-btn-secondary {
-    min-width: 170px;
-    min-height: 52px;
+.lg-btn-primary,
+.lg-btn-secondary {
+    min-height: 54px;
     border-radius: 18px;
     font-size: 16px;
     font-weight: 800;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
     font-family: inherit;
 }
 
-    .rg-btn-primary:hover,
-    .rg-btn-secondary:hover {
+    .lg-btn-primary:hover,
+    .lg-btn-secondary:hover {
         transform: translateY(-1px);
     }
 
-.rg-btn-primary {
+.lg-btn-primary {
     border: none;
     color: #FFFFFF;
     background: linear-gradient(135deg, #34C759 0%, #2E7D32 100%);
     box-shadow: 0 8px 18px rgba(46, 125, 50, 0.20);
 }
 
-.rg-btn-secondary {
+.lg-btn-secondary {
     background: #FFFFFF;
     color: #2E7D32;
     border: 2px solid #2E7D32;
 }
 
-@media (max-width: 760px) {
-    .rg-card {
-        padding: 28px 20px 24px 20px;
+@media (max-width: 640px) {
+    .lg-card {
+        padding: 30px 22px 24px 22px;
         border-radius: 22px;
     }
 
-    .rg-grid {
-        grid-template-columns: 1fr;
+    .lg-brand-circle {
+        width: 108px;
+        height: 108px;
+        font-size: 20px;
     }
 
-    .rg-actions {
-        flex-direction: column;
-    }
-
-    .rg-btn-primary,
-    .rg-btn-secondary {
-        width: 100%;
+    .lg-title {
+        font-size: 24px;
     }
 }

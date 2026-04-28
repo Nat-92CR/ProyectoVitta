@@ -3,82 +3,115 @@
 @using VittaController
 @inject LoginController LoginController
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
-@*
-    Presenta la vista de inicio de sesión del sistema.
-    Valida las credenciales del usuario y redirige al dashboard
-    enviando el nombre de usuario para continuar el flujo.
-*@
+<PageTitle>Vitta - Inicio de sesión</PageTitle>
 
-<PageTitle>Login</PageTitle>
+<div class="lg-page">
+    <div class="lg-card">
+        <div class="lg-brand-circle">Vitta</div>
 
-<div class="vitta-auth-page">
-    <div class="vitta-auth-card">
-        <div class="vitta-brand-circle">Vitta</div>
-
-        <h1 class="vitta-auth-title">Inicio de sesión</h1>
-        <p class="vitta-auth-subtitle">
+        <h1 class="lg-title">Inicio de sesión</h1>
+        <p class="lg-subtitle">
             Accede a tu espacio nutricional de manera segura.
         </p>
 
-        <div class="vitta-form">
-            <div class="vitta-field">
-                <label>Usuario</label>
-                <input @bind="userName" />
-            </div>
+        @* Campos trampa para reducir el autocompletado agresivo del navegador *@
+        <input type="text" name="fake-user" autocomplete="username" style="display:none;" />
+        <input type="password" name="fake-pass" autocomplete="current-password" style="display:none;" />
 
-            <div class="vitta-field">
-                <label>Contraseña</label>
-                <input type="password" @bind="password" />
-            </div>
+        <div class="lg-field">
+            <label for="userName">Usuario</label>
+            <input id="userName"
+                   name="vitta-login-user"
+                   type="text"
+                   @bind="userName"
+                   autocomplete="off"
+                   autocapitalize="off"
+                   autocorrect="off"
+                   spellcheck="false" />
+        </div>
 
-            <div class="vitta-actions">
-                <button type="button" class="vitta-btn" @onclick="HandleLogin">
-                    Iniciar sesión
-                </button>
+        <div class="lg-field">
+            <label for="password">Contraseña</label>
+            <input id="password"
+                   name="vitta-login-password"
+                   type="password"
+                   @bind="password"
+                   autocomplete="new-password" />
+        </div>
 
-                <button type="button" class="vitta-btn-secondary" @onclick="GoToRegister">
-                    Registrarse
-                </button>
-            </div>
+        <div class="lg-actions">
+            <button type="button" class="lg-btn-primary" @onclick="HandleLogin">
+                Iniciar sesión
+            </button>
 
-            @if (!string.IsNullOrWhiteSpace(errorMessage))
-            {
-                <div class="vitta-message">
-                    @errorMessage
-                </div>
-            }
+            <button type="button" class="lg-btn-secondary" @onclick="GoToRegister">
+                Registrarse
+            </button>
         </div>
     </div>
 </div>
 
 @code {
+    /// <summary>
+    /// Nombre de usuario ingresado en la vista.
+    /// </summary>
     private string userName = string.Empty;
-    private string password = string.Empty;
-    private string errorMessage = string.Empty;
 
     /// <summary>
-    /// Ejecuta la validación de credenciales y redirige al dashboard.
+    /// Contraseña ingresada en la vista.
     /// </summary>
-    private void HandleLogin()
+    private string password = string.Empty;
+
+    /// <summary>
+    /// Inicializa la vista dejando los campos vacíos.
+    /// </summary>
+    protected override void OnInitialized()
     {
-        bool result = this.LoginController.Login(this.userName, this.password);
-
-        if (result)
-        {
-            this.errorMessage = string.Empty;
-            this.Navigation.NavigateTo($"/dashboard/{this.userName}");
-            return;
-        }
-
-        this.errorMessage = "Usuario o contraseña incorrectos.";
+        this.ClearFields();
     }
 
     /// <summary>
-    /// Redirige a la vista de registro de usuario.
+    /// Ejecuta el proceso de inicio de sesión.
+    /// </summary>
+    private async Task HandleLogin()
+    {
+        string normalizedUserName = this.userName?.Trim() ?? string.Empty;
+        string normalizedPassword = this.password?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(normalizedUserName) || string.IsNullOrWhiteSpace(normalizedPassword))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el usuario y la contraseña.");
+            return;
+        }
+
+        bool result = this.LoginController.Login(normalizedUserName, normalizedPassword);
+
+        if (result)
+        {
+            this.Navigation.NavigateTo($"/dashboard/{normalizedUserName}");
+            return;
+        }
+
+        this.password = string.Empty;
+        await this.JS.InvokeVoidAsync("alert", "Usuario o contraseña incorrectos.");
+    }
+
+    /// <summary>
+    /// Redirige a la vista de registro.
     /// </summary>
     private void GoToRegister()
     {
-        this.Navigation.NavigateTo("/register");
+        this.Navigation.NavigateTo("/registro");
+    }
+
+    /// <summary>
+    /// Limpia los campos de la vista.
+    /// </summary>
+    private void ClearFields()
+    {
+        this.userName = string.Empty;
+        this.password = string.Empty;
     }
 }

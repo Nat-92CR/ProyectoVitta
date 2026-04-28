@@ -3,9 +3,9 @@
     using VittaController.Abstractions;
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using VittaModel;
-    using System.Globalization;
 
     /// <summary>
     /// Clase encargada de gestionar la carga y el guardado de datos mediante archivos,
@@ -65,7 +65,7 @@
 
             if (typeof(T) == typeof(User))
             {
-                lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType,Age,Sex");
+                lines.Add("UserName,Password,Name,Weight,Height,Goal,ActivityLevel,DietType,Age,Sex,IsActive,IsAdmin");
 
                 foreach (var item in data)
                 {
@@ -82,7 +82,9 @@
                                    user.ActivityLevel + "," +
                                    user.DietType + "," +
                                    user.Age.ToString(CultureInfo.InvariantCulture) + "," +
-                                   user.Sex;
+                                   user.Sex + "," +
+                                   user.IsActive.ToString(CultureInfo.InvariantCulture) + "," +
+                                   user.IsAdmin.ToString(CultureInfo.InvariantCulture);
 
                         lines.Add(line);
                     }

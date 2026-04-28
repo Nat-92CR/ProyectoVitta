@@ -7,9 +7,7 @@
 @inject IStatisticsController StatisticsController
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
-
 <PageTitle>Vitta - Estadísticas nutricionales</PageTitle>
-
 <div class="st-header">
     <div class="st-header-inner">
         <div class="st-brand">
@@ -19,31 +17,26 @@
         <button type="button" class="st-back-btn" @onclick="GoBack">← Volver</button>
     </div>
 </div>
-
 <div class="st-content">
     <div class="st-card">
         <h1 class="st-title">Estadísticas nutricionales</h1>
         <p class="st-subtitle">
             Consulta tu consumo diario y por rango de fechas comparándolo con tus metas.
         </p>
-
         <div class="st-user-row">
             <div class="st-field">
                 <label>Usuario</label>
                 <input value="@UserName" readonly />
             </div>
         </div>
-
         <section class="st-section">
             <h2 class="st-section-title">Estadísticas diarias</h2>
-
             <div class="st-filter-row">
                 <div class="st-field">
                     <label>Fecha</label>
                     <input type="date" @bind="selectedDate" />
                 </div>
             </div>
-
             <div class="st-stats-grid">
                 <div class="st-stat-card st-cal">
                     <span class="st-stat-label">Calorías</span>
@@ -53,7 +46,6 @@
                         <span><strong>Diferencia:</strong> @remainingCalories</span>
                     </div>
                 </div>
-
                 <div class="st-stat-card st-protein">
                     <span class="st-stat-label">Proteínas</span>
                     <div class="st-stat-numbers">
@@ -62,7 +54,6 @@
                         <span><strong>Diferencia:</strong> @remainingProtein</span>
                     </div>
                 </div>
-
                 <div class="st-stat-card st-carbs">
                     <span class="st-stat-label">Carbohidratos</span>
                     <div class="st-stat-numbers">
@@ -71,7 +62,6 @@
                         <span><strong>Diferencia:</strong> @remainingCarbohydrates</span>
                     </div>
                 </div>
-
                 <div class="st-stat-card st-fat">
                     <span class="st-stat-label">Grasas</span>
                     <div class="st-stat-numbers">
@@ -81,16 +71,13 @@
                     </div>
                 </div>
             </div>
-
             <div class="st-summary-box">
                 <h3 class="st-summary-title">Resumen del día</h3>
                 <pre class="st-summary-text">@dailySummary</pre>
             </div>
         </section>
-
         <section class="st-section">
             <h2 class="st-section-title">Estadísticas por rango de fechas</h2>
-
             <div class="st-filter-row">
                 <div class="st-field">
                     <label>Fecha inicial</label>
@@ -101,7 +88,6 @@
                     <input type="date" @bind="endDate" />
                 </div>
             </div>
-
             <div class="st-range-grid">
                 <div class="st-range-item">
                     <span class="st-range-label">Calorías</span>
@@ -132,31 +118,27 @@
                     <span class="st-range-value">@daysMeetingGoal</span>
                 </div>
             </div>
-
             <div class="st-summary-box">
                 <h3 class="st-summary-title">Resumen del período</h3>
                 <pre class="st-summary-text">@periodSummary</pre>
             </div>
         </section>
-
         <div class="st-actions">
             <button type="button" class="st-btn-primary" @onclick="LoadStatistics">Consultar</button>
+            <button type="button" class="st-btn-secondary" @onclick="DownloadHtml">📄 Descargar reporte</button>
             <button type="button" class="st-btn-secondary" @onclick="GoBack">Cerrar</button>
         </div>
     </div>
 </div>
-
 @code {
     /// <summary>
     /// Nombre del usuario autenticado, recibido como parámetro de la ruta.
     /// </summary>
     [Parameter]
     public string UserName { get; set; } = string.Empty;
-
     private DateTime selectedDate = DateTime.Today;
     private DateTime startDate = DateTime.Today.AddDays(-6);
     private DateTime endDate = DateTime.Today;
-
     private string consumedCalories = "0";
     private string calorieGoal = "0";
     private string remainingCalories = "0";
@@ -169,7 +151,6 @@
     private string consumedFat = "0";
     private string fatGoal = "0";
     private string remainingFat = "0";
-
     private string rangeCalories = "0";
     private string rangeProtein = "0";
     private string rangeCarbohydrates = "0";
@@ -177,10 +158,8 @@
     private string totalDaysInRange = "0";
     private string registeredDays = "0";
     private string daysMeetingGoal = "0";
-
     private string dailySummary = string.Empty;
     private string periodSummary = string.Empty;
-
     /// <summary>
     /// Carga inicial de estadísticas con los rangos por defecto.
     /// </summary>
@@ -188,7 +167,6 @@
     {
         await this.LoadStatistics();
     }
-
     /// <summary>
     /// Recalcula las estadísticas diarias y por rango usando las fechas seleccionadas.
     /// </summary>
@@ -199,17 +177,14 @@
             await this.JS.InvokeVoidAsync("alert", "No se pudo identificar el usuario actual.");
             return;
         }
-
         if (this.startDate > this.endDate)
         {
             await this.JS.InvokeVoidAsync("alert", "La fecha inicial no puede ser mayor que la fecha final.");
             return;
         }
-
         this.dailySummary = this.LoadDailyStatistics(this.selectedDate);
         this.periodSummary = this.LoadRangeStatistics(this.startDate, this.endDate);
     }
-
     /// <summary>
     /// Calcula las estadísticas diarias del día seleccionado.
     /// </summary>
@@ -222,43 +197,33 @@
             out double totalProtein,
             out double totalCarbohydrates,
             out double totalFat);
-
         double calorieGoalValue = this.StatisticsController.CalculateDailyCalorieGoal(this.UserName);
-
         this.StatisticsController.CalculateDailyMacronutrientGoal(
             this.UserName,
             out double proteinGoalValue,
             out double carbsGoalValue,
             out double fatGoalValue);
-
         double remainingCal = this.StatisticsController.CalculateRemainingCalories(this.UserName, selected);
-
         this.StatisticsController.CalculateRemainingMacronutrients(
             this.UserName,
             selected,
             out double remainingProt,
             out double remainingCarb,
             out double remainingFatValue);
-
         this.consumedCalories = totalCalories.ToString("0.##", CultureInfo.InvariantCulture);
         this.calorieGoal = calorieGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
         this.remainingCalories = remainingCal.ToString("0.##", CultureInfo.InvariantCulture);
-
         this.consumedProtein = totalProtein.ToString("0.##", CultureInfo.InvariantCulture);
         this.proteinGoal = proteinGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
         this.remainingProtein = remainingProt.ToString("0.##", CultureInfo.InvariantCulture);
-
         this.consumedCarbohydrates = totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture);
         this.carbohydratesGoal = carbsGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
         this.remainingCarbohydrates = remainingCarb.ToString("0.##", CultureInfo.InvariantCulture);
-
         this.consumedFat = totalFat.ToString("0.##", CultureInfo.InvariantCulture);
         this.fatGoal = fatGoalValue.ToString("0.##", CultureInfo.InvariantCulture);
         this.remainingFat = remainingFatValue.ToString("0.##", CultureInfo.InvariantCulture);
-
         return this.BuildDailySummaryMessage(remainingCal, remainingProt, remainingCarb, remainingFatValue);
     }
-
     /// <summary>
     /// Calcula las estadísticas por rango de fechas.
     /// </summary>
@@ -272,13 +237,10 @@
             out double totalProtein,
             out double totalCarbohydrates,
             out double totalFat);
-
         var menusInRange = this.StatisticsController.GetMenusByDateRange(this.UserName, start, end);
-
         int totalDays = (end - start).Days + 1;
         int registered = menusInRange.Count;
         int daysMeeting = this.StatisticsController.CountDaysMeetingCalorieGoal(this.UserName, start, end);
-
         this.rangeCalories = totalCalories.ToString("0.##", CultureInfo.InvariantCulture);
         this.rangeProtein = totalProtein.ToString("0.##", CultureInfo.InvariantCulture);
         this.rangeCarbohydrates = totalCarbohydrates.ToString("0.##", CultureInfo.InvariantCulture);
@@ -286,7 +248,6 @@
         this.totalDaysInRange = totalDays.ToString(CultureInfo.InvariantCulture);
         this.registeredDays = registered.ToString(CultureInfo.InvariantCulture);
         this.daysMeetingGoal = daysMeeting.ToString(CultureInfo.InvariantCulture);
-
         if (registered == 0)
         {
             return "Período consultado: " +
@@ -296,13 +257,11 @@
                    Environment.NewLine +
                    "No hay menús registrados en ese rango de fechas.";
         }
-
         double dailyCalorieGoal = this.StatisticsController.CalculateDailyCalorieGoal(this.UserName);
         double accumulatedGoal = dailyCalorieGoal * registered;
         double periodDifference = accumulatedGoal - totalCalories;
         double averageCaloriesPerDay = totalCalories / registered;
         double compliance = (double)daysMeeting / registered * 100;
-
         return this.BuildRangeSummaryMessage(
             start,
             end,
@@ -313,7 +272,6 @@
             averageCaloriesPerDay,
             compliance);
     }
-
     /// <summary>
     /// Construye el mensaje resumen del día.
     /// </summary>
@@ -328,7 +286,6 @@
                this.GetDifferenceMessage("carbohidratos", remainingCarbohydrates) + Environment.NewLine +
                this.GetDifferenceMessage("grasas", remainingFat);
     }
-
     /// <summary>
     /// Construye el mensaje resumen del período.
     /// </summary>
@@ -358,7 +315,6 @@
                Environment.NewLine +
                "Promedio de calorías por día registrado: " + averageCalories.ToString("0.##", CultureInfo.InvariantCulture);
     }
-
     /// <summary>
     /// Genera mensajes según diferencia diaria.
     /// </summary>
@@ -368,15 +324,12 @@
         {
             return "Aún faltan " + difference.ToString("0.##", CultureInfo.InvariantCulture) + " de " + label + ".";
         }
-
         if (difference < 0)
         {
             return "Se excedió la meta por " + Math.Abs(difference).ToString("0.##", CultureInfo.InvariantCulture) + " de " + label + ".";
         }
-
         return "La meta de " + label + " se cumplió exactamente.";
     }
-
     /// <summary>
     /// Genera el mensaje de diferencia del período.
     /// </summary>
@@ -386,15 +339,38 @@
         {
             return "En el período aún faltaron " + periodDifference.ToString("0.##", CultureInfo.InvariantCulture) + " calorías para alcanzar la meta acumulada.";
         }
-
         if (periodDifference < 0)
         {
             return "En el período se excedió la meta acumulada por " + Math.Abs(periodDifference).ToString("0.##", CultureInfo.InvariantCulture) + " calorías.";
         }
-
         return "En el período se cumplió exactamente la meta acumulada.";
     }
-
+    /// <summary>
+    /// Genera el reporte visual de estadísticas y dispara la descarga
+    /// en el navegador del usuario. El archivo puede abrirse en cualquier
+    /// navegador y desde allí imprimirse o guardarse como PDF.
+    /// </summary>
+    private async Task DownloadHtml()
+    {
+        if (string.IsNullOrWhiteSpace(this.UserName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se pudo identificar el usuario actual.");
+            return;
+        }
+        if (this.startDate > this.endDate)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La fecha inicial no puede ser mayor que la fecha final.");
+            return;
+        }
+        string contenidoHtml = this.StatisticsController.ExportSummaryToHtml(
+            this.UserName,
+            this.startDate,
+            this.endDate);
+        string nombreArchivo = "vitta_reporte_" + this.UserName + "_" +
+            this.startDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + "_a_" +
+            this.endDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".html";
+        await this.JS.InvokeVoidAsync("descargarArchivoHtml", nombreArchivo, contenidoHtml);
+    }
     /// <summary>
     /// Regresa al dashboard del usuario actual.
     /// </summary>

@@ -1,5 +1,4 @@
-﻿@* Página para el registro de un nuevo usuario, fiel a RegisterView de WinForms. *@
-@page "/register"
+﻿@page "/registro"
 @rendermode InteractiveServer
 @using VittaController
 @using VittaModel
@@ -9,47 +8,48 @@
 
 <PageTitle>Vitta - Registro</PageTitle>
 
-<div class="reg-page">
-    <div class="reg-card">
-        <div class="reg-brand-circle">V</div>
-        <h1 class="reg-title">Registro de usuario</h1>
-        <p class="reg-subtitle">
+<div class="rg-page">
+    <div class="rg-card">
+        <div class="rg-brand-circle">V</div>
+
+        <h1 class="rg-title">Registro de usuario</h1>
+        <p class="rg-subtitle">
             Completa tus datos para crear una nueva cuenta en Vitta.
         </p>
 
-        <div class="reg-grid">
+        <div class="rg-grid">
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Usuario</label>
-                <input @bind="userName" />
+                <input @bind="userName" autocomplete="off" />
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Contraseña</label>
-                <input type="password" @bind="password" />
+                <input type="password" @bind="password" autocomplete="new-password" />
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Nombre</label>
-                <input @bind="name" />
+                <input @bind="name" autocomplete="off" />
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Peso</label>
-                <input type="number" step="0.01" @bind="weight" />
+                <input type="number" step="0.01" @bind="weight" autocomplete="off" />
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Altura</label>
-                <input type="number" step="0.01" @bind="height" />
+                <input type="number" step="0.01" @bind="height" autocomplete="off" />
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Edad</label>
-                <input type="number" @bind="age" />
+                <input type="number" @bind="age" autocomplete="off" />
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Sexo</label>
                 <select @bind="sex">
                     <option value="">Seleccione una opción</option>
@@ -59,7 +59,7 @@
                 </select>
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Objetivo</label>
                 <select @bind="goal">
                     <option value="">Seleccione una opción</option>
@@ -69,7 +69,7 @@
                 </select>
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Nivel de actividad</label>
                 <select @bind="activityLevel">
                     <option value="">Seleccione una opción</option>
@@ -80,7 +80,7 @@
                 </select>
             </div>
 
-            <div class="reg-field">
+            <div class="rg-field">
                 <label>Tipo de dieta</label>
                 <select @bind="dietType">
                     <option value="">Seleccione una opción</option>
@@ -92,11 +92,12 @@
 
         </div>
 
-        <div class="reg-actions">
-            <button type="button" class="reg-btn-primary" @onclick="HandleRegister">
+        <div class="rg-actions">
+            <button type="button" class="rg-btn-primary" @onclick="HandleRegister">
                 Registrarse
             </button>
-            <button type="button" class="reg-btn-secondary" @onclick="GoToLogin">
+
+            <button type="button" class="rg-btn-secondary" @onclick="GoToLogin">
                 Cancelar
             </button>
         </div>

@@ -1,9 +1,11 @@
-﻿@* Página unificada de administración de alimentos. Solo visible para el usuario admin. *@
+﻿@* Página unificada de administración de alimentos. Solo visible para usuarios administradores. *@
 @page "/admin/alimentos/{UserName}"
 @rendermode InteractiveServer
+@using VittaController
 @using VittaController.Abstractions
 @using VittaModel
 @inject IFoodController FoodController
+@inject UserController UserController
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -26,7 +28,6 @@
             Crea, busca, edita o elimina los alimentos disponibles en el sistema.
         </p>
 
-        @* SECCIÓN: NUEVO ALIMENTO *@
         <section class="fa-section">
             <h2 class="fa-section-title">+ Nuevo alimento</h2>
 
@@ -63,7 +64,6 @@
             </div>
         </section>
 
-        @* SECCIÓN: BUSCAR + TABLA *@
         <section class="fa-section">
             <h2 class="fa-section-title">Buscar y administrar</h2>
 
@@ -115,7 +115,6 @@
             </div>
         </section>
 
-        @* SECCIÓN: EDITAR / ELIMINAR *@
         <section class="fa-section">
             <h2 class="fa-section-title">Editar alimento seleccionado</h2>
 
@@ -165,14 +164,12 @@
     private List<Food> foods = new();
     private string searchText = string.Empty;
 
-    // Campos de "Nuevo alimento"
     private string newName = string.Empty;
     private double newCalories;
     private double newProtein;
     private double newCarbohydrates;
     private double newFat;
 
-    // Campos de "Editar"
     private string selectedFoodName = string.Empty;
     private string editName = string.Empty;
     private double editCalories;
@@ -181,11 +178,13 @@
     private double editFat;
 
     /// <summary>
-    /// Carga la lista inicial de alimentos. Bloquea acceso si el usuario no es admin.
+    /// Carga la lista inicial de alimentos y valida que el usuario actual sea administrador.
     /// </summary>
     protected override void OnInitialized()
     {
-        if (!string.Equals(this.UserName, "admin", StringComparison.OrdinalIgnoreCase))
+        User? currentUser = this.UserController.GetUserByUserName(this.UserName);
+
+        if (currentUser is null || !currentUser.IsAdmin)
         {
             this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
             return;
@@ -257,7 +256,7 @@
             return;
         }
 
-        var food = new Food(
+        Food food = new Food(
             this.newName.Trim(),
             this.newCalories,
             this.newProtein,
@@ -313,7 +312,7 @@
             return;
         }
 
-        var updatedFood = new Food(
+        Food updatedFood = new Food(
             this.selectedFoodName,
             this.editCalories,
             this.editProtein,

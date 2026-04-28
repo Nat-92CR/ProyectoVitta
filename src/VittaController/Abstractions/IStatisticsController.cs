@@ -5,7 +5,8 @@
     using VittaModel;
 
     /// <summary>
-    /// Define las operaciones del módulo de estadísticas nutricionales.
+    /// Define las operaciones disponibles para calcular estadísticas nutricionales
+    /// individuales y globales del sistema.
     /// </summary>
     public interface IStatisticsController
     {
@@ -43,6 +44,13 @@
             out double totalFat);
 
         /// <summary>
+        /// Calcula la meta diaria de calorías del usuario.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <returns>Meta diaria de calorías.</returns>
+        double CalculateDailyCalorieGoal(string userName);
+
+        /// <summary>
         /// Calcula el consumo nutricional total de un período.
         /// </summary>
         /// <param name="userName">Nombre del usuario.</param>
@@ -62,11 +70,13 @@
             out double totalFat);
 
         /// <summary>
-        /// Calcula la meta diaria de calorías del usuario.
+        /// Cuenta cuántos días del período cumplieron o superaron la meta calórica.
         /// </summary>
         /// <param name="userName">Nombre del usuario.</param>
-        /// <returns>Meta diaria de calorías.</returns>
-        double CalculateDailyCalorieGoal(string userName);
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <returns>Cantidad de días que cumplieron la meta.</returns>
+        int CountDaysMeetingCalorieGoal(string userName, DateTime startDate, DateTime endDate);
 
         /// <summary>
         /// Calcula la meta diaria de macronutrientes del usuario.
@@ -105,12 +115,55 @@
             out double remainingFat);
 
         /// <summary>
-        /// Cuenta cuántos días del período cumplieron o superaron la meta calórica.
+        /// Exporta un resumen estadístico del usuario en formato CSV.
         /// </summary>
         /// <param name="userName">Nombre del usuario.</param>
         /// <param name="startDate">Fecha inicial.</param>
         /// <param name="endDate">Fecha final.</param>
-        /// <returns>Cantidad de días que cumplieron la meta.</returns>
-        int CountDaysMeetingCalorieGoal(string userName, DateTime startDate, DateTime endDate);
+        /// <returns>Contenido CSV del resumen.</returns>
+        string ExportSummaryToCsv(string userName, DateTime startDate, DateTime endDate);
+
+        /// <summary>
+        /// Exporta un resumen estadístico del usuario en formato HTML.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <returns>Contenido HTML del resumen.</returns>
+        string ExportSummaryToHtml(string userName, DateTime startDate, DateTime endDate);
+
+        /// <summary>
+        /// Obtiene el producto más consumido entre todos los usuarios en un rango de fechas.
+        /// </summary>
+        /// <param name="users">Lista de usuarios.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <param name="productName">Nombre del producto más consumido.</param>
+        /// <param name="totalQuantity">Cantidad total consumida.</param>
+        void GetMostConsumedProduct(
+            List<User> users,
+            DateTime startDate,
+            DateTime endDate,
+            out string productName,
+            out int totalQuantity);
+
+        /// <summary>
+        /// Calcula los porcentajes de tipos de dieta de todos los usuarios.
+        /// </summary>
+        /// <param name="users">Lista de usuarios.</param>
+        /// <returns>Diccionario con dieta y porcentaje.</returns>
+        Dictionary<string, double> GetDietTypePercentages(List<User> users);
+
+        /// <summary>
+        /// Obtiene el ranking de usuarios con más menús ingresados en un rango de fechas.
+        /// </summary>
+        /// <param name="users">Lista de usuarios.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <returns>Lista ordenada de usuarios y cantidad de menús.</returns>
+        List<KeyValuePair<string, int>> GetUsersWithMostMenus(
+            List<User> users,
+            DateTime startDate,
+            DateTime endDate);
     }
 }

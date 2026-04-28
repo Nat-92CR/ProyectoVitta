@@ -1,5 +1,6 @@
 ﻿namespace VittaController.Abstractions
 {
+    using System.Collections.Generic;
     using VittaModel;
 
     /// <summary>
@@ -31,10 +32,38 @@
         User? GetUserByUserName(string username);
 
         /// <summary>
+        /// Obtiene la lista completa de usuarios del sistema.
+        /// </summary>
+        /// <returns>Lista de usuarios registrados.</returns>
+        List<User> GetUsers();
+
+        /// <summary>
         /// Actualiza la información de un usuario existente.
         /// </summary>
         /// <param name="updatedUser">Usuario con datos actualizados.</param>
         /// <returns>True si se actualiza correctamente; de lo contrario, false.</returns>
         bool UpdateUser(User updatedUser);
+
+        /// <summary>
+        /// Restablece la contraseña de un usuario existente.
+        /// </summary>
+        /// <param name="userName">Nombre de usuario.</param>
+        /// <param name="newPassword">Nueva contraseña.</param>
+        /// <returns>True si se actualiza correctamente; de lo contrario, false.</returns>
+        bool ResetPassword(string userName, string newPassword);
+
+        /// <summary>
+        /// Desactiva un usuario existente.
+        /// </summary>
+        /// <param name="userName">Nombre de usuario.</param>
+        /// <returns>True si se desactiva correctamente; de lo contrario, false.</returns>
+        bool DeactivateUser(string userName);
+
+        /// <summary>
+        /// Activa un usuario existente.
+        /// </summary>
+        /// <param name="userName">Nombre de usuario.</param>
+        /// <returns>True si se activa correctamente; de lo contrario, false.</returns>
+        bool ActivateUser(string userName);
     }
 }

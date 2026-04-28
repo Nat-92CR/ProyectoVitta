@@ -1,10 +1,10 @@
-﻿.fa-header {
+﻿.au-header {
     background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     padding: 18px 0;
 }
 
-.fa-header-inner {
+.au-header-inner {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
@@ -13,13 +13,13 @@
     justify-content: space-between;
 }
 
-.fa-brand {
+.au-brand {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.fa-brand-circle {
+.au-brand-circle {
     width: 42px;
     height: 42px;
     border-radius: 50%;
@@ -33,14 +33,14 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
-.fa-brand-text {
+.au-brand-text {
     color: #FFFFFF;
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 0.4px;
 }
 
-.fa-back-btn {
+.au-back-btn {
     background: rgba(255, 255, 255, 0.18);
     color: #FFFFFF;
     border: none;
@@ -53,17 +53,17 @@
     font-family: inherit;
 }
 
-    .fa-back-btn:hover {
+    .au-back-btn:hover {
         background: rgba(255, 255, 255, 0.3);
     }
 
-.fa-content {
+.au-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 32px 24px 48px 24px;
 }
 
-.fa-card {
+.au-card {
     background-color: #FFFFFF;
     border-radius: 14px;
     padding: 32px;
@@ -71,62 +71,63 @@
     border: 1px solid #E0E0E0;
 }
 
-.fa-title {
+.au-title {
     color: #2E7D32;
     font-size: 24px;
     font-weight: 700;
     margin: 0 0 6px 0;
 }
 
-.fa-subtitle {
+.au-subtitle {
     color: #616161;
     font-size: 14px;
     margin: 0 0 24px 0;
 }
 
-.fa-section {
+.au-section {
     margin-top: 28px;
     padding-top: 22px;
     border-top: 1px dashed #E0E0E0;
 }
 
-    .fa-section:first-of-type {
+    .au-section:first-of-type {
         margin-top: 0;
         padding-top: 0;
         border-top: none;
     }
 
-.fa-section-title {
+.au-section-title {
     color: #2E7D32;
     font-size: 18px;
     font-weight: 700;
     margin: 0 0 16px 0;
 }
 
-.fa-grid {
+.au-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 14px 18px;
     margin-bottom: 16px;
 }
 
-.fa-field {
+.au-field {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.fa-field-full {
+.au-field-full {
     grid-column: 1 / -1;
 }
 
-.fa-field label {
+.au-field label {
     font-weight: 600;
     color: #424242;
     font-size: 13px;
 }
 
-.fa-field input {
+.au-field input,
+.au-field select {
     padding: 10px 12px;
     border: 1px solid #BDBDBD;
     border-radius: 8px;
@@ -136,35 +137,28 @@
     font-family: inherit;
 }
 
-    .fa-field input:focus,
-    .fa-search-input:focus {
+    .au-field input:focus,
+    .au-field select:focus,
+    .au-search-input:focus {
         outline: none;
         border-color: #2E7D32;
         background-color: #FFFFFF;
         box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
     }
 
-    .fa-field input[readonly] {
+    .au-field input[readonly] {
         background-color: #F5F5F5;
         color: #424242;
     }
 
-.fa-actions-row {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-.fa-search-row {
+.au-search-row {
     display: flex;
     gap: 12px;
     margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
-.fa-search-input {
+.au-search-input {
     flex: 1;
     min-width: 220px;
     padding: 10px 14px;
@@ -176,22 +170,23 @@
     font-family: inherit;
 }
 
-.fa-table-wrapper {
+.au-table-wrapper {
     max-height: 520px;
     overflow-y: auto;
     overflow-x: auto;
+    border-radius: 10px;
     border: 1px solid #E0E0E0;
-    border-radius: 12px;
     margin-bottom: 24px;
     background-color: #FFFFFF;
 }
 
-.fa-table {
+.au-table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 14px;
 }
 
-    .fa-table thead th {
+    .au-table thead th {
         position: sticky;
         top: 0;
         z-index: 2;
@@ -199,27 +194,27 @@
         color: #FFFFFF;
     }
 
-    .fa-table th,
-    .fa-table td {
-        padding: 14px 16px;
+    .au-table th,
+    .au-table td {
+        padding: 12px 14px;
         text-align: left;
-        border-bottom: 1px solid #EEEEEE;
+        border-top: 1px solid #EEEEEE;
     }
 
-    .fa-table tbody tr {
+    .au-table tbody tr {
         background-color: #FFFFFF;
         transition: background-color 0.15s ease;
     }
 
-        .fa-table tbody tr:hover {
+        .au-table tbody tr:hover {
             background-color: #F4FAF4;
         }
 
-.fa-row-selected {
+.au-row-selected {
     background-color: #E8F5E9 !important;
 }
 
-.fa-row-btn {
+.au-row-btn {
     background-color: #FFFFFF;
     color: #2E7D32;
     border: 1.5px solid #2E7D32;
@@ -232,21 +227,57 @@
     font-family: inherit;
 }
 
-    .fa-row-btn:hover {
+    .au-row-btn:hover {
         background-color: #2E7D32;
         color: #FFFFFF;
     }
 
-.fa-empty {
+.au-status-active,
+.au-status-inactive {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.au-status-active {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
+
+.au-status-inactive {
+    background-color: #FDECEA;
+    color: #C62828;
+}
+
+.au-empty {
     text-align: center;
     color: #9E9E9E;
     font-style: italic;
     padding: 24px 0;
 }
 
-.fa-btn-primary,
-.fa-btn-secondary,
-.fa-btn-danger {
+.au-empty-block {
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background-color: #F5F5F5;
+    color: #616161;
+    border-left: 4px solid #2E7D32;
+}
+
+.au-actions-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.au-btn-primary,
+.au-btn-secondary,
+.au-btn-warning {
     border: none;
     padding: 10px 16px;
     border-radius: 8px;
@@ -257,55 +288,49 @@
     font-family: inherit;
 }
 
-    .fa-btn-primary:hover,
-    .fa-btn-secondary:hover,
-    .fa-btn-danger:hover {
+    .au-btn-primary:hover,
+    .au-btn-secondary:hover,
+    .au-btn-warning:hover {
         transform: translateY(-1px);
     }
 
-.fa-btn-primary {
+.au-btn-primary {
     background: linear-gradient(135deg, #2E7D32 0%, #43A047 100%);
     color: #FFFFFF;
     box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
 }
 
-.fa-btn-secondary {
+.au-btn-secondary {
     background-color: #FFFFFF;
     color: #2E7D32;
     border: 1.5px solid #2E7D32;
 }
 
-.fa-btn-danger {
-    background-color: #FFFFFF;
-    color: #C62828;
-    border: 1.5px solid #C62828;
-}
-
-@media (max-width: 900px) {
-    .fa-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.au-btn-warning {
+    background-color: #FFF3E0;
+    color: #E65100;
+    border: 1.5px solid #E65100;
 }
 
 @media (max-width: 768px) {
-    .fa-grid {
+    .au-grid {
         grid-template-columns: 1fr;
     }
 
-    .fa-header-inner {
+    .au-header-inner {
         padding: 0 16px;
         gap: 12px;
     }
 
-    .fa-brand-text {
+    .au-brand-text {
         font-size: 20px;
     }
 
-    .fa-content {
+    .au-content {
         padding: 22px 16px 32px 16px;
     }
 
-    .fa-card {
+    .au-card {
         padding: 22px;
     }
 }

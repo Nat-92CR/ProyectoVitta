@@ -1,0 +1,474 @@
+﻿@page "/admin/estadisticas/{UserName}"
+@rendermode InteractiveServer
+@using System
+@using System.Collections.Generic
+@using System.Text
+@using VittaController
+@using VittaController.Abstractions
+@using VittaModel
+@inject UserController UserController
+@inject IStatisticsController StatisticsController
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Vitta - Estadísticas globales</PageTitle>
+
+<div class="ads-header">
+    <div class="ads-header-inner">
+        <div class="ads-brand">
+            <span class="ads-brand-circle">V</span>
+            <span class="ads-brand-text">Vitta - Admin</span>
+        </div>
+
+        <button type="button" class="ads-back-btn" @onclick="GoBack">
+            ← Volver
+        </button>
+    </div>
+</div>
+
+<div class="ads-content">
+    <div class="ads-card">
+        <h1 class="ads-title">Estadísticas globales</h1>
+        <p class="ads-subtitle">
+            Consulta cómo se está usando Vitta según el período seleccionado.
+        </p>
+
+        <section class="ads-section">
+            <h2 class="ads-section-title">Período de análisis</h2>
+
+            <div class="ads-filter-grid">
+                <div class="ads-field">
+                    <label>Fecha inicial</label>
+                    <input type="date" @bind="startDate" />
+                </div>
+
+                <div class="ads-field">
+                    <label>Fecha final</label>
+                    <input type="date" @bind="endDate" />
+                </div>
+            </div>
+
+            <div class="ads-actions-row">
+                <button type="button" class="ads-btn-primary" @onclick="LoadStatistics">
+                    Consultar
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(csvDownloadUrl))
+                {
+                    <a class="ads-btn-secondary" href="@csvDownloadUrl" download="@csvFileName">
+                        Descargar CSV
+                    </a>
+                }
+
+                <button type="button" class="ads-btn-secondary" @onclick="ViewReport">
+                    Ver reporte
+                </button>
+            </div>
+        </section>
+
+        <section class="ads-section">
+            <h2 class="ads-section-title">Resumen general</h2>
+
+            <div class="ads-summary-grid ads-summary-grid-large">
+                <div class="ads-summary-card">
+                    <span class="ads-summary-label">Alimento más registrado</span>
+                    <span class="ads-summary-value">@mostConsumedProduct</span>
+                    <span class="ads-summary-note">Cantidad total: @mostConsumedQuantity</span>
+                </div>
+
+                <div class="ads-summary-card">
+                    <span class="ads-summary-label">Usuarios registrados</span>
+                    <span class="ads-summary-value">@totalUsers</span>
+                    <span class="ads-summary-note">Usuarios creados en el sistema</span>
+                </div>
+
+                <div class="ads-summary-card">
+                    <span class="ads-summary-label">Usuarios con menús en el período</span>
+                    <span class="ads-summary-value">@usersWithMenusInRange</span>
+                    <span class="ads-summary-note">Usuarios que sí registraron menús</span>
+                </div>
+
+                <div class="ads-summary-card">
+                    <span class="ads-summary-label">Menús registrados en el período</span>
+                    <span class="ads-summary-value">@totalMenusInRange</span>
+                    <span class="ads-summary-note">Total de menús tomados en cuenta</span>
+                </div>
+
+                <div class="ads-summary-card">
+                    <span class="ads-summary-label">Rango consultado</span>
+                    <span class="ads-summary-value">@rangeText</span>
+                    <span class="ads-summary-note">Período usado para estas estadísticas</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="ads-section">
+            <h2 class="ads-section-title">Tipos de dieta registrados</h2>
+            <p class="ads-helper-text">
+                Muestra cómo se distribuyen los usuarios de Vitta según su tipo de dieta.
+            </p>
+
+            <div class="ads-table-wrapper ads-table-wrapper-small">
+                <table class="ads-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo de dieta</th>
+                            <th>Porcentaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (dietPercentagesOrdered.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="2" class="ads-empty">No hay datos disponibles.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (KeyValuePair<string, double> item in dietPercentagesOrdered)
+                            {
+                                <tr>
+                                    <td>@item.Key</td>
+                                    <td>@item.Value.ToString("0.##")%</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="ads-section">
+            <h2 class="ads-section-title">Usuarios con más menús registrados</h2>
+            <p class="ads-helper-text">
+                Se muestran los 15 usuarios con mayor cantidad de menús en el período consultado.
+            </p>
+
+            <div class="ads-table-wrapper">
+                <table class="ads-table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Cantidad de menús</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (topUsersToDisplay.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="2" class="ads-empty">No hay menús registrados en ese rango.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (KeyValuePair<string, int> item in topUsersToDisplay)
+                            {
+                                <tr>
+                                    <td>@item.Key</td>
+                                    <td>@item.Value</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (topUsers.Count > topUsersToDisplay.Count)
+            {
+                <p class="ads-foot-note">
+                    Total de usuarios con menús en este rango: @topUsers.Count
+                </p>
+            }
+        </section>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private DateTime startDate = DateTime.Today.AddDays(-90);
+    private DateTime endDate = DateTime.Today;
+
+    private string mostConsumedProduct = "No disponible";
+    private int mostConsumedQuantity = 0;
+    private int totalUsers = 0;
+    private int usersWithMenusInRange = 0;
+    private int totalMenusInRange = 0;
+    private string rangeText = string.Empty;
+
+    private Dictionary<string, double> dietPercentages = new Dictionary<string, double>();
+    private List<KeyValuePair<string, double>> dietPercentagesOrdered = new List<KeyValuePair<string, double>>();
+    private List<KeyValuePair<string, int>> topUsers = new List<KeyValuePair<string, int>>();
+    private List<KeyValuePair<string, int>> topUsersToDisplay = new List<KeyValuePair<string, int>>();
+
+    private string csvDownloadUrl = string.Empty;
+    private string reportHtmlContent = string.Empty;
+
+    private string csvFileName
+    {
+        get
+        {
+            return "reporte_admin_" + this.startDate.ToString("yyyyMMdd") + "_" + this.endDate.ToString("yyyyMMdd") + ".csv";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User? currentSessionUser = this.UserController.GetUserByUserName(this.UserName);
+
+        if (currentSessionUser is null || !currentSessionUser.IsAdmin)
+        {
+            this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+            return;
+        }
+
+        await this.LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+        if (this.endDate.Date < this.startDate.Date)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La fecha final no puede ser menor que la fecha inicial.");
+            return;
+        }
+
+        List<User> users = this.UserController.GetUsers();
+        this.totalUsers = users.Count;
+
+        this.StatisticsController.GetMostConsumedProduct(
+            users,
+            this.startDate,
+            this.endDate,
+            out string productName,
+            out int quantity);
+
+        this.mostConsumedProduct = productName;
+        this.mostConsumedQuantity = quantity;
+
+        this.dietPercentages = this.StatisticsController.GetDietTypePercentages(users);
+        this.OrderDietPercentages();
+
+        this.topUsers = this.StatisticsController.GetUsersWithMostMenus(users, this.startDate, this.endDate);
+        this.LoadTopUsersToDisplay();
+        this.CalculateExtraTotals();
+
+        this.rangeText = this.startDate.ToString("dd/MM/yyyy") + " - " + this.endDate.ToString("dd/MM/yyyy");
+
+        this.BuildDownloadFiles();
+    }
+
+    private void OrderDietPercentages()
+    {
+        this.dietPercentagesOrdered = new List<KeyValuePair<string, double>>();
+
+        foreach (KeyValuePair<string, double> item in this.dietPercentages)
+        {
+            this.dietPercentagesOrdered.Add(item);
+        }
+
+        this.dietPercentagesOrdered.Sort((first, second) => second.Value.CompareTo(first.Value));
+    }
+
+    private void LoadTopUsersToDisplay()
+    {
+        this.topUsersToDisplay = new List<KeyValuePair<string, int>>();
+
+        int maxItems = 15;
+
+        if (this.topUsers.Count < maxItems)
+        {
+            maxItems = this.topUsers.Count;
+        }
+
+        for (int index = 0; index < maxItems; index++)
+        {
+            this.topUsersToDisplay.Add(this.topUsers[index]);
+        }
+    }
+
+    private void CalculateExtraTotals()
+    {
+        this.usersWithMenusInRange = this.topUsers.Count;
+        this.totalMenusInRange = 0;
+
+        foreach (KeyValuePair<string, int> item in this.topUsers)
+        {
+            this.totalMenusInRange += item.Value;
+        }
+    }
+
+    private void BuildDownloadFiles()
+    {
+        string csvContent = this.BuildCsvContent();
+        this.reportHtmlContent = this.BuildHtmlReportContent();
+
+        this.csvDownloadUrl = "data:text/csv;charset=utf-8," + Uri.EscapeDataString(csvContent);
+    }
+
+    private async Task ViewReport()
+    {
+        if (string.IsNullOrWhiteSpace(this.reportHtmlContent))
+        {
+            this.reportHtmlContent = this.BuildHtmlReportContent();
+        }
+
+        await this.JS.InvokeVoidAsync("vittaReports.openHtmlReport", this.reportHtmlContent);
+    }
+
+    private string BuildCsvContent()
+    {
+        StringBuilder csv = new StringBuilder();
+
+        csv.AppendLine("Seccion,Campo,Valor");
+        csv.AppendLine("Resumen,Alimento más registrado," + this.mostConsumedProduct);
+        csv.AppendLine("Resumen,Cantidad total," + this.mostConsumedQuantity);
+        csv.AppendLine("Resumen,Usuarios registrados," + this.totalUsers);
+        csv.AppendLine("Resumen,Usuarios con menús en el período," + this.usersWithMenusInRange);
+        csv.AppendLine("Resumen,Menús registrados en el período," + this.totalMenusInRange);
+        csv.AppendLine("Resumen,Rango consultado," + this.rangeText);
+        csv.AppendLine();
+
+        csv.AppendLine("Tipos de dieta registrados,Tipo de dieta,Porcentaje");
+        foreach (KeyValuePair<string, double> item in this.dietPercentagesOrdered)
+        {
+            csv.AppendLine("Tipos de dieta registrados," + item.Key + "," + item.Value.ToString("0.##") + "%");
+        }
+
+        csv.AppendLine();
+
+        csv.AppendLine("Usuarios con más menús registrados,Usuario,Cantidad de menús");
+        foreach (KeyValuePair<string, int> item in this.topUsers)
+        {
+            csv.AppendLine("Usuarios con más menús registrados," + item.Key + "," + item.Value);
+        }
+
+        return csv.ToString();
+    }
+
+    private string BuildHtmlReportContent()
+    {
+        StringBuilder html = new StringBuilder();
+
+        html.AppendLine("<!DOCTYPE html>");
+        html.AppendLine("<html lang='es'>");
+        html.AppendLine("<head>");
+        html.AppendLine("<meta charset='utf-8'>");
+        html.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
+        html.AppendLine("<title>Reporte global Vitta</title>");
+        html.AppendLine("<style>");
+        html.AppendLine("body { font-family: Arial, sans-serif; margin: 0; background: #f4f8f4; color: #212121; }");
+        html.AppendLine(".header { background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%); color: white; padding: 22px 32px; }");
+        html.AppendLine(".header h1 { margin: 0; font-size: 28px; }");
+        html.AppendLine(".header p { margin: 8px 0 0 0; font-size: 14px; opacity: 0.95; }");
+        html.AppendLine(".container { max-width: 1180px; margin: 0 auto; padding: 28px 22px 40px 22px; }");
+        html.AppendLine(".card { background: white; border-radius: 18px; padding: 24px; box-shadow: 0 10px 24px rgba(0,0,0,0.06); border: 1px solid #dfe8df; }");
+        html.AppendLine(".section { margin-top: 24px; }");
+        html.AppendLine(".section h2 { color: #2E7D32; margin: 0 0 12px 0; font-size: 24px; }");
+        html.AppendLine(".section p { margin: 0 0 14px 0; color: #616161; line-height: 1.5; }");
+        html.AppendLine(".summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }");
+        html.AppendLine(".summary-card { background: #f7fbf7; border: 1px solid #dce7dd; border-radius: 16px; padding: 16px; }");
+        html.AppendLine(".summary-label { display: block; color: #616161; font-size: 13px; font-weight: 700; margin-bottom: 8px; }");
+        html.AppendLine(".summary-value { display: block; color: #212121; font-size: 18px; font-weight: 800; line-height: 1.3; }");
+        html.AppendLine(".summary-note { display: block; color: #616161; font-size: 12px; margin-top: 8px; line-height: 1.4; }");
+        html.AppendLine("table { width: 100%; border-collapse: collapse; background: white; border-radius: 14px; overflow: hidden; }");
+        html.AppendLine("th { background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%); color: white; text-align: left; padding: 12px 14px; }");
+        html.AppendLine("td { padding: 12px 14px; border-bottom: 1px solid #edf3ee; }");
+        html.AppendLine("@media (max-width: 1100px) { .summary-grid { grid-template-columns: repeat(2, 1fr); } }");
+        html.AppendLine("@media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr; } .container { padding: 18px 14px 28px 14px; } }");
+        html.AppendLine("</style>");
+        html.AppendLine("</head>");
+        html.AppendLine("<body>");
+
+        html.AppendLine("<div class='header'>");
+        html.AppendLine("<h1>Reporte global de Vitta</h1>");
+        html.AppendLine("<p>Resumen del comportamiento del sistema según el período consultado.</p>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='container'>");
+        html.AppendLine("<div class='card'>");
+
+        html.AppendLine("<div class='section'>");
+        html.AppendLine("<h2>Resumen general</h2>");
+        html.AppendLine("<p>Datos principales del período seleccionado.</p>");
+        html.AppendLine("<div class='summary-grid'>");
+
+        html.AppendLine("<div class='summary-card'>");
+        html.AppendLine("<span class='summary-label'>Alimento más registrado</span>");
+        html.AppendLine("<span class='summary-value'>" + this.mostConsumedProduct + "</span>");
+        html.AppendLine("<span class='summary-note'>Cantidad total: " + this.mostConsumedQuantity + "</span>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='summary-card'>");
+        html.AppendLine("<span class='summary-label'>Usuarios registrados</span>");
+        html.AppendLine("<span class='summary-value'>" + this.totalUsers + "</span>");
+        html.AppendLine("<span class='summary-note'>Usuarios creados en el sistema</span>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='summary-card'>");
+        html.AppendLine("<span class='summary-label'>Usuarios con menús en el período</span>");
+        html.AppendLine("<span class='summary-value'>" + this.usersWithMenusInRange + "</span>");
+        html.AppendLine("<span class='summary-note'>Usuarios que sí registraron menús</span>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='summary-card'>");
+        html.AppendLine("<span class='summary-label'>Menús registrados en el período</span>");
+        html.AppendLine("<span class='summary-value'>" + this.totalMenusInRange + "</span>");
+        html.AppendLine("<span class='summary-note'>Total de menús tomados en cuenta</span>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='summary-card'>");
+        html.AppendLine("<span class='summary-label'>Rango consultado</span>");
+        html.AppendLine("<span class='summary-value'>" + this.rangeText + "</span>");
+        html.AppendLine("<span class='summary-note'>Período usado para estas estadísticas</span>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("</div>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='section'>");
+        html.AppendLine("<h2>Tipos de dieta registrados</h2>");
+        html.AppendLine("<p>Muestra cómo se distribuyen los usuarios de Vitta según su tipo de dieta.</p>");
+        html.AppendLine("<table>");
+        html.AppendLine("<thead><tr><th>Tipo de dieta</th><th>Porcentaje</th></tr></thead>");
+        html.AppendLine("<tbody>");
+
+        foreach (KeyValuePair<string, double> item in this.dietPercentagesOrdered)
+        {
+            html.AppendLine("<tr><td>" + item.Key + "</td><td>" + item.Value.ToString("0.##") + "%</td></tr>");
+        }
+
+        html.AppendLine("</tbody>");
+        html.AppendLine("</table>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("<div class='section'>");
+        html.AppendLine("<h2>Usuarios con más menús registrados</h2>");
+        html.AppendLine("<p>Listado de usuarios con mayor cantidad de menús en el período consultado.</p>");
+        html.AppendLine("<table>");
+        html.AppendLine("<thead><tr><th>Usuario</th><th>Cantidad de menús</th></tr></thead>");
+        html.AppendLine("<tbody>");
+
+        foreach (KeyValuePair<string, int> item in this.topUsers)
+        {
+            html.AppendLine("<tr><td>" + item.Key + "</td><td>" + item.Value + "</td></tr>");
+        }
+
+        html.AppendLine("</tbody>");
+        html.AppendLine("</table>");
+        html.AppendLine("</div>");
+
+        html.AppendLine("</div>");
+        html.AppendLine("</div>");
+        html.AppendLine("</body>");
+        html.AppendLine("</html>");
+
+        return html.ToString();
+    }
+
+    private void GoBack()
+    {
+        this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+    }
+}

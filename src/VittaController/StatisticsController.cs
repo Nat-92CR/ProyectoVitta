@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Text;
     using VittaController.Abstractions;
     using VittaModel;
 
@@ -58,7 +59,7 @@
         /// <returns>Lista de menús encontrados.</returns>
         public List<Menu> GetMenusByDateRange(string userName, DateTime startDate, DateTime endDate)
         {
-            var menusInRange = new List<Menu>();
+            List<Menu> menusInRange = new List<Menu>();
 
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -305,6 +306,261 @@
         }
 
         /// <summary>
+        /// Exporta un resumen estadístico del usuario en formato CSV.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <returns>Contenido CSV del resumen.</returns>
+        public string ExportSummaryToCsv(string userName, DateTime startDate, DateTime endDate)
+        {
+            this.CalculateConsumptionByDateRange(
+                userName,
+                startDate,
+                endDate,
+                out double totalCalories,
+                out double totalProtein,
+                out double totalCarbohydrates,
+                out double totalFat);
+
+            double calorieGoal = this.CalculateDailyCalorieGoal(userName);
+
+            this.CalculateDailyMacronutrientGoal(
+                userName,
+                out double proteinGoal,
+                out double carbohydratesGoal,
+                out double fatGoal);
+
+            int daysMeetingGoal = this.CountDaysMeetingCalorieGoal(userName, startDate, endDate);
+
+            StringBuilder csv = new StringBuilder();
+
+            csv.AppendLine("Campo,Valor");
+            csv.AppendLine("Usuario," + userName);
+            csv.AppendLine("Fecha inicial," + startDate.ToString("dd/MM/yyyy"));
+            csv.AppendLine("Fecha final," + endDate.ToString("dd/MM/yyyy"));
+            csv.AppendLine("Calorías consumidas," + totalCalories.ToString("0.##"));
+            csv.AppendLine("Proteínas consumidas," + totalProtein.ToString("0.##"));
+            csv.AppendLine("Carbohidratos consumidos," + totalCarbohydrates.ToString("0.##"));
+            csv.AppendLine("Grasas consumidas," + totalFat.ToString("0.##"));
+            csv.AppendLine("Meta calórica diaria," + calorieGoal.ToString("0.##"));
+            csv.AppendLine("Meta proteína," + proteinGoal.ToString("0.##"));
+            csv.AppendLine("Meta carbohidratos," + carbohydratesGoal.ToString("0.##"));
+            csv.AppendLine("Meta grasas," + fatGoal.ToString("0.##"));
+            csv.AppendLine("Días que cumplieron meta calórica," + daysMeetingGoal);
+
+            return csv.ToString();
+        }
+
+        /// <summary>
+        /// Exporta un resumen estadístico del usuario en formato HTML.
+        /// </summary>
+        /// <param name="userName">Nombre del usuario.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <returns>Contenido HTML del resumen.</returns>
+        public string ExportSummaryToHtml(string userName, DateTime startDate, DateTime endDate)
+        {
+            this.CalculateConsumptionByDateRange(
+                userName,
+                startDate,
+                endDate,
+                out double totalCalories,
+                out double totalProtein,
+                out double totalCarbohydrates,
+                out double totalFat);
+
+            double calorieGoal = this.CalculateDailyCalorieGoal(userName);
+
+            this.CalculateDailyMacronutrientGoal(
+                userName,
+                out double proteinGoal,
+                out double carbohydratesGoal,
+                out double fatGoal);
+
+            int daysMeetingGoal = this.CountDaysMeetingCalorieGoal(userName, startDate, endDate);
+
+            StringBuilder html = new StringBuilder();
+
+            html.AppendLine("<html>");
+            html.AppendLine("<head><title>Resumen estadístico</title></head>");
+            html.AppendLine("<body>");
+            html.AppendLine("<h1>Resumen estadístico</h1>");
+            html.AppendLine("<table border='1' cellpadding='6' cellspacing='0'>");
+            html.AppendLine("<tr><th>Campo</th><th>Valor</th></tr>");
+            html.AppendLine("<tr><td>Usuario</td><td>" + userName + "</td></tr>");
+            html.AppendLine("<tr><td>Fecha inicial</td><td>" + startDate.ToString("dd/MM/yyyy") + "</td></tr>");
+            html.AppendLine("<tr><td>Fecha final</td><td>" + endDate.ToString("dd/MM/yyyy") + "</td></tr>");
+            html.AppendLine("<tr><td>Calorías consumidas</td><td>" + totalCalories.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Proteínas consumidas</td><td>" + totalProtein.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Carbohidratos consumidos</td><td>" + totalCarbohydrates.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Grasas consumidas</td><td>" + totalFat.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Meta calórica diaria</td><td>" + calorieGoal.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Meta proteína</td><td>" + proteinGoal.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Meta carbohidratos</td><td>" + carbohydratesGoal.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Meta grasas</td><td>" + fatGoal.ToString("0.##") + "</td></tr>");
+            html.AppendLine("<tr><td>Días que cumplieron meta calórica</td><td>" + daysMeetingGoal + "</td></tr>");
+            html.AppendLine("</table>");
+            html.AppendLine("</body>");
+            html.AppendLine("</html>");
+
+            return html.ToString();
+        }
+
+        /// <summary>
+        /// Obtiene el producto más consumido entre todos los usuarios en un rango de fechas.
+        /// </summary>
+        /// <param name="users">Lista de usuarios.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <param name="productName">Nombre del producto más consumido.</param>
+        /// <param name="totalQuantity">Cantidad total consumida.</param>
+        public void GetMostConsumedProduct(
+            List<User> users,
+            DateTime startDate,
+            DateTime endDate,
+            out string productName,
+            out int totalQuantity)
+        {
+            productName = "No disponible";
+            totalQuantity = 0;
+
+            if (users == null || users.Count == 0)
+            {
+                return;
+            }
+
+            Dictionary<string, int> productCounters = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (User user in users)
+            {
+                if (user == null || string.IsNullOrWhiteSpace(user.UserName))
+                {
+                    continue;
+                }
+
+                List<Menu> menus = this.GetMenusByDateRange(user.UserName, startDate, endDate);
+
+                foreach (Menu menu in menus)
+                {
+                    this.AddMealItemsToCounter(menu.Breakfast, productCounters);
+                    this.AddMealItemsToCounter(menu.MorningSnack, productCounters);
+                    this.AddMealItemsToCounter(menu.Lunch, productCounters);
+                    this.AddMealItemsToCounter(menu.AfternoonSnack, productCounters);
+                    this.AddMealItemsToCounter(menu.Dinner, productCounters);
+                }
+            }
+
+            foreach (KeyValuePair<string, int> item in productCounters)
+            {
+                if (item.Value > totalQuantity)
+                {
+                    productName = item.Key;
+                    totalQuantity = item.Value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Calcula los porcentajes de tipos de dieta de todos los usuarios.
+        /// </summary>
+        /// <param name="users">Lista de usuarios.</param>
+        /// <returns>Diccionario con dieta y porcentaje.</returns>
+        public Dictionary<string, double> GetDietTypePercentages(List<User> users)
+        {
+            Dictionary<string, double> result = new Dictionary<string, double>();
+
+            if (users == null || users.Count == 0)
+            {
+                return result;
+            }
+
+            Dictionary<string, int> counters = new Dictionary<string, int>();
+            int totalUsers = 0;
+
+            foreach (User user in users)
+            {
+                if (user == null)
+                {
+                    continue;
+                }
+
+                string dietType = string.IsNullOrWhiteSpace(user.DietType)
+                    ? "No especificado"
+                    : user.DietType.Trim();
+
+                if (!counters.ContainsKey(dietType))
+                {
+                    counters[dietType] = 0;
+                }
+
+                counters[dietType]++;
+                totalUsers++;
+            }
+
+            if (totalUsers == 0)
+            {
+                return result;
+            }
+
+            foreach (KeyValuePair<string, int> item in counters)
+            {
+                result[item.Key] = (item.Value * 100.0) / totalUsers;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Obtiene el ranking de usuarios con más menús ingresados en un rango de fechas.
+        /// </summary>
+        /// <param name="users">Lista de usuarios.</param>
+        /// <param name="startDate">Fecha inicial.</param>
+        /// <param name="endDate">Fecha final.</param>
+        /// <returns>Lista ordenada de usuarios y cantidad de menús.</returns>
+        public List<KeyValuePair<string, int>> GetUsersWithMostMenus(
+            List<User> users,
+            DateTime startDate,
+            DateTime endDate)
+        {
+            List<KeyValuePair<string, int>> result = new List<KeyValuePair<string, int>>();
+
+            if (users == null || users.Count == 0)
+            {
+                return result;
+            }
+
+            foreach (User user in users)
+            {
+                if (user == null || string.IsNullOrWhiteSpace(user.UserName))
+                {
+                    continue;
+                }
+
+                int menuCount = this.GetMenusByDateRange(user.UserName, startDate, endDate).Count;
+
+                if (menuCount > 0)
+                {
+                    result.Add(new KeyValuePair<string, int>(user.UserName, menuCount));
+                }
+            }
+
+            result.Sort((first, second) =>
+            {
+                int compareByCount = second.Value.CompareTo(first.Value);
+
+                if (compareByCount != 0)
+                {
+                    return compareByCount;
+                }
+
+                return string.Compare(first.Key, second.Key, StringComparison.OrdinalIgnoreCase);
+            });
+
+            return result;
+        }
+
+        /// <summary>
         /// Suma la información nutricional de un tiempo de comida.
         /// </summary>
         /// <param name="mealText">Texto del tiempo de comida.</param>
@@ -339,6 +595,38 @@
                     totalCarbohydrates += matchedFood.Carbohydrates * quantity;
                     totalFat += matchedFood.Fat * quantity;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Acumula la cantidad de productos encontrados en el texto de un tiempo de comida.
+        /// </summary>
+        /// <param name="mealText">Texto del tiempo de comida.</param>
+        /// <param name="productCounters">Diccionario acumulador de cantidades.</param>
+        private void AddMealItemsToCounter(string mealText, Dictionary<string, int> productCounters)
+        {
+            if (string.IsNullOrWhiteSpace(mealText))
+            {
+                return;
+            }
+
+            string[] mealItems = mealText.Split(new string[] { " | " }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string mealItem in mealItems)
+            {
+                this.ParseMealItem(mealItem.Trim(), out string foodName, out int quantity);
+
+                if (string.IsNullOrWhiteSpace(foodName))
+                {
+                    continue;
+                }
+
+                if (!productCounters.ContainsKey(foodName))
+                {
+                    productCounters[foodName] = 0;
+                }
+
+                productCounters[foodName] += quantity;
             }
         }
 

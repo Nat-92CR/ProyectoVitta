@@ -25,7 +25,7 @@
     <div class="mr-card">
         <h1 class="mr-title">Registrar menú</h1>
         <p class="mr-subtitle">
-            Registra un menú nuevo o carga uno existente para editarlo. Los totales se actualizan automáticamente.
+            Organiza tus tiempos de comida del día y mantén tu registro nutricional al día en Vitta.
         </p>
 
         <section class="mr-section">
@@ -97,6 +97,7 @@
                 {
                     <div class="mr-meal-card">
                         <h3 class="mr-meal-title">@meal</h3>
+
                         @if (meals[meal].Count == 0)
                         {
                             <p class="mr-meal-empty">Sin alimentos registrados.</p>
@@ -107,8 +108,17 @@
                                 @foreach (var item in meals[meal])
                                 {
                                     <li>
-                                        <span>@item.FoodName <strong>x@item.Quantity</strong></span>
-                                        <button type="button" class="mr-remove-btn" @onclick="@(() => RemoveItem(meal, item))" title="Quitar">×</button>
+                                        <div class="mr-meal-item-text">
+                                            <span class="mr-meal-item-name">@item.FoodName</span>
+                                            <strong class="mr-meal-item-quantity">@GetQuantityLabel(item.Quantity)</strong>
+                                        </div>
+
+                                        <button type="button"
+                                                class="mr-remove-btn"
+                                                @onclick="@(() => RemoveItem(meal, item))"
+                                                title="Quitar">
+                                            ×
+                                        </button>
                                     </li>
                                 }
                             </ul>
@@ -150,10 +160,10 @@
             {
                 <button type="button" class="mr-btn-primary" @onclick="SaveMenu">Guardar menú</button>
             }
+
             <button type="button" class="mr-btn-secondary" @onclick="ClearForm">Limpiar</button>
             <button type="button" class="mr-btn-secondary" @onclick="GoBack">Cancelar</button>
         </div>
-
     </div>
 </div>
 
@@ -267,7 +277,11 @@
         }
         else
         {
-            list.Add(new MealItem { FoodName = this.selectedFood, Quantity = this.quantity });
+            list.Add(new MealItem
+            {
+                FoodName = this.selectedFood,
+                Quantity = this.quantity
+            });
         }
 
         this.RefreshTotals();
@@ -389,6 +403,7 @@
         foreach (var part in parts)
         {
             var clean = part.Trim();
+
             if (string.IsNullOrWhiteSpace(clean))
             {
                 continue;
@@ -412,14 +427,18 @@
                 }
             }
 
-            result.Add(new MealItem { FoodName = foodName, Quantity = qty });
+            result.Add(new MealItem
+            {
+                FoodName = foodName,
+                Quantity = qty
+            });
         }
 
         return result;
     }
 
     /// <summary>
-    /// Convierte la lista interna de alimentos al formato de almacenamiento (separado por " | ").
+    /// Convierte la lista interna de alimentos al formato de almacenamiento.
     /// </summary>
     private string SerializeMeal(string mealTime)
     {
@@ -469,6 +488,7 @@
     private async Task SaveMenu()
     {
         var (valid, breakfast, morning, lunch, afternoon, dinner) = await this.ValidateAndSerializeAsync();
+
         if (!valid)
         {
             return;
@@ -508,6 +528,7 @@
         }
 
         var (valid, breakfast, morning, lunch, afternoon, dinner) = await this.ValidateAndSerializeAsync();
+
         if (!valid)
         {
             return;
@@ -602,6 +623,14 @@
     private bool ContainsComma(string text)
     {
         return !string.IsNullOrEmpty(text) && text.Contains(",");
+    }
+
+    /// <summary>
+    /// Devuelve el texto de cantidad para mostrarlo en la vista.
+    /// </summary>
+    private string GetQuantityLabel(int value)
+    {
+        return $"x{value}";
     }
 
     /// <summary>

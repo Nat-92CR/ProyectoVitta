@@ -1,0 +1,638 @@
+﻿@page "/admin/usuarios/{UserName}"
+@rendermode InteractiveServer
+@using System
+@using System.Linq
+@using VittaController
+@using VittaModel
+@inject UserController UserController
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Vitta - Administrar usuarios</PageTitle>
+
+<div class="au-header">
+    <div class="au-header-inner">
+        <div class="au-brand">
+            <span class="au-brand-circle">V</span>
+            <span class="au-brand-text">Vitta - Admin</span>
+        </div>
+
+        <button type="button" class="au-back-btn" @onclick="GoBack">
+            ← Volver
+        </button>
+    </div>
+</div>
+
+<div class="au-content">
+    <div class="au-card">
+        <h1 class="au-title">Administrar usuarios</h1>
+        <p class="au-subtitle">
+            Registra usuarios, restablece contraseñas, cambia el tipo de cuenta y desactiva o reactiva usuarios del sistema.
+        </p>
+
+        @* Campos trampa para reducir el autocompletado agresivo del navegador *@
+        <input type="text" name="fake-admin-user" autocomplete="username" style="display:none;" />
+        <input type="password" name="fake-admin-pass" autocomplete="current-password" style="display:none;" />
+
+        <section class="au-section">
+            <h2 class="au-section-title">+ Nuevo usuario</h2>
+
+            <div class="au-grid">
+                <div class="au-field">
+                    <label for="newUserName">Usuario</label>
+                    <input id="newUserName"
+                           name="vitta-admin-new-username"
+                           type="text"
+                           @bind="newUserName"
+                           autocomplete="off"
+                           autocapitalize="off"
+                           autocorrect="off"
+                           spellcheck="false" />
+                </div>
+
+                <div class="au-field">
+                    <label for="newPassword">Contraseña</label>
+                    <input id="newPassword"
+                           name="vitta-admin-new-password"
+                           type="password"
+                           @bind="newPassword"
+                           autocomplete="new-password" />
+                </div>
+
+                <div class="au-field">
+                    <label for="newName">Nombre</label>
+                    <input id="newName"
+                           name="vitta-admin-new-name"
+                           type="text"
+                           @bind="newName"
+                           autocomplete="off"
+                           autocapitalize="off"
+                           autocorrect="off"
+                           spellcheck="false" />
+                </div>
+
+                <div class="au-field">
+                    <label for="newWeight">Peso</label>
+                    <input id="newWeight"
+                           name="vitta-admin-new-weight"
+                           type="number"
+                           step="0.01"
+                           @bind="newWeight"
+                           autocomplete="off" />
+                </div>
+
+                <div class="au-field">
+                    <label for="newHeight">Altura</label>
+                    <input id="newHeight"
+                           name="vitta-admin-new-height"
+                           type="number"
+                           step="0.01"
+                           @bind="newHeight"
+                           autocomplete="off" />
+                </div>
+
+                <div class="au-field">
+                    <label for="newAge">Edad</label>
+                    <input id="newAge"
+                           name="vitta-admin-new-age"
+                           type="number"
+                           @bind="newAge"
+                           autocomplete="off" />
+                </div>
+
+                <div class="au-field">
+                    <label for="newSex">Sexo</label>
+                    <select id="newSex" @bind="newSex">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="No especificado">No especificado</option>
+                    </select>
+                </div>
+
+                <div class="au-field">
+                    <label for="newGoal">Objetivo</label>
+                    <select id="newGoal" @bind="newGoal">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Mantener">Mantener</option>
+                        <option value="Perder grasa">Perder grasa</option>
+                        <option value="Ganar masa">Ganar masa</option>
+                    </select>
+                </div>
+
+                <div class="au-field">
+                    <label for="newActivityLevel">Nivel de actividad</label>
+                    <select id="newActivityLevel" @bind="newActivityLevel">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Sedentario">Sedentario</option>
+                        <option value="Ligero">Ligero</option>
+                        <option value="Moderado">Moderado</option>
+                        <option value="Alto">Alto</option>
+                    </select>
+                </div>
+
+                <div class="au-field">
+                    <label for="newDietType">Tipo de dieta</label>
+                    <select id="newDietType" @bind="newDietType">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Estándar">Estándar</option>
+                        <option value="Keto">Keto</option>
+                        <option value="Vegetariana">Vegetariana</option>
+                    </select>
+                </div>
+
+                <div class="au-field">
+                    <label for="newUserType">Tipo</label>
+                    <select id="newUserType" @bind="newUserType">
+                        <option value="Usuario">Usuario</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="au-actions-row">
+                <button type="button" class="au-btn-primary" @onclick="HandleAddUser">
+                    Registrar usuario
+                </button>
+
+                <button type="button" class="au-btn-secondary" @onclick="ClearNewFields">
+                    Limpiar
+                </button>
+            </div>
+        </section>
+
+        <section class="au-section">
+            <h2 class="au-section-title">Buscar y administrar</h2>
+
+            <div class="au-search-row">
+                <input class="au-search-input"
+                       placeholder="Buscar usuario por nombre o usuario..."
+                       @bind="searchText"
+                       autocomplete="off" />
+
+                <button type="button" class="au-btn-primary" @onclick="SearchUsers">
+                    Buscar
+                </button>
+
+                <button type="button" class="au-btn-secondary" @onclick="ShowAll">
+                    Mostrar todos
+                </button>
+            </div>
+
+            <div class="au-table-wrapper">
+                <table class="au-table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>Dieta</th>
+                            <th>Estado</th>
+                            <th>Tipo</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (visibleUsers.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="6" class="au-empty">No se encontraron usuarios.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var user in visibleUsers)
+                            {
+                                <tr class="@(IsRowSelected(user.UserName) ? "au-row-selected" : string.Empty)">
+                                    <td>@user.UserName</td>
+                                    <td>@user.Name</td>
+                                    <td>@user.DietType</td>
+                                    <td>
+                                        <span class="@(user.IsActive ? "au-status-active" : "au-status-inactive")">
+                                            @(user.IsActive ? "Activo" : "Inactivo")
+                                        </span>
+                                    </td>
+                                    <td>@(user.IsAdmin ? "Administrador" : "Usuario")</td>
+                                    <td>
+                                        <button type="button" class="au-row-btn" @onclick="@(() => SelectUser(user))">
+                                            Seleccionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="au-section">
+            <h2 class="au-section-title">Usuario seleccionado</h2>
+
+            @if (selectedUser is null)
+            {
+                <p class="au-empty-block">Seleccione un usuario de la tabla para administrarlo.</p>
+            }
+            else
+            {
+                <div class="au-grid">
+                    <div class="au-field">
+                        <label>Usuario</label>
+                        <input value="@selectedUser.UserName" readonly />
+                    </div>
+
+                    <div class="au-field">
+                        <label>Nombre</label>
+                        <input value="@selectedUser.Name" readonly />
+                    </div>
+
+                    <div class="au-field">
+                        <label>Estado actual</label>
+                        <input value="@(selectedUser.IsActive ? "Activo" : "Inactivo")" readonly />
+                    </div>
+
+                    <div class="au-field">
+                        <label>Tipo</label>
+                        <select @bind="selectedUserType">
+                            <option value="Usuario">Usuario</option>
+                            <option value="Administrador">Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="au-field au-field-full">
+                        <label for="resetPassword">Nueva contraseña</label>
+                        <input id="resetPassword"
+                               name="vitta-admin-reset-password"
+                               type="password"
+                               @bind="resetPassword"
+                               autocomplete="new-password" />
+                    </div>
+                </div>
+
+                <div class="au-actions-row">
+                    <button type="button" class="au-btn-primary" @onclick="HandleResetPassword">
+                        Resetear contraseña
+                    </button>
+
+                    <button type="button" class="au-btn-primary" @onclick="HandleUpdateUserType">
+                        Guardar tipo
+                    </button>
+
+                    <button type="button"
+                            class="@(selectedUser.IsActive ? "au-btn-warning" : "au-btn-primary")"
+                            @onclick="ToggleUserStatus">
+                        @(selectedUser.IsActive ? "Desactivar usuario" : "Reactivar usuario")
+                    </button>
+
+                    <button type="button" class="au-btn-secondary" @onclick="ClearSelection">
+                        Limpiar selección
+                    </button>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private List<User> allUsers = new();
+    private List<User> visibleUsers = new();
+    private string searchText = string.Empty;
+
+    private string selectedUserName = string.Empty;
+    private User? selectedUser;
+    private string selectedUserType = string.Empty;
+    private string resetPassword = string.Empty;
+
+    private string newUserName = string.Empty;
+    private string newPassword = string.Empty;
+    private string newName = string.Empty;
+    private double newWeight = 0;
+    private double newHeight = 0;
+    private int newAge = 0;
+    private string newSex = string.Empty;
+    private string newGoal = string.Empty;
+    private string newActivityLevel = string.Empty;
+    private string newDietType = string.Empty;
+    private string newUserType = "Usuario";
+
+    protected override void OnInitialized()
+    {
+        User? currentSessionUser = this.UserController.GetUserByUserName(this.UserName);
+
+        if (currentSessionUser is null || !currentSessionUser.IsAdmin)
+        {
+            this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+            return;
+        }
+
+        this.ClearNewFields();
+        this.ClearSelection();
+        this.LoadUsers();
+    }
+
+    private void LoadUsers()
+    {
+        this.allUsers = this.UserController.GetUsers();
+        this.ApplyFilter();
+        this.RefreshSelectedUser();
+    }
+
+    private void ApplyFilter()
+    {
+        if (string.IsNullOrWhiteSpace(this.searchText))
+        {
+            this.visibleUsers = new List<User>(this.allUsers);
+            return;
+        }
+
+        string normalizedText = this.searchText.Trim().ToLower();
+
+        this.visibleUsers = this.allUsers
+            .Where(user =>
+                user.UserName.ToLower().Contains(normalizedText) ||
+                user.Name.ToLower().Contains(normalizedText))
+            .ToList();
+    }
+
+    private void RefreshSelectedUser()
+    {
+        if (string.IsNullOrWhiteSpace(this.selectedUserName))
+        {
+            this.selectedUser = null;
+            this.selectedUserType = string.Empty;
+            return;
+        }
+
+        this.selectedUser = this.allUsers.FirstOrDefault(user => user.UserName == this.selectedUserName);
+
+        if (this.selectedUser is null)
+        {
+            this.selectedUserName = string.Empty;
+            this.selectedUserType = string.Empty;
+            return;
+        }
+
+        this.selectedUserType = this.selectedUser.IsAdmin ? "Administrador" : "Usuario";
+    }
+
+    private bool IsRowSelected(string userName)
+    {
+        return this.selectedUserName == userName;
+    }
+
+    private void SelectUser(User user)
+    {
+        this.selectedUserName = user.UserName;
+        this.resetPassword = string.Empty;
+        this.RefreshSelectedUser();
+    }
+
+    private void ClearSelection()
+    {
+        this.selectedUserName = string.Empty;
+        this.selectedUser = null;
+        this.selectedUserType = string.Empty;
+        this.resetPassword = string.Empty;
+    }
+
+    private void ClearNewFields()
+    {
+        this.newUserName = string.Empty;
+        this.newPassword = string.Empty;
+        this.newName = string.Empty;
+        this.newWeight = 0;
+        this.newHeight = 0;
+        this.newAge = 0;
+        this.newSex = string.Empty;
+        this.newGoal = string.Empty;
+        this.newActivityLevel = string.Empty;
+        this.newDietType = string.Empty;
+        this.newUserType = "Usuario";
+    }
+
+    private void SearchUsers()
+    {
+        this.ApplyFilter();
+        this.RefreshSelectedUser();
+    }
+
+    private void ShowAll()
+    {
+        this.searchText = string.Empty;
+        this.ApplyFilter();
+        this.RefreshSelectedUser();
+    }
+
+    private async Task HandleAddUser()
+    {
+        if (string.IsNullOrWhiteSpace(this.newUserName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre de usuario.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.newPassword))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar la contraseña.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.newName))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar el nombre.");
+            return;
+        }
+
+        if (this.newWeight <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El peso debe ser un número mayor que 0.");
+            return;
+        }
+
+        if (this.newHeight <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La altura debe ser un número mayor que 0.");
+            return;
+        }
+
+        if (this.newAge <= 0)
+        {
+            await this.JS.InvokeVoidAsync("alert", "La edad debe ser un número entero mayor que 0.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.newSex))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar el sexo.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.newGoal))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un objetivo.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.newActivityLevel))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un nivel de actividad.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.newDietType))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un tipo de dieta.");
+            return;
+        }
+
+        bool isAdmin = this.newUserType == "Administrador";
+
+        User newUser = new User(
+            this.newUserName.Trim(),
+            this.newPassword.Trim(),
+            this.newName.Trim(),
+            this.newWeight,
+            this.newHeight,
+            this.newGoal,
+            this.newActivityLevel,
+            this.newDietType,
+            this.newAge,
+            this.newSex,
+            true,
+            isAdmin);
+
+        bool result = this.UserController.Register(newUser);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Usuario registrado correctamente.");
+            this.ClearNewFields();
+            this.LoadUsers();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo registrar el usuario. Verifique si el nombre de usuario ya existe.");
+    }
+
+    private async Task HandleResetPassword()
+    {
+        if (this.selectedUser is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un usuario.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.resetPassword))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe ingresar la nueva contraseña.");
+            return;
+        }
+
+        bool result = this.UserController.ResetPassword(this.selectedUser.UserName, this.resetPassword.Trim());
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Contraseña restablecida correctamente.");
+            this.resetPassword = string.Empty;
+            this.LoadUsers();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo restablecer la contraseña.");
+    }
+
+    private async Task HandleUpdateUserType()
+    {
+        if (this.selectedUser is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un usuario.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.selectedUserType))
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un tipo de usuario.");
+            return;
+        }
+
+        bool newIsAdmin = this.selectedUserType == "Administrador";
+
+        if (this.selectedUser.UserName == this.UserName && !newIsAdmin)
+        {
+            await this.JS.InvokeVoidAsync("alert", "No se recomienda quitarte a ti mismo el rol de administrador desde esta sesión.");
+            return;
+        }
+
+        if (this.selectedUser.IsAdmin == newIsAdmin)
+        {
+            await this.JS.InvokeVoidAsync("alert", "El usuario ya tiene ese tipo asignado.");
+            return;
+        }
+
+        User updatedUser = new User(
+            this.selectedUser.UserName,
+            this.selectedUser.Password,
+            this.selectedUser.Name,
+            this.selectedUser.Weight,
+            this.selectedUser.Height,
+            this.selectedUser.Goal,
+            this.selectedUser.ActivityLevel,
+            this.selectedUser.DietType,
+            this.selectedUser.Age,
+            this.selectedUser.Sex,
+            this.selectedUser.IsActive,
+            newIsAdmin);
+
+        bool result = this.UserController.UpdateUser(updatedUser);
+
+        if (result)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Tipo de usuario actualizado correctamente.");
+            this.LoadUsers();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo actualizar el tipo de usuario.");
+    }
+
+    private async Task ToggleUserStatus()
+    {
+        if (this.selectedUser is null)
+        {
+            await this.JS.InvokeVoidAsync("alert", "Debe seleccionar un usuario.");
+            return;
+        }
+
+        bool wasActive = this.selectedUser.IsActive;
+        bool result;
+
+        if (wasActive)
+        {
+            result = this.UserController.DeactivateUser(this.selectedUser.UserName);
+        }
+        else
+        {
+            result = this.UserController.ActivateUser(this.selectedUser.UserName);
+        }
+
+        if (result)
+        {
+            string message = wasActive
+                ? "Usuario desactivado correctamente."
+                : "Usuario activado correctamente.";
+
+            await this.JS.InvokeVoidAsync("alert", message);
+            this.LoadUsers();
+            return;
+        }
+
+        await this.JS.InvokeVoidAsync("alert", "No se pudo actualizar el estado del usuario.");
+    }
+
+    private void GoBack()
+    {
+        this.Navigation.NavigateTo($"/dashboard/{this.UserName}");
+    }
+}

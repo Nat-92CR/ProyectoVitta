@@ -1,0 +1,310 @@
+﻿.ads-header {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.16);
+}
+
+.ads-header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    min-height: 86px;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ads-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ads-brand-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.ads-brand-text {
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.ads-back-btn {
+    border: none;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #FFFFFF;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ads-content {
+    min-height: calc(100vh - 86px);
+    background: linear-gradient(135deg, #F4F8F4 0%, #EAF4EC 100%);
+    padding: 34px 18px 40px 18px;
+}
+
+.ads-card {
+    max-width: 1180px;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    border-radius: 28px;
+    padding: 32px 28px 28px 28px;
+    box-shadow: 0 18px 40px rgba(46, 125, 50, 0.10);
+    border: 1px solid #E2E8E2;
+}
+
+.ads-title {
+    margin: 0 0 10px 0;
+    color: #2E7D32;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.ads-subtitle {
+    margin: 0 0 22px 0;
+    color: #616161;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 860px;
+}
+
+.ads-section {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px dashed #E0E0E0;
+}
+
+    .ads-section:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+
+.ads-section-title {
+    margin: 0 0 16px 0;
+    color: #2E7D32;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.ads-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 20px;
+}
+
+.ads-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .ads-field label {
+        color: #212121;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .ads-field input {
+        height: 50px;
+        border: 1px solid #CFE0D1;
+        background-color: #F7FBF7;
+        border-radius: 16px;
+        padding: 0 16px;
+        font-size: 15px;
+        color: #212121;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+        .ads-field input:focus {
+            border-color: #2E7D32;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.12);
+        }
+
+.ads-actions-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+.ads-btn-primary,
+.ads-btn-secondary {
+    min-height: 50px;
+    padding: 0 22px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    font-family: inherit;
+}
+
+    .ads-btn-primary:hover,
+    .ads-btn-secondary:hover {
+        transform: translateY(-1px);
+    }
+
+.ads-btn-primary {
+    border: none;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #34C759 0%, #2E7D32 100%);
+    box-shadow: 0 8px 18px rgba(46, 125, 50, 0.20);
+}
+
+.ads-btn-secondary {
+    background: #FFFFFF;
+    color: #2E7D32;
+    border: 2px solid #2E7D32;
+}
+
+.ads-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ads-summary-grid-large {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.ads-summary-card {
+    background: #F7FBF7;
+    border: 1px solid #DDE9DF;
+    border-radius: 20px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ads-summary-label {
+    color: #616161;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ads-summary-value {
+    color: #212121;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.ads-summary-note {
+    color: #616161;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.ads-helper-text {
+    margin: 0 0 12px 0;
+    color: #616161;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.ads-foot-note {
+    margin-top: 12px;
+    color: #616161;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.ads-table-wrapper {
+    border: 1px solid #DCE7DD;
+    border-radius: 18px;
+    overflow: hidden;
+    background-color: #FFFFFF;
+    max-height: 520px;
+    overflow-y: auto;
+}
+
+.ads-table-wrapper-small {
+    max-height: 280px;
+}
+
+.ads-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .ads-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+        color: #FFFFFF;
+    }
+
+    .ads-table th,
+    .ads-table td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid #EDF3EE;
+        font-size: 14px;
+    }
+
+    .ads-table tbody tr:hover {
+        background-color: #F6FBF6;
+    }
+
+.ads-empty {
+    text-align: center;
+    color: #757575;
+    font-style: italic;
+    padding: 22px 0;
+}
+
+@media (max-width: 1200px) {
+    .ads-summary-grid-large {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .ads-summary-grid,
+    .ads-summary-grid-large {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .ads-card {
+        padding: 24px 18px 22px 18px;
+        border-radius: 22px;
+    }
+
+    .ads-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ads-actions-row {
+        justify-content: stretch;
+    }
+
+    .ads-btn-primary,
+    .ads-btn-secondary {
+        width: 100%;
+    }
+}

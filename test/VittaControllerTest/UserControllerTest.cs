@@ -13,7 +13,6 @@ namespace VittaControllerTest
         [TestMethod]
         public void Login_WhenUserExistsAndPasswordMatches_ReturnsTrue()
         {
-            // Arrange
             List<User> users = new List<User>
             {
                 new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino")
@@ -24,17 +23,14 @@ namespace VittaControllerTest
 
             UserController userController = new UserController(dataHandlerMock.Object);
 
-            // Act
             bool result = userController.Login("Nat", "123");
 
-            // Assert
             Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void Login_WhenPasswordIsIncorrect_ReturnsFalse()
         {
-            // Arrange
             List<User> users = new List<User>
             {
                 new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino")
@@ -45,17 +41,14 @@ namespace VittaControllerTest
 
             UserController userController = new UserController(dataHandlerMock.Object);
 
-            // Act
             bool result = userController.Login("Nat", "999");
 
-            // Assert
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void Login_WhenUserNameIsEmpty_ReturnsFalse()
         {
-            // Arrange
             List<User> users = new List<User>();
 
             Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
@@ -63,17 +56,32 @@ namespace VittaControllerTest
 
             UserController userController = new UserController(dataHandlerMock.Object);
 
-            // Act
             bool result = userController.Login("", "123");
 
-            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void Login_WhenUserIsInactive_ReturnsFalse()
+        {
+            List<User> users = new List<User>
+            {
+                new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino", false, false)
+            };
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.Login("Nat", "123");
+
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void Register_WhenUserDoesNotExist_AddsUserAndReturnsTrue()
         {
-            // Arrange
             List<User> users = new List<User>();
 
             Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
@@ -96,10 +104,8 @@ namespace VittaControllerTest
                 33,
                 "Femenino");
 
-            // Act
             bool result = userController.Register(newUser);
 
-            // Assert
             Assert.IsTrue(result);
             dataHandlerMock.Verify(x => x.SaveData(It.IsAny<List<User>>()), Times.Once);
         }
@@ -107,7 +113,6 @@ namespace VittaControllerTest
         [TestMethod]
         public void Register_WhenUserAlreadyExists_ReturnsFalse()
         {
-            // Arrange
             List<User> users = new List<User>
             {
                 new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino")
@@ -124,23 +129,20 @@ namespace VittaControllerTest
                 "Otra Natalia",
                 62,
                 161,
-                "Perder peso",
+                "Perder grasa",
                 "Ligero",
                 "Vegetariana",
                 30,
                 "Femenino");
 
-            // Act
             bool result = userController.Register(duplicateUser);
 
-            // Assert
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void GetUserByUserName_WhenUserExists_ReturnsUser()
         {
-            // Arrange
             List<User> users = new List<User>
             {
                 new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino")
@@ -151,10 +153,8 @@ namespace VittaControllerTest
 
             UserController userController = new UserController(dataHandlerMock.Object);
 
-            // Act
             User? result = userController.GetUserByUserName("Nat");
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("Natalia Tobal", result.Name);
         }
@@ -162,7 +162,6 @@ namespace VittaControllerTest
         [TestMethod]
         public void UpdateUser_WhenUserExists_UpdatesAndReturnsTrue()
         {
-            // Arrange
             List<User> users = new List<User>
             {
                 new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino")
@@ -183,15 +182,15 @@ namespace VittaControllerTest
                 61,
                 160,
                 "Mantener",
-                "Activo",
-                "Alta en proteína",
+                "Moderado",
+                "Estándar",
                 33,
-                "Femenino");
+                "Femenino",
+                true,
+                false);
 
-            // Act
             bool result = userController.UpdateUser(updatedUser);
 
-            // Assert
             Assert.IsTrue(result);
             dataHandlerMock.Verify(x => x.SaveData(It.IsAny<List<User>>()), Times.Once);
         }
@@ -199,7 +198,6 @@ namespace VittaControllerTest
         [TestMethod]
         public void UpdateUser_WhenUserDoesNotExist_ReturnsFalse()
         {
-            // Arrange
             List<User> users = new List<User>();
 
             Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
@@ -219,10 +217,125 @@ namespace VittaControllerTest
                 33,
                 "Femenino");
 
-            // Act
             bool result = userController.UpdateUser(updatedUser);
 
-            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ResetPassword_WhenUserExists_UpdatesPasswordAndReturnsTrue()
+        {
+            List<User> users = new List<User>
+            {
+                new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino")
+            };
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+            dataHandlerMock
+                .Setup(x => x.SaveData(It.IsAny<List<User>>()))
+                .Returns(true);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.ResetPassword("Nat", "999");
+
+            Assert.IsTrue(result);
+            Assert.AreEqual("999", users[0].Password);
+            dataHandlerMock.Verify(x => x.SaveData(It.IsAny<List<User>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void ResetPassword_WhenUserDoesNotExist_ReturnsFalse()
+        {
+            List<User> users = new List<User>();
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.ResetPassword("Nat", "999");
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void DeactivateUser_WhenUserExistsAndIsActive_ReturnsTrue()
+        {
+            List<User> users = new List<User>
+            {
+                new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino", true, false)
+            };
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+            dataHandlerMock
+                .Setup(x => x.SaveData(It.IsAny<List<User>>()))
+                .Returns(true);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.DeactivateUser("Nat");
+
+            Assert.IsTrue(result);
+            Assert.IsFalse(users[0].IsActive);
+            dataHandlerMock.Verify(x => x.SaveData(It.IsAny<List<User>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void DeactivateUser_WhenUserIsAdmin_ReturnsFalse()
+        {
+            List<User> users = new List<User>
+            {
+                new User("admin", "123", "Administrador", 70, 170, "Mantener", "Sedentario", "Estándar", 30, "No especificado", true, true)
+            };
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.DeactivateUser("admin");
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ActivateUser_WhenUserExistsAndIsInactive_ReturnsTrue()
+        {
+            List<User> users = new List<User>
+            {
+                new User("Nat", "123", "Natalia Tobal", 60, 160, "Mantener", "Moderado", "Estándar", 33, "Femenino", false, false)
+            };
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+            dataHandlerMock
+                .Setup(x => x.SaveData(It.IsAny<List<User>>()))
+                .Returns(true);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.ActivateUser("Nat");
+
+            Assert.IsTrue(result);
+            Assert.IsTrue(users[0].IsActive);
+            dataHandlerMock.Verify(x => x.SaveData(It.IsAny<List<User>>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void ActivateUser_WhenUserDoesNotExist_ReturnsFalse()
+        {
+            List<User> users = new List<User>();
+
+            Mock<IDataHandler<User>> dataHandlerMock = new Mock<IDataHandler<User>>();
+            dataHandlerMock.Setup(x => x.LoadData()).Returns(users);
+
+            UserController userController = new UserController(dataHandlerMock.Object);
+
+            bool result = userController.ActivateUser("Nat");
+
             Assert.IsFalse(result);
         }
     }

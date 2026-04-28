@@ -253,18 +253,34 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 10px;
         background-color: #FFFFFF;
         border: 1px solid #E0E0E0;
         border-radius: 8px;
-        padding: 6px 10px;
+        padding: 8px 10px;
         font-size: 13px;
         color: #212121;
     }
 
-        .mr-meal-list li strong {
-            color: #2E7D32;
-            margin-left: 4px;
-        }
+.mr-meal-item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.mr-meal-item-name {
+    color: #212121;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.mr-meal-item-quantity {
+    color: #2E7D32;
+    font-size: 12px;
+    font-weight: 800;
+}
 
 .mr-remove-btn {
     background-color: #FFEBEE;
@@ -283,6 +299,7 @@
     line-height: 1;
     padding: 0;
     font-family: inherit;
+    flex-shrink: 0;
 }
 
     .mr-remove-btn:hover {

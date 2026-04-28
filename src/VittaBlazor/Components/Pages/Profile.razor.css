@@ -1,0 +1,174 @@
+﻿.pf-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #F4F8F4 0%, #EAF4EC 100%);
+}
+
+.pf-header {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.16);
+}
+
+.pf-header-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    min-height: 86px;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pf-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pf-brand-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #2E7D32;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.pf-brand-text {
+    color: #FFFFFF;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.pf-back-btn {
+    border: none;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #FFFFFF;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pf-content {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 34px 18px 40px 18px;
+}
+
+.pf-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+    border-radius: 28px;
+    padding: 34px 30px 30px 30px;
+    box-shadow: 0 18px 40px rgba(46, 125, 50, 0.10);
+    border: 1px solid #E2E8E2;
+}
+
+.pf-title {
+    margin: 0 0 10px 0;
+    color: #212121;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.pf-subtitle {
+    margin: 0 0 24px 0;
+    color: #616161;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.pf-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 20px;
+}
+
+.pf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .pf-field label {
+        color: #212121;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .pf-field input,
+    .pf-field select {
+        height: 50px;
+        border: 1px solid #CFE0D1;
+        background-color: #F7FBF7;
+        border-radius: 16px;
+        padding: 0 16px;
+        font-size: 15px;
+        color: #212121;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+        .pf-field input:focus,
+        .pf-field select:focus {
+            border-color: #2E7D32;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.12);
+        }
+
+        .pf-field input[readonly] {
+            background-color: #EEF5EF;
+        }
+
+.pf-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.pf-btn-primary,
+.pf-btn-secondary {
+    min-height: 52px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    font-family: inherit;
+}
+
+    .pf-btn-primary:hover,
+    .pf-btn-secondary:hover {
+        transform: translateY(-1px);
+    }
+
+.pf-btn-primary {
+    border: none;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #34C759 0%, #2E7D32 100%);
+    box-shadow: 0 8px 18px rgba(46, 125, 50, 0.20);
+}
+
+.pf-btn-secondary {
+    background: #FFFFFF;
+    color: #2E7D32;
+    border: 2px solid #2E7D32;
+}
+
+@media (max-width: 760px) {
+    .pf-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pf-card {
+        padding: 28px 20px 24px 20px;
+        border-radius: 22px;
+    }
+}

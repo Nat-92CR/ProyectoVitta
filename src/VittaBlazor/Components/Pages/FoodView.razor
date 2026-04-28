@@ -8,72 +8,76 @@
 
 <PageTitle>Vitta - Consultar alimentos</PageTitle>
 
-<div class="fv-header">
-    <div class="fv-header-inner">
-        <div class="fv-brand">
-            <span class="fv-brand-circle">V</span>
-            <span class="fv-brand-text">Vitta</span>
+<div class="fv-page">
+    <div class="fv-header">
+        <div class="fv-header-inner">
+            <div class="fv-brand">
+                <span class="fv-brand-circle">V</span>
+                <span class="fv-brand-text">Vitta</span>
+            </div>
+
+            <button type="button" class="fv-back-btn" @onclick="GoBack">
+                ← Volver
+            </button>
         </div>
-        <button type="button" class="fv-back-btn" @onclick="GoBack">← Volver</button>
     </div>
-</div>
 
-<div class="fv-content">
-    <div class="fv-card">
-        <h1 class="fv-title">Consultar alimentos</h1>
-        <p class="fv-subtitle">
-            Busca alimentos disponibles en el sistema y consulta su información nutricional.
-        </p>
+    <div class="fv-content">
+        <div class="fv-card">
+            <h1 class="fv-title">Consultar alimentos</h1>
+            <p class="fv-subtitle">
+                Busca alimentos disponibles en el sistema y consulta su información nutricional.
+            </p>
 
-        <div class="fv-search-row">
-            <input class="fv-search-input" placeholder="Buscar alimento por nombre..." @bind="searchText" />
-            <button type="button" class="fv-btn-primary" @onclick="SearchFoods">Buscar</button>
-            <button type="button" class="fv-btn-secondary" @onclick="ShowAll">Mostrar todos</button>
-        </div>
+            <div class="fv-search-row">
+                <input class="fv-search-input" placeholder="Buscar alimento por nombre..." @bind="searchText" />
+                <button type="button" class="fv-btn-primary" @onclick="SearchFoods">Buscar</button>
+                <button type="button" class="fv-btn-secondary" @onclick="ShowAll">Mostrar todos</button>
+            </div>
 
-        <div class="fv-table-wrapper">
-            <table class="fv-table">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Calorías</th>
-                        <th>Proteínas</th>
-                        <th>Carbohidratos</th>
-                        <th>Grasas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (foods is null || foods.Count == 0)
-                    {
+            <div class="fv-table-wrapper">
+                <table class="fv-table">
+                    <thead>
                         <tr>
-                            <td colspan="5" class="fv-empty">No se encontraron alimentos.</td>
+                            <th>Nombre</th>
+                            <th>Calorías</th>
+                            <th>Proteínas</th>
+                            <th>Carbohidratos</th>
+                            <th>Grasas</th>
                         </tr>
-                    }
-                    else
-                    {
-                        @foreach (var food in foods)
+                    </thead>
+                    <tbody>
+                        @if (foods is null || foods.Count == 0)
                         {
                             <tr>
-                                <td>@food.Name</td>
-                                <td>@food.Calories</td>
-                                <td>@food.Protein</td>
-                                <td>@food.Carbohydrates</td>
-                                <td>@food.Fat</td>
+                                <td colspan="5" class="fv-empty">No se encontraron alimentos.</td>
                             </tr>
                         }
-                    }
-                </tbody>
-            </table>
-        </div>
+                        else
+                        {
+                            @foreach (var food in foods)
+                            {
+                                <tr>
+                                    <td>@food.Name</td>
+                                    <td>@food.Calories</td>
+                                    <td>@food.Protein</td>
+                                    <td>@food.Carbohydrates</td>
+                                    <td>@food.Fat</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="fv-info-box">
-            <span class="fv-info-icon">ℹ️</span>
-            <span class="fv-info-text">
-                Solo el administrador puede crear, editar o eliminar alimentos.
-                Si necesitas que se agregue un alimento, contáctalo.
-            </span>
+            <div class="fv-info-box">
+                <span class="fv-info-icon">ℹ️</span>
+                <span class="fv-info-text">
+                    Solo el administrador puede crear, editar o eliminar alimentos.
+                    Si necesitas que se agregue un alimento, contáctalo.
+                </span>
+            </div>
         </div>
-
     </div>
 </div>
 
